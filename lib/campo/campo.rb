@@ -59,7 +59,7 @@ module Campo
   end
   
   def self.output( *args )
-    Base.output( *args )
+    "- locals.default = {} if locals.default.nil?\n\n#{Base.output( *args )}"
   end
 
   # opt id
@@ -69,7 +69,7 @@ module Campo
     def initialize(name,  attributes={} )
       super( name, DEFAULT.merge( attributes ) )
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%form{ #{Base.unhash( @attributes )} }!
+        %Q!#{" " * n * tab}%form{ locals[:#{name}], #{Base.unhash( @attributes )} }!
       end
     end
     
@@ -91,7 +91,7 @@ module Campo
     def initialize( name, type=:text, attributes={} )
       super( name, {type: type.to_s}.merge( attributes ) )
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%input{ #{Base.unhash( @attributes )} }! 
+        %Q!#{" " * n * tab}%input{ locals[:#{name}], #{Base.unhash( @attributes )} }! 
       end
     end
   end
@@ -126,7 +126,7 @@ module Campo
       super( name, DEFAULT.merge( attributes ) )
       @inner = inner
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%textarea{ #{Base.unhash( @attributes )} } #{@inner}!
+        %Q!#{" " * n * tab}%textarea{ locals[:#{name}], #{Base.unhash( @attributes )} } #{@inner}!
       end
     end
   end
