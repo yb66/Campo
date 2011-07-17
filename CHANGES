@@ -1,3 +1,5 @@
+v0.0.5 Added in locals, which makes the parts of the form (possibly) dynamic.
+
 v0.0.4 Moved output delegates to blocks on path to adding locals easier.
 
 v0.0.3 Simplified API, removed unnecessary classes
