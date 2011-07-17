@@ -10,6 +10,12 @@ module Campo
     alias :<< :push=
   end
 
+    @locals = {}
+
+    class << self
+      attr_accessor :locals
+    end
+  
   class Base 
     include Childish
     DEFAULT = { tabindex: nil }
@@ -20,9 +26,13 @@ module Campo
       @attributes = DEFAULT.merge( attributes.merge({name: name}) )
       @fields = []
     end
+    
+    def on_output( &block )
+      @output_listener = block
+    end
 
-    def output
-      # not implemented
+    def output( n=0, tab=2 )
+      @output_listener.call n, tab
     end
 
     def labelled( inner=nil )
@@ -58,11 +68,11 @@ module Campo
 
     def initialize(name,  attributes={} )
       super( name, DEFAULT.merge( attributes ) )
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%form{ #{Base.unhash( @attributes )} }!
+      end
     end
-
-    def output( n=0, tab=2 )
-      %Q!#{" " * n * tab}- form_#{@attributes[:name]} = form_#{@attributes[:name]}.nil? ? {} : form_#{@attributes[:name]}\n\n#{" " * n * tab}%form{ form_#{@attributes[:name]}, #{Base.unhash( @attributes )} }! 
-    end
+    
   end
 
   # 
@@ -80,10 +90,9 @@ module Campo
     #{ type: "submit" }
     def initialize( name, type=:text, attributes={} )
       super( name, {type: type.to_s}.merge( attributes ) )
-    end
-
-    def output( n=0, tab=2 )
-      %Q!#{" " * n * tab}%input{ #{Base.unhash( @attributes )} }! 
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%input{ #{Base.unhash( @attributes )} }! 
+      end
     end
   end
 
@@ -101,11 +110,10 @@ module Campo
       @fields = []
       @inner = inner
     end
-
+    
     def output( n=0, tab=2 )
       %Q!#{" " * n * tab}%label{ for: "#{@name}", #{Base.unhash( @attributes )} }\n#{" " * (n + 1) * tab}#{@inner}! 
     end
-
 
   end
 
@@ -117,11 +125,9 @@ module Campo
       (attributes = inner && inner = nil) if inner.kind_of? Hash
       super( name, DEFAULT.merge( attributes ) )
       @inner = inner
-    end
-
-
-    def output( n=0, tab=2 )
-      %Q!#{" " * n * tab}%textarea{ #{Base.unhash( @attributes )} } #{@inner}!
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%textarea{ #{Base.unhash( @attributes )} } #{@inner}!
+      end
     end
   end
 
