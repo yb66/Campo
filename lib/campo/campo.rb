@@ -54,11 +54,11 @@ module Campo
 
   # opt id
   class Form < Base
+    DEFAULT = { name: nil, method: "POST", action: nil }
 
     def initialize(name,  attributes={} )
       super( name, DEFAULT.merge( attributes ) )
     end
-    DEFAULT = { name: nil, method: "POST", action: nil }
 
     def output( n=0, tab=2 )
       %Q!#{" " * n * tab}- form_#{@attributes[:name]} = form_#{@attributes[:name]}.nil? ? {} : form_#{@attributes[:name]}\n\n#{" " * n * tab}%form{ form_#{@attributes[:name]}, #{Base.unhash( @attributes )} }! 
@@ -66,31 +66,20 @@ module Campo
   end
 
   # 
-  class Input < Base
-    DEFAULT = { type: nil, value: nil, name: nil }
+  # form = Campo::Form.new( "myform" )
+  # form << Campo::Input.new( "abc", :text ).labelled("abc")
+  # form << Campo::Input.new( "def", :text ).labelled("def")
+  # form << Campo::Input.new( "ghi", :text ).labelled("ghi")
+  # form << Campo::Textarea.new( "jkl", "Here we go again" ).labelled("jkl")
+  # form << Campo::Input.new( "submit", :submit )
+  class Input < Base  
 
-    def initialize( name, attributes={} )
-      super( name, DEFAULT.merge( attributes ) )
-    end
-  end
-
-  class Text < Input
-    DEFAULT = { size: nil, maxlength: nil, type: "text" }
-
-    def initialize( name, attributes={} )
-      super( name, DEFAULT.merge( attributes ) )
-    end
-
-    def output( n=0, tab=2 )
-      %Q!#{" " * n * tab}%input{ #{Base.unhash( @attributes )} }! 
-    end
-  end
-  
-  class Submit < Input
-    DEFAULT = { type: "submit" }
-
-    def initialize( name="submit", attributes={} )
-      super( name, DEFAULT.merge( attributes ) )
+    #{ type: nil, value: nil, name: nil }
+    #{ size: nil, maxlength: nil, type: "text" }
+    #{ size: nil, maxlength: nil, type: "hidden" }
+    #{ type: "submit" }
+    def initialize( name, type=:text, attributes={} )
+      super( name, {type: type.to_s}.merge( attributes ) )
     end
 
     def output( n=0, tab=2 )
