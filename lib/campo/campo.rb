@@ -10,10 +10,10 @@ module Campo
     alias :<< :push=
   end
 
-    @locals = {}
+    @atts = {}
 
     class << self
-      attr_accessor :locals
+      attr_accessor :atts
     end
   
   class Base 
@@ -59,7 +59,14 @@ module Campo
   end
   
   def self.output( *args )
-    "- locals.default = {} if locals.default.nil?\n\n#{Base.output( *args )}"
+    s = <<STR
+- atts = {} if atts.nil?
+- atts.default = {} if atts.default.nil?
+- inners = {} if inners.nil?
+- inners.default = "" if inners.default.nil?
+
+#{Base.output( *args )}
+STR
   end
 
   # opt id
@@ -69,7 +76,7 @@ module Campo
     def initialize(name,  attributes={} )
       super( name, DEFAULT.merge( attributes ) )
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%form{ locals[:#{name}], #{Base.unhash( @attributes )} }!
+        %Q!#{" " * n * tab}%form{ atts[:#{name}], #{Base.unhash( @attributes )} }!
       end
     end
     
@@ -80,7 +87,8 @@ module Campo
   # form << Campo::Input.new( "abc", :text ).labelled("abc")
   # form << Campo::Input.new( "def", :text ).labelled("def")
   # form << Campo::Input.new( "ghi", :text ).labelled("ghi")
-  # form << Campo::Textarea.new( "jkl", "Here we go again" ).labelled("jkl")
+  # form << Campo::Textarea.new( "jkl", "= inners[:jkl]" ).labelled("jkl")
+  # form << Campo::Input.new("mno", :checkbox ).labelled( "mno" )
   # form << Campo::Input.new( "submit", :submit )
   class Input < Base  
 
@@ -91,7 +99,7 @@ module Campo
     def initialize( name, type=:text, attributes={} )
       super( name, {type: type.to_s}.merge( attributes ) )
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%input{ locals[:#{name}], #{Base.unhash( @attributes )} }! 
+        %Q!#{" " * n * tab}%input{ atts[:#{name}], #{Base.unhash( @attributes )} }! 
       end
     end
   end
@@ -126,24 +134,13 @@ module Campo
       super( name, DEFAULT.merge( attributes ) )
       @inner = inner
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%textarea{ locals[:#{name}], #{Base.unhash( @attributes )} } #{@inner}!
+        %Q!#{" " * n * tab}%textarea{ atts[:#{name}], #{Base.unhash( @attributes )} }#{@inner}!
       end
     end
   end
 
 end
-# 
-# 
-# 
-# 
-# 
-# class Checkbox < Input
-#   DEFAULT = { checked: nil, type: "checkbox" }
-# 
-#   def initialize( name, attributes={} )
-#     super( name, DEFAULT.merge( attributes ) )
-#   end
-# end
+
 # 
 # class Radio < Input
 #   DEFAULT = { checked: nil, type: "radio" }
