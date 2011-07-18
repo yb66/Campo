@@ -47,7 +47,7 @@ module Campo
     def self.output( top, so_far="", count=0, tab=2 )
       so_far << "#{top.output( count, tab )}\n"
       count += 1
-      unless top.fields.length == 0
+      if top.respond_to?( :fields ) && top.fields.length >= 1
         top.fields.each do |field|
           so_far = Base.output( field, so_far, count, tab ) 
         end
@@ -71,7 +71,7 @@ STR
 
   # opt id
   class Form < Base
-    DEFAULT = { name: nil, method: "POST", action: nil }
+    DEFAULT = { method: "POST" }
 
     def initialize(name,  attributes={} )
       super( name, DEFAULT.merge( attributes ) )
@@ -82,13 +82,35 @@ STR
     
   end
 
-  # 
-  # form = Campo::Form.new( "myform" )
-  # form << Campo::Input.new( "abc", :text ).labelled("abc")
-  # form << Campo::Input.new( "def", :text ).labelled("def")
-  # form << Campo::Input.new( "ghi", :text ).labelled("ghi")
-  # form << Campo::Textarea.new( "jkl", "= inners[:jkl]" ).labelled("jkl")
-  # form << Campo::Input.new("mno", :checkbox ).labelled( "mno" )
+  
+  class Select < Base
+    def initialize( name, attributes={} )
+      super( name, attributes )
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%select{ atts[:#{name}], #{Base.unhash( @attributes )} }! 
+      end
+      yield( self ) if block_given?
+    end # initialize
+      
+    def option( *args )
+      self << Campo::Option.new( *args )
+    end
+  end # Select
+  
+  class Option
+    def initialize( value, inner, checked=false, attributes={} )
+      @value = value
+      @inner = inner
+      (attributes = checked && checked = {}) if checked.kind_of? Hash
+      @checked = checked ? {checked: "checked"} : {}
+      @attributes = attributes
+    end
+    
+    def output(n=0, tab=2)
+      %Q!#{" " * n * tab}%option{ #{@checked}, value: "#{@value}", #{Base.unhash( @attributes )} }#{@inner}!
+    end
+  end # Option
+  
   # form << Campo::Input.new( "submit", :submit )
   class Input < Base  
 
@@ -140,20 +162,3 @@ STR
   end
 
 end
-
-# 
-# class Radio < Input
-#   DEFAULT = { checked: nil, type: "radio" }
-# 
-#   def initialize( name, attributes={} )
-#     super( name, DEFAULT.merge( attributes ) )
-#   end
-# end
-# 
-# class Password < Input
-#   DEFAULT = { type: "password" }
-# 
-#   def initialize( name, attributes={} )
-#     super( name, DEFAULT.merge( attributes ) )
-#   end
-# end
