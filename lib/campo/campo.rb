@@ -16,6 +16,13 @@ module Campo
     end
   end
   
+  module Grouping
+    
+    def fieldset( fieldset )
+      fieldset << self
+    end
+  end
+  
   module Helpers
     # [ [id, lookup, selected || false], ... ]
     def self.options_builder( opts )
@@ -45,6 +52,7 @@ module Campo
   class Base 
     include Childish
     include Iding
+    include Grouping
     
     DEFAULT = { tabindex: nil }
 
@@ -66,6 +74,7 @@ module Campo
     def labelled( inner=nil )
       Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value])}!, inner ) << self
     end
+
 
     def self.unhash( hash )
       hash.reject{|k,v| v.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k}: "#{v}", !}
@@ -106,6 +115,12 @@ STR
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%form{ atts[:#{name}], #{Base.unhash( @attributes )} }!
       end
+    end
+    
+    def fieldset( text )
+      fieldset = (Fieldset.new() << Legend.new( text ))
+      @fields << fieldset
+      fieldset
     end
     
   end
@@ -170,9 +185,39 @@ STR
     end
   end
 
+  class Fieldset < Base
+    include Childish
+    
+    def initialize( attributes={} )
+      super( "", attributes )
+      @attributes.delete(:name)
+      
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%fieldset{ #{Base.unhash( @attributes )} }! 
+      end
+    end # initialize
+  end # Fieldset
+  
+  
+  class Legend < Base
+    include Childish
+    
+    def initialize( inner, attributes={} )
+      super( "", attributes )
+      @attributes.delete(:name)
+      @inner = inner
+      
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%legend{ #{Base.unhash( @attributes )} }#{@inner}! 
+      end
+    end # initialize
+  end # Fieldset
+      
 
   class Label
     include Childish
+    include Grouping
+    
     DEFAULT = { for: nil }
 
     attr_reader :attributes, :fields
