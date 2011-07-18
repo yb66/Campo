@@ -8,7 +8,12 @@ form << Campo::Input.new( "abc", :text ).labelled("abc")
 form << Campo::Input.new( "def", :text ).labelled("def")
 form << Campo::Input.new( "ghi", :text ).labelled("ghi")
 form << Campo::Textarea.new( "jkl", "= inners[:jkl]" ).labelled("jkl")
-form << Campo::Input.new("mno", :checkbox ).labelled( "mno" )
+form << Campo::Input.new("mno", :checkbox, value: "blue" ).labelled( "blue" )
+form << Campo::Input.new("mno", :checkbox, value: "red" ).labelled( "red" )
+
+form << Campo::Input.new("radio1", :radio, value: "green" ).labelled( "green" )
+form << Campo::Input.new("radio1", :radio, value: "yellow" ).labelled( "yellow" )
+
 form << Campo::Select.new( "pqr" ) do |s|
   s << Campo::Option.new( "volvo", "Volvo" )
   s << Campo::Option.new( "saab", "Saab" )
