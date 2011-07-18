@@ -10,6 +10,12 @@ module Campo
     alias :<< :push=
   end
   
+  module Iding
+    def id_tag( val )
+      val.nil? ? "" : "_#{val}"
+    end
+  end
+  
   module Helpers
     # [ [id, lookup, selected || false], ... ]
     def self.options_builder( opts )
@@ -38,6 +44,8 @@ module Campo
   
   class Base 
     include Childish
+    include Iding
+    
     DEFAULT = { tabindex: nil }
 
     attr_accessor :attributes, :fields
@@ -56,7 +64,7 @@ module Campo
     end
 
     def labelled( inner=nil )
-      Label.new( @attributes[:name], inner ) << self
+      Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value])}!, inner ) << self
     end
 
     def self.unhash( hash )
@@ -145,13 +153,17 @@ STR
   
   # form << Campo::Input.new( "submit", :submit )
   class Input < Base  
-
+    
     #{ type: nil, value: nil, name: nil }
     #{ size: nil, maxlength: nil, type: "text" }
     #{ size: nil, maxlength: nil, type: "hidden" }
     #{ type: "submit" }
     def initialize( name, type=:text, attributes={} )
-      super( name, {type: type.to_s}.merge( attributes ) )
+      super( name, 
+            { type: type.to_s, 
+              id: "#{name}#{id_tag(attributes[:value])}" 
+            }.merge( attributes ) )
+            
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%input{ atts[:#{name}], #{Base.unhash( @attributes )} }! 
       end
