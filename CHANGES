@@ -1,3 +1,5 @@
+v0.0.7 Select tags with dynamic option tags possible.
+
 v0.0.6 Added in another local, called inners for dynamic inner stuff. Changed locals to atts as it was messing up sinatra/haml. Added in more defaults to locals to avoid errors.
 
 v0.0.5 Added in locals, which makes the parts of the form (possibly) dynamic.
