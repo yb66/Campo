@@ -1,3 +1,5 @@
+v0.0.12 Tab index for fields is automatically generated.
+
 v0.0.11 No need to explicitly give a label the name, it picks it up from the field.
 
 v0.0.10 All options get id's and locals too.
