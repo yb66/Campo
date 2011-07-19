@@ -1,3 +1,5 @@
+v0.0.10 All options get id's and locals too.
+
 v0.0.9 Added fieldsets and legends.
 
 v0.0.8 Adds id's to input fields, making accessible labels.
