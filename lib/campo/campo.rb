@@ -72,6 +72,7 @@ module Campo
     end
 
     def labelled( inner=nil )
+      inner ||= self.attributes[:name]
       Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value])}!, inner ) << self
     end
 

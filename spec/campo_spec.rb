@@ -42,6 +42,9 @@ end.labelled("yz")
 
 form << Campo::Select.new( "bands" ).option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").labelled("Bands")
 
+form << Campo::Input.new( "blah", :text ).labelled
+form << Campo::Input.new( "deblah", :text ).labelled
+
 puts Campo.output( form )
 
 require "haml"
