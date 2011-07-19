@@ -1,0 +1,41 @@
+Note: this is in ultra alpha state.
+
+A static dynamic form builder into haml. Yep, static _and_ dynamic. Use it to statically create a form into haml, but you may notice it's taken advantage of haml's "add a hash to the front of the attributes and it'll get merged" property. http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#attribute_methods
+
+What does this mean? You can pass in a local to dynamically alter the form based on server side logic.
+
+These get added to the top:
+
+    - atts = {} if atts.nil?
+    - atts.default = {} if atts.default.nil?
+    - inners = {} if inners.nil?
+    - inners.default = "" if inners.default.nil?
+
+In the select below, notice how each tag gets a local variable added to the front. You can either fill that variable with a hash pair, or an empty hash gets passed and nothing happens.
+
+    %label{ for: "bands",  }
+      Bands
+      %select{ atts[:bands], name: "bands",  }
+        %option{ atts[:bands_Suede], id: "bands_Suede", value: "Suede", name: "bands",  }Suede
+        %option{ atts[:bands_Blur], id: "bands_Blur", value: "Blur", name: "bands",  }Blur
+        %option{ atts[:bands_Oasis], id: "bands_Oasis", value: "Oasis", name: "bands",  }Oasis
+        %option{ atts[:bands_Echobelly], id: "bands_Echobelly", value: "Echobelly", name: "bands",  }Echobelly
+        %option{ atts[:bands_Pulp], id: "bands_Pulp", value: "Pulp", name: "bands",  }Pulp
+        %option{ atts[:bands_Supergrass], id: "bands_Supergrass", value: "Supergrass", name: "bands",  }Supergrass
+
+If you wanted to select "Blur" dynamically (and you should, but I'd accept Suede) you might do:
+
+    atts[:bands_Blur] = {selected: "selected"}
+
+and pass it in to the form when the view is rendered, and the tag would change from:
+
+    <option id='bands_Blur' name='bands' value='Blur'>Blur</option>
+
+to:
+
+    <option selected='selected' id='bands_Blur' name='bands' value='Blur'>Blur</option>
+    
+I'll be using this with Sinatra, if you're using Rails you'll need to work out how that's done as I don't know.
+
+
+See the "spec" to see examples.
