@@ -102,6 +102,7 @@ module Campo
 - atts.default = {} if atts.default.nil?
 - inners = {} if inners.nil?
 - inners.default = "" if inners.default.nil?
+- i = 0 # for tabindex
 
 #{Base.output( *args )}
 STR
@@ -131,7 +132,7 @@ STR
     def initialize( name, opts=[], attributes={} )
       (attributes = opts && opts = []) if opts.kind_of? Hash
       
-      super( name, attributes )
+      super( name, { tabindex: %q!#{i += 1}! }.merge(attributes) )
       
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%select{ atts[:#{name}], #{Base.unhash( @attributes )} }! 
@@ -188,7 +189,8 @@ STR
     def initialize( name, type=:text, attributes={} )
       super( name, 
             { type: type.to_s, 
-              id: "#{name}#{id_tag(attributes[:value])}" 
+              id: "#{name}#{id_tag(attributes[:value])}",
+              tabindex: %q!#{i += 1}!, 
             }.merge( attributes ) )
             
       self.on_output do |n=0, tab=2|
@@ -250,7 +252,7 @@ STR
 
 
   class Textarea < Base
-    DEFAULT = { cols: 40, rows: 10 }
+    DEFAULT = { cols: 40, rows: 10, tabindex: %q!#{i += 1}! }
 
     def initialize( name,  inner=nil, attributes={} )
       (attributes = inner && inner = nil) if inner.kind_of? Hash
