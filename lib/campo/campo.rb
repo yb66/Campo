@@ -25,15 +25,15 @@ module Campo
   
   module Helpers
     # [ [id, lookup, selected || false], ... ]
-    def self.options_builder( opts )
+    def self.options_builder( name, opts )
       return [] if opts.nil? || opts.empty?
 
       opts.map do |opt|
         id, lookup, selected, atts = opt
-        selected = false if selected.nil?
+        selected = selected ? true : false
         atts = atts.nil? ? { } : atts
 
-        Campo::Option.new( id, lookup, selected, atts )
+        Campo::Option.new( name, id, lookup, selected, atts )
       end
     end
     
@@ -136,13 +136,14 @@ STR
         %Q!#{" " * n * tab}%select{ atts[:#{name}], #{Base.unhash( @attributes )} }! 
       end
       
-      self.fields += Helpers.options_builder( opts ) unless opts.nil? || opts.empty?
+      self.fields += Helpers.options_builder( name, opts ) unless opts.nil? || opts.empty?
       
       yield( self ) if block_given?
     end # initialize
       
     def option( *args )
-      self << Campo::Option.new( *args )
+      self << Campo::Option.new( @attributes[:name], *args )
+      self
     end
     
     def mark_as_selected( val )
@@ -150,19 +151,29 @@ STR
     end
   end # Select
   
-  class Option
+  
+  class Option < Base
     attr_accessor :value, :checked
-    def initialize( value, inner, selected=false, attributes={} )
-      @value = value
-      @inner = inner
-      (attributes = selected && selected = {}) if selected.kind_of? Hash
-      @selected = selected ? {selected: "selected"} : {}
-      @attributes = attributes
-    end
     
-    def output(n=0, tab=2)
-      %Q!#{" " * n * tab}%option{ #{@selected}, value: "#{@value}", #{Base.unhash( @attributes )} }#{@inner}!
-    end
+    def initialize( name, value, inner=nil, selected=nil, attributes={} )
+      
+      (selected = attributes && inner = nil) if inner.kind_of? TrueClass
+      
+      @inner = inner || value
+      
+      (attributes = selected && selected = {}) if selected.kind_of? Hash
+      
+      super( name, { 
+        id: "#{name}#{id_tag(value)}",
+        value: value,
+        selected: (selected ? "selected" : nil)
+      }.merge( attributes ) )
+      
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%option{ atts[:#{@attributes[:id]}], #{Base.unhash( @attributes )} }#{@inner}!
+      end
+
+    end #initialize
   end # Option
   
   
@@ -180,7 +191,7 @@ STR
             }.merge( attributes ) )
             
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%input{ atts[:#{name}], #{Base.unhash( @attributes )} }! 
+        %Q!#{" " * n * tab}%input{ atts[:#{name}#{id_tag(attributes[:value])}], #{Base.unhash( @attributes )} }! 
       end
     end
   end
