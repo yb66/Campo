@@ -20,9 +20,10 @@ Campo::Input.new("radio1", :radio, value: "blue" ).labelled( "blue" ).fieldset( 
 Campo::Input.new("radio1", :radio, value: "purple" ).labelled( "purple" ).fieldset( sel_colours )
 
 form << Campo::Select.new( "pqr" ) do |s|
-  s << Campo::Option.new( "volvo", "Volvo" )
-  s << Campo::Option.new( "saab", "Saab" )
-  s << Campo::Option.new( "audi", "Audi" )
+  s << Campo::Option.new( "pqr", "", "Please select one" )
+  s << Campo::Option.new( "pqr", "volvo", "Volvo" )
+  s << Campo::Option.new( "pqr", "saab", "Saab" )
+  s << Campo::Option.new( "pqr", "audi", "Audi" )
 end.labelled("pqr")
 opts = [["ford", "Ford"], ["bmw", "BMW"], ["ferrari", "Ferrari", "checked"]]
 form << Campo::Select.new("stu", opts, ).labelled( "stu" )
@@ -38,6 +39,8 @@ form << Campo::Select.new( "yz", opts ) do |s|
   s.option "saab", "Saab"
   s.option "audi", "Audi"
 end.labelled("yz")
+
+form << Campo::Select.new( "bands" ).option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").labelled("Bands")
 
 puts Campo.output( form )
 
