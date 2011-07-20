@@ -9,3 +9,4 @@ thin/
 run/
 app/.sass-cache/
 scratch/
+*.gem
