@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-require_relative "../lib/campo/campo.rb"
+require_relative "../lib/campo.rb"
 
 
 form = Campo::Form.new( "myform" )
@@ -20,7 +20,7 @@ Campo::Input.new("radio1", :radio, value: "blue" ).labelled( "blue" ).fieldset( 
 Campo::Input.new("radio1", :radio, value: "purple" ).labelled( "purple" ).fieldset( sel_colours )
 
 form << Campo::Select.new( "pqr" ) do |s|
-  s << Campo::Option.new( "pqr", "", "Please select one" )
+  s << Campo::Option.new( "pqr", "", "Please choose one option", nil, {disabled: "disabled" } )
   s << Campo::Option.new( "pqr", "volvo", "Volvo" )
   s << Campo::Option.new( "pqr", "saab", "Saab" )
   s << Campo::Option.new( "pqr", "audi", "Audi" )
@@ -40,7 +40,7 @@ form << Campo::Select.new( "yz", opts ) do |s|
   s.option "audi", "Audi"
 end.labelled("yz")
 
-form << Campo::Select.new( "bands" ).option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").labelled("Bands")
+form << Campo::Select.new( "bands" ).with_default.option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").labelled("Bands")
 
 form << Campo::Input.new( "blah", :text ).labelled
 form << Campo::Input.new( "deblah", :text ).labelled

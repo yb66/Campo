@@ -154,6 +154,11 @@ STR
       self
     end
     
+    def with_default( inner="Choose one:" )
+      self << Campo::Option.new( @attributes[:name], "", inner , nil, {disabled: "disabled" } )
+      self
+    end
+    
     def mark_as_selected( val )
       fields.find {|field| field.value == val }.selected = {selected: "selected"}
     end
@@ -171,14 +176,17 @@ STR
       
       (attributes = selected && selected = {}) if selected.kind_of? Hash
       
-      super( name, { 
-        id: "#{name}#{id_tag(value)}",
+      attributes = { id: "#{name}#{id_tag(value)}" }.merge(attributes) unless value.nil? || value.empty?
+      
+      super( name, {
         value: value,
         selected: (selected ? "selected" : nil)
       }.merge( attributes ) )
       
+      atts_string = "atts[:#{@attributes[:id]}]," unless @attributes[:id].nil?
+      
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%option{ atts[:#{@attributes[:id]}], #{Base.unhash( @attributes )} }#{@inner}!
+        %Q!#{" " * n * tab}%option{ #{atts_string} #{Base.unhash( @attributes )} }#{@inner}!
       end
 
     end #initialize
