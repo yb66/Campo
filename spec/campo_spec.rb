@@ -44,6 +44,9 @@ form << Campo::Select.new( "bands" ).option("Suede").option("Blur").option("Oasi
 
 form << Campo::Input.new( "blah", :text ).labelled
 form << Campo::Input.new( "deblah", :text ).labelled
+form.text( "age", "How old are you?" )
+form.text( "cuppa", "What's your favourite tea?", class: "drink" )
+
 
 puts Campo.output( form )
 

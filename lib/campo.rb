@@ -125,6 +125,12 @@ STR
       fieldset
     end
     
+    def text( name, label_inner=nil, attributes={} )
+      (attributes = label_inner && label_inner = nil) if label_inner.kind_of? Hash
+      text = Campo::Input.new( name, :text, attributes ).labelled( label_inner )
+      @fields << text
+      text
+    end
   end
 
   
