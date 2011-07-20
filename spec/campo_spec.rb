@@ -47,6 +47,7 @@ form << Campo::Input.new( "deblah", :text ).labelled
 form.text( "age", "How old are you?" )
 form.text( "cuppa", "What's your favourite tea?", class: "drink" )
 
+form.select("teas").with_default.option("Ceylon").option("Breakfast").option("Earl grey").labelled("Favourite tea:")
 
 puts Campo.output( form )
 
