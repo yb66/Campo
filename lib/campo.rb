@@ -73,7 +73,7 @@ module Campo
 
     def labelled( inner=nil )
       inner ||= self.attributes[:name]
-      Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value])}!, inner ) << self
+      Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value]).gsub(/\W/, "_")}!, inner ) << self
     end
 
 
@@ -115,7 +115,7 @@ STR
     def initialize(name,  attributes={} )
       super( name, DEFAULT.merge( attributes ) )
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%form{ atts[:#{name}], #{Base.unhash( @attributes )} }!
+        %Q!#{" " * n * tab}%form{ atts[:#{name.gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }!
       end
     end
     
@@ -125,26 +125,43 @@ STR
       fieldset
     end
     
+    def text( name, label_inner=nil, attributes={} )
+      (attributes = label_inner && label_inner = nil) if label_inner.kind_of? Hash
+      text = Campo::Input.new( name, :text, attributes ).labelled( label_inner )
+      @fields << text
+      text
+    end
+    
+    def select( name, opts=[], attributes={}, &block )
+      select = Campo::Select.new( name, opts, attributes, &block )
+      @fields << select
+      select
+    end
   end
 
   
   class Select < Base
-    def initialize( name, opts=[], attributes={} )
+    def initialize( name, opts=[], attributes={}, &block )
       (attributes = opts && opts = []) if opts.kind_of? Hash
       
       super( name, { tabindex: %q!#{i += 1}! }.merge(attributes) )
       
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%select{ atts[:#{name}], #{Base.unhash( @attributes )} }! 
+        %Q!#{" " * n * tab}%select{ atts[:#{name.gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }! 
       end
       
       self.fields += Helpers.options_builder( name, opts ) unless opts.nil? || opts.empty?
       
-      yield( self ) if block_given?
+      block.call( self ) if block
     end # initialize
       
     def option( *args )
       self << Campo::Option.new( @attributes[:name], *args )
+      self
+    end
+    
+    def with_default( inner="Choose one:" )
+      self << Campo::Option.new( @attributes[:name], "", inner , nil, {disabled: "disabled" } )
       self
     end
     
@@ -165,14 +182,17 @@ STR
       
       (attributes = selected && selected = {}) if selected.kind_of? Hash
       
-      super( name, { 
-        id: "#{name}#{id_tag(value)}",
+      attributes = { id: "#{name.gsub(/\W/, "_")}#{id_tag(value).gsub(/\W/, "_")}" }.merge(attributes) unless value.nil? || value.empty?
+      
+      super( name, {
         value: value,
         selected: (selected ? "selected" : nil)
       }.merge( attributes ) )
       
+      atts_string = "atts[:#{@attributes[:id]}]," unless @attributes[:id].nil?
+      
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%option{ atts[:#{@attributes[:id]}], #{Base.unhash( @attributes )} }#{@inner}!
+        %Q!#{" " * n * tab}%option{ #{atts_string} #{Base.unhash( @attributes )} }#{@inner}!
       end
 
     end #initialize
@@ -189,12 +209,12 @@ STR
     def initialize( name, type=:text, attributes={} )
       super( name, 
             { type: type.to_s, 
-              id: "#{name}#{id_tag(attributes[:value])}",
+              id: "#{name}#{id_tag(attributes[:value]).gsub(/\W/, "_")}",
               tabindex: %q!#{i += 1}!, 
             }.merge( attributes ) )
             
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%input{ atts[:#{name}#{id_tag(attributes[:value])}], #{Base.unhash( @attributes )} }! 
+        %Q!#{" " * n * tab}%input{ atts[:#{name.gsub(/\W/, "_")}#{id_tag(attributes[:value]).gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }! 
       end
     end
   end
@@ -259,7 +279,7 @@ STR
       super( name, DEFAULT.merge( attributes ) )
       @inner = inner
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%textarea{ atts[:#{name}], #{Base.unhash( @attributes )} }#{@inner}!
+        %Q!#{" " * n * tab}%textarea{ atts[:#{name.gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }#{@inner}!
       end
     end
   end
