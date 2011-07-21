@@ -76,7 +76,6 @@ module Campo
       Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value]).gsub(/\W/, "_")}!, inner ) << self
     end
 
-
     def self.unhash( hash )
       hash.reject{|k,v| v.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k}: "#{v}", !}
     end
