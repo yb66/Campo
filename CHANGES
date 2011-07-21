@@ -1,3 +1,5 @@
+v0.0.14 Added some specs and made minor changes to code.
+
 v0.0.13 Added convenience methods for adding text and select tags (with a default option tag), and problem with spaces in names/values for attribute methods.
 
 v0.0.12 Tab index for fields is automatically generated.
