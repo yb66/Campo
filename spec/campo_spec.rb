@@ -81,6 +81,25 @@ s.chomp
         
     end
 
+    describe Haml_Ruby_Insert do
+      let(:tag) { Haml_Ruby_Insert.new "= sel_opts" }
+      subject { tag }
+      it { should_not be_nil }
+      it { should be_a_kind_of(Haml_Ruby_Insert) }
+      
+      describe :output do
+        let(:expected) { "= sel_opts" }
+        subject { tag.output }
+        it { should == expected }
+      end
+      
+      describe "Campo.output" do
+        let(:expected) { top_bit + %Q!= sel_opts\n\n! }
+        subject { Campo.output tag }
+        it { should == expected }
+      end
+    end
+    
     describe Select do
       context "initialisation" do
         context "Given a name" do
@@ -166,11 +185,37 @@ s.chomp
               end
             end
             
+            
+            context "and a haml ruby insert" do
+              let(:tag) {  
+                Campo::Select.new( "pqr", {haml_insert: "= opts"} ) do |s|
+                  s.option "volvo", "Volvo"
+                  s.option "saab", "Saab"
+                  s.option "audi", "Audi"
+                end
+              }
+              subject { tag }
+              specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+              
+              context "Campo.output" do
+                let(:expected) { top_bit + %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! + %q!
+  = opts
+  %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
+  %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
+  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
+
+! }
+                subject { 
+                  Campo.output tag }
+                it { should_not be_nil }
+                it { should == expected }
+              end
+            end
           end
 
           context "and an array" do
             let(:opts) { [["ford", "Ford"], ["bmw", "BMW"], ["ferrari", "Ferrari", "checked"]] }
-            subject { Campo::Select.new( "pqr", opts ) }
+            subject { Campo::Select.new( "pqr", {opts: opts} ) }
 
             it { should_not be_nil }
             it { should be_a_kind_of(Select) }
@@ -179,7 +224,7 @@ s.chomp
             context "with a block with options" do
               let(:opts) { [["ford", "Ford"], ["bmw", "BMW"], ["ferrari", "Ferrari", "checked"]] }
               let(:tag){ 
-                Campo::Select.new( "pqr", opts ) do |s|
+                Campo::Select.new( "pqr", {opts: opts} ) do |s|
                   s.option "volvo", "Volvo"
                   s.option "saab", "Saab"
                   s.option "audi", "Audi"

@@ -137,11 +137,22 @@ STR
       select
     end
   end
-
+  
+  class Haml_Ruby_Insert
+    def initialize( s )
+      @s = s.start_with?( '=' ) ? s : "= #{s}"
+    end
+    
+    def output(n=0, tab=2)
+      (" " * n * tab) + @s
+    end
+  end
   
   class Select < Base
-    def initialize( name, opts=[], attributes={}, &block )
-      (attributes = opts && opts = []) if opts.kind_of? Hash
+    def initialize( name, params={}, &block )
+      opts = params[:opts] || []
+      attributes = params[:attributes] || {}
+      haml_insert = params[:haml_insert] || nil
       
       super( name, { tabindex: %q!#{i += 1}! }.merge(attributes) )
       
@@ -150,6 +161,8 @@ STR
       end
       
       self.fields += Helpers.options_builder( name, opts ) unless opts.nil? || opts.empty?
+      
+      self.fields << Haml_Ruby_Insert.new( haml_insert ) unless haml_insert.nil?
       
       block.call( self ) if block
     end # initialize
