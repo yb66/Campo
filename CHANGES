@@ -1,3 +1,5 @@
+v0.0.16 can pass a ruby insert for Haml to a select tag
+
 v0.0.15 Select#with_default can now be used with an and array and/or a block.
 
 v0.0.14 Added some specs and made minor changes to code.
