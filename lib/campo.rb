@@ -160,7 +160,7 @@ STR
     end
     
     def with_default( inner="Choose one:" )
-      self << Campo::Option.new( @attributes[:name], "", inner , nil, {disabled: "disabled" } )
+      self.fields.unshift Campo::Option.new( @attributes[:name], "", inner , nil, {disabled: "disabled" } )
       self
     end
     
