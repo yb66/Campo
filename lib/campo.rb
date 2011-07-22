@@ -131,8 +131,8 @@ STR
       text
     end
     
-    def select( name, opts=[], attributes={}, &block )
-      select = Campo::Select.new( name, opts, attributes, &block )
+    def select( *args )
+      select = Campo::Select.new( *args )
       @fields << select
       select
     end
