@@ -59,26 +59,42 @@ s.chomp
     end
 
     describe Form do
-
+      let(:form) { Campo::Form.new( "myform" ) }
       context "initialisation" do
-        subject { Campo::Form.new( "myform" ) }
+        subject { form }
         it { should_not be_nil }
         it { should be_a_kind_of(Form) }
       end
 
       context "simple output" do
         let(:expected) { %q!%form{ atts[:myform], method: "POST", name: "myform",  }! }
-        subject { Campo::Form.new( "myform" ).output }
+        subject { form.output }
         it { should == expected }
       end
       
       context :fieldset do
         let(:expected) { top_bit + "%fieldset{  }\n  %legend{  }Do you like these colours? Tick for yes:\n\n" }
-        subject { Campo.output Campo::Form.new( "myform" ).fieldset("Do you like these colours? Tick for yes:") }
+        subject { Campo.output form.fieldset("Do you like these colours? Tick for yes:") }
         it { should_not be_nil }
         it { should == expected }
       end
         
+      context :select do
+        let(:expected) { top_bit + %q!%label{ for: "teas",  }
+  Favourite tea:
+  %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+    %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
+    %option{ atts[:teas_Ceylon], value: "Ceylon", id: "teas_Ceylon", name: "teas",  }Ceylon
+    %option{ atts[:teas_Breakfast], value: "Breakfast", id: "teas_Breakfast", name: "teas",  }Breakfast
+    %option{ atts[:teas_Earl_grey], value: "Earl grey", id: "teas_Earl_grey", name: "teas",  }Earl grey
+
+!
+        }
+                            
+        subject{ Campo.output form.select("teas").with_default.option("Ceylon").option("Breakfast").option("Earl grey").labelled("Favourite tea:") }
+        it { should_not be_nil }
+        it { should == expected }
+      end
     end
 
     describe Haml_Ruby_Insert do
