@@ -1,3 +1,5 @@
+v0.0.17 Bug fix/internal API change, forced by changes in 0.0.16
+
 v0.0.16 can pass a ruby insert for Haml to a select tag
 
 v0.0.15 Select#with_default can now be used with an and array and/or a block.
