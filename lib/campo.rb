@@ -161,6 +161,12 @@ STR
     end
   end
   
+  
+  def self.form( name, *args )
+    Form.new( name, *args )
+  end
+  
+  
   class Haml_Ruby_Insert
     def initialize( s )
       @s = s.start_with?( '=' ) ? s : "= #{s}"

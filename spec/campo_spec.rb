@@ -72,6 +72,14 @@ s.chomp
           it { should_not be_nil }
           it { should be_a_kind_of(Form) }
           
+          context "via convenience method" do
+            let(:form) { Campo.form( "myform" ) }
+            subject { form }
+            it { should_not be_nil }
+            it { should be_a_kind_of(Form) }
+          end
+            
+          
           context "simple output" do
             let(:expected) { %q!%form{ atts[:myform], method: "POST", name: "myform",  }! }
             subject { form.output }
@@ -103,6 +111,9 @@ s.chomp
           }
           it { should_not be_nil }
           it { should == expected }
+        end
+        context "When given a form with a mix of fields" do
+          let(:form) { Campo::Form.new( "myform" ) }
         end
       end
         
