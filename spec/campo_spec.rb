@@ -59,41 +59,105 @@ s.chomp
     end
 
     describe Form do
-      let(:form) { Campo::Form.new( "myform" ) }
-      context "initialisation" do
-        subject { form }
-        it { should_not be_nil }
-        it { should be_a_kind_of(Form) }
+      
+      describe "initialisation" do
+        context "When given no args" do
+          let(:form) { Campo::Form.new }
+          it { should_not be_nil }
+          it { should raise_error }
+        end
+        context "When given a name" do
+          let(:form) { Campo::Form.new( "myform" ) }
+          subject { form }
+          it { should_not be_nil }
+          it { should be_a_kind_of(Form) }
+          
+          context "simple output" do
+            let(:expected) { %q!%form{ atts[:myform], method: "POST", name: "myform",  }! }
+            subject { form.output }
+            it { should == expected }
+          end
+        end
+        context "When given a name and a hash of haml attributes" do
+          let(:form) { Campo::Form.new( "myform", action: "/" ) }
+          subject { form }
+          it { should_not be_nil }
+          it { should be_a_kind_of(Form) }
+          
+          context "simple output" do
+            let(:expected) { %q!%form{ atts[:myform], method: "POST", action: "/", name: "myform",  }! }
+            subject { form.output }
+            it { should == expected }
+          end
+        end
       end
 
-      context "simple output" do
-        let(:expected) { %q!%form{ atts[:myform], method: "POST", name: "myform",  }! }
-        subject { form.output }
-        it { should == expected }
-      end
+
       
-      context :fieldset do
-        let(:expected) { top_bit + "%fieldset{  }\n  %legend{  }Do you like these colours? Tick for yes:\n\n" }
-        subject { Campo.output form.fieldset("Do you like these colours? Tick for yes:") }
-        it { should_not be_nil }
-        it { should == expected }
+      describe :fieldset do
+        context "When given a form with only a name" do
+          let(:form) { Campo::Form.new( "myform" ) }
+          let(:expected) { top_bit + %Q!%form{ atts[:myform], method: "POST", name: "myform",  }\n  %fieldset{  }\n    %legend{  }Do you like these colours? Tick for yes:\n\n! }
+          subject { form.fieldset("Do you like these colours? Tick for yes:") 
+            Campo.output form
+          }
+          it { should_not be_nil }
+          it { should == expected }
+        end
       end
         
       context :select do
-        let(:expected) { top_bit + %q!%label{ for: "teas",  }
-  Favourite tea:
-  %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
-    %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
-    %option{ atts[:teas_Ceylon], value: "Ceylon", id: "teas_Ceylon", name: "teas",  }Ceylon
-    %option{ atts[:teas_Breakfast], value: "Breakfast", id: "teas_Breakfast", name: "teas",  }Breakfast
-    %option{ atts[:teas_Earl_grey], value: "Earl grey", id: "teas_Earl_grey", name: "teas",  }Earl grey
+        let(:form) { Campo::Form.new( "myform" ) }
+        context "Given one select tag" do
+          let(:expected) { top_bit + %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %label{ for: "teas",  }
+    Favourite tea:
+    %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+      %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
+      %option{ atts[:teas_Ceylon], value: "Ceylon", id: "teas_Ceylon", name: "teas",  }Ceylon
+      %option{ atts[:teas_Breakfast], value: "Breakfast", id: "teas_Breakfast", name: "teas",  }Breakfast
+      %option{ atts[:teas_Earl_grey], value: "Earl grey", id: "teas_Earl_grey", name: "teas",  }Earl grey
 
-!
-        }
+!.strip + "\n\n"
+          }
                             
-        subject{ Campo.output form.select("teas").with_default.option("Ceylon").option("Breakfast").option("Earl grey").labelled("Favourite tea:") }
-        it { should_not be_nil }
-        it { should == expected }
+          subject {
+            form.select("teas").with_default.option("Ceylon").option("Breakfast").option("Earl grey").labelled("Favourite tea:") 
+            Campo.output form
+          }
+          it { should_not be_nil }
+          it { should == expected }
+        end
+        context "Given several select tags" do
+          let(:expected) {  top_bit + %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %label{ for: "teas",  }
+    Favourite tea:
+    %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+      %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
+      %option{ atts[:teas_Ceylon], value: "Ceylon", id: "teas_Ceylon", name: "teas",  }Ceylon
+      %option{ atts[:teas_Breakfast], value: "Breakfast", id: "teas_Breakfast", name: "teas",  }Breakfast
+      %option{ atts[:teas_Earl_grey], value: "Earl grey", id: "teas_Earl_grey", name: "teas",  }Earl grey
+  %label{ for: "coffees",  }
+    Favourite coffee:
+    %select{ atts[:coffees], tabindex: "#{i += 1}", name: "coffees",  }
+      %option{  value: "", disabled: "disabled", name: "coffees",  }Choose one:
+      %option{ atts[:coffees_Blue_mountain], value: "Blue mountain", id: "coffees_Blue_mountain", name: "coffees",  }Blue mountain
+      %option{ atts[:coffees_Kenyan_peaberry], value: "Kenyan peaberry", id: "coffees_Kenyan_peaberry", name: "coffees",  }Kenyan peaberry
+      %option{ atts[:coffees_Colombian], value: "Colombian", id: "coffees_Colombian", name: "coffees",  }Colombian
+      %option{ atts[:coffees_Java], value: "Java", id: "coffees_Java", name: "coffees",  }Java
+
+!.strip + "\n\n" }
+          before {
+            form.select("teas").with_default.option("Ceylon").option("Breakfast").option("Earl grey").labelled("Favourite tea:")
+            form.select("coffees").with_default.option("Blue mountain").option("Kenyan peaberry").option("Colombian").option("Java").labelled("Favourite coffee:")
+          }
+          
+          subject{ Campo.output form }
+          it { should_not be_nil }
+          it { should == expected }
+        end
       end
     end
 

@@ -4,10 +4,13 @@ module Campo
   module Childish
     def push=( child )
       @fields << child
+      child.parent = self
       self
     end
 
     alias :<< :push=
+    
+    attr_accessor :parent
   end
   
   module Iding
@@ -73,7 +76,17 @@ module Campo
 
     def labelled( inner=nil )
       inner ||= self.attributes[:name]
-      Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value]).gsub(/\W/, "_")}!, inner ) << self
+      parent = self.parent
+      label = Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value]).gsub(/\W/, "_")}!, inner ) << self
+      retval = if parent.nil?
+        label
+      else
+        parent.fields.delete self
+        parent << label
+        self
+      end
+      
+      retval
     end
 
     def self.unhash( hash )
@@ -133,7 +146,7 @@ STR
     
     def select( *args )
       select = Campo::Select.new( *args )
-      @fields << select
+      self << select
       select
     end
   end
@@ -194,7 +207,7 @@ STR
       
       (attributes = selected && selected = {}) if selected.kind_of? Hash
       
-      attributes = { id: "#{name.gsub(/\W/, "_")}#{id_tag(value).gsub(/\W/, "_")}" }.merge(attributes) unless value.nil? || value.empty?
+      attributes = { id: "#{name.gsub(/\W/, "_")}#{id_tag(value).gsub(/\W/, "_")}" }.merge(attributes) unless value.nil? || value.to_s.empty?
       
       super( name, {
         value: value,
