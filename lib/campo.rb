@@ -138,7 +138,11 @@ STR
     end
     
     def text( name, label_inner=nil, attributes={} )
-      (attributes = label_inner && label_inner = nil) if label_inner.kind_of? Hash
+      if label_inner.kind_of? Hash
+        attributes = label_inner
+        label_inner = nil
+      end
+      
       text = Campo::Input.new( name, :text, attributes ).labelled( label_inner )
       self << text
       text
@@ -207,11 +211,17 @@ STR
     
     def initialize( name, value, inner=nil, selected=nil, attributes={} )
       
-      (selected = attributes && inner = nil) if inner.kind_of? TrueClass
+      if inner.kind_of? TrueClass
+        selected = attributes
+        inner = nil
+      end
       
       @inner = inner || value
       
-      (attributes = selected && selected = {}) if selected.kind_of? Hash
+      if selected.kind_of? Hash
+        attributes = selected 
+        selected = {}
+      end 
       
       attributes = { id: "#{name.gsub(/\W/, "_")}#{id_tag(value).gsub(/\W/, "_")}" }.merge(attributes) unless value.nil? || value.to_s.empty?
       
@@ -288,7 +298,11 @@ STR
     attr_reader :attributes, :fields
 
     def initialize( name, inner=nil, attributes={} )
-      (attributes = inner && inner = nil) if inner.kind_of? Hash
+      if inner.kind_of? Hash
+        attributes = inner
+        inner = nil
+      end
+
       @name = name
       @attributes = attributes || {}
       @fields = []
@@ -306,7 +320,10 @@ STR
     DEFAULT = { cols: 40, rows: 10, tabindex: %q!#{i += 1}! }
 
     def initialize( name,  inner=nil, attributes={} )
-      (attributes = inner && inner = nil) if inner.kind_of? Hash
+      if inner.kind_of? Hash
+        attributes = inner
+        inner = nil
+      end
       super( name, DEFAULT.merge( attributes ) )
       @inner = inner
       self.on_output do |n=0, tab=2|
