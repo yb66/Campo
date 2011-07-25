@@ -491,25 +491,24 @@ s.chomp
 
       context "Labelling" do
         let(:expected) { 
-          s = <<STR
+          top_bit + %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
   %label{ for: "abc",  }
     abc
-    %input{ atts[:abc], tabindex: "\#{i += 1}", type: "text", id: "abc", name: "abc",  }
-  %label{ for: "def",  }
-    def
-    %input{ atts[:def], tabindex: "\#{i += 1}", type: "text", id: "def", name: "def",  }
+    %input{ atts[:abc], tabindex: "#{i += 1}", type: "text", id: "abc", name: "abc",  }
+  %label{ for: "deff",  }
+    deff
+    %input{ atts[:deff], tabindex: "#{i += 1}", type: "text", id: "deff", name: "deff",  }
   %label{ for: "ghi",  }
     ghi
-    %input{ atts[:ghi], tabindex: "\#{i += 1}", type: "text", id: "ghi", name: "ghi",  }
+    %input{ atts[:ghi], tabindex: "#{i += 1}", type: "text", id: "ghi", name: "ghi",  }
 
-STR
-        top_bit + s
-      }
+!.strip + "\n\n"
+        }
         let(:form) {
           form = Campo::Form.new( "myform" )
           form << Campo::Input.new( "abc", :text ).labelled("abc")
-          form << Campo::Input.new( "def", :text ).labelled("def")
+          form << Campo::Input.new( "deff", :text ).labelled("deff")
           form << Campo::Input.new( "ghi", :text ).labelled("ghi")
           form
         }
@@ -519,23 +518,22 @@ STR
         
         context "Within a fieldset" do
           let(:expected) { 
-            s = <<STR
+            top_bit + %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
   %fieldset{  }
     %legend{  }Alphabetty spaghetti
     %label{ for: "abc",  }
       abc
-      %input{ atts[:abc], tabindex: "\#{i += 1}", type: "text", id: "abc", name: "abc",  }
+      %input{ atts[:abc], tabindex: "#{i += 1}", type: "text", id: "abc", name: "abc",  }
     %label{ for: "def",  }
       def
-      %input{ atts[:def], tabindex: "\#{i += 1}", type: "text", id: "def", name: "def",  }
+      %input{ atts[:def], tabindex: "#{i += 1}", type: "text", id: "def", name: "def",  }
     %label{ for: "ghi",  }
       ghi
-      %input{ atts[:ghi], tabindex: "\#{i += 1}", type: "text", id: "ghi", name: "ghi",  }
+      %input{ atts[:ghi], tabindex: "#{i += 1}", type: "text", id: "ghi", name: "ghi",  }
 
-STR
-        top_bit + s
-      }
+!.strip + "\n\n"
+          }
           let(:form) {
             form = Campo::Form.new( "myform" )
             myfieldset = form.fieldset( "Alphabetty spaghetti" )
@@ -553,7 +551,7 @@ STR
         
       describe "A form with a group of radio buttons" do
         let(:expected) { 
-          s = <<'STRI' 
+          top_bit +  %q! 
 %fieldset{  }
   %legend{  }Select the colour you like most:
   %label{ for: "radio1_green",  }
@@ -571,10 +569,10 @@ STR
   %label{ for: "radio1_purple",  }
     purple
     %input{ atts[:radio1_purple], tabindex: "#{i += 1}", type: "radio", id: "radio1_purple", value: "purple", name: "radio1",  }
-STRI
-          top_bit + s + "\n"
+
+!.strip + "\n\n"
         }
-        
+      
         let(:radios) {
           form = Campo::Form.new( "myform" )
           sel_colours = form.fieldset( "Select the colour you like most:" )
@@ -591,6 +589,23 @@ STRI
       end # a group of radio buttons
     end # Input
     
+    describe Textarea do
+      context "Given no arguments" do
+        it { should_not be_nil }
+        it { should raise_error }
+      end
+      context "Given a name" do
+        subject { Textarea.new( "textie" ) }
+        it { should_not be_nil }
+        it { should be_a_kind_of(Textarea) }
+        
+        context "and an attribute" do
+          subject { Textarea.new( "textie", cols: 40 ) }
+          it { should_not be_nil }
+          it { should be_a_kind_of(Textarea) }
+        end
+      end
+    end
 
 
     # describe "A form" do
