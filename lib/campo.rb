@@ -149,6 +149,12 @@ STR
       self << select
       select
     end
+    
+    def submit( name="Submit", label_inner=nil, attributes={} )
+      submit = Campo::Input.new( name, :submit, {value: name}.merge(attributes) )
+      self << submit
+      submit
+    end
   end
   
   class Haml_Ruby_Insert

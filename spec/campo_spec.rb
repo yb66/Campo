@@ -159,6 +159,42 @@ s.chomp
           it { should == expected }
         end
       end
+      
+      describe :submit do
+        let(:form) { Campo::Form.new( "myform" ) }
+        context "Given a submit button" do
+          context "With no arguments" do
+            let(:expected) { top_bit + %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %input{ atts[:Submit_Submit], tabindex: "#{i += 1}", type: "submit", id: "Submit_Submit", value: "Submit", name: "Submit",  }
+
+!.strip + "\n\n" }
+            
+            subject { 
+              form.submit
+              Campo.output form
+            }
+            
+            it { should_not be_nil }
+            it { should == expected }
+          end
+          context "With a name" do
+            let(:expected) { top_bit + %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %input{ atts[:Save_Save], tabindex: "#{i += 1}", type: "submit", id: "Save_Save", value: "Save", name: "Save",  }
+
+!.strip + "\n\n" }
+            
+            subject { 
+              form.submit( "Save" )
+              Campo.output form
+            }
+            
+            it { should_not be_nil }
+            it { should == expected }
+          end
+        end
+      end
     end
 
     describe Haml_Ruby_Insert do
