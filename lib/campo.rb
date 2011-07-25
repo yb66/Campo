@@ -133,14 +133,14 @@ STR
     
     def fieldset( text )
       fieldset = (Fieldset.new() << Legend.new( text ))
-      @fields << fieldset
+      self << fieldset
       fieldset
     end
     
     def text( name, label_inner=nil, attributes={} )
       (attributes = label_inner && label_inner = nil) if label_inner.kind_of? Hash
       text = Campo::Input.new( name, :text, attributes ).labelled( label_inner )
-      @fields << text
+      self << text
       text
     end
     
@@ -148,6 +148,12 @@ STR
       select = Campo::Select.new( *args )
       self << select
       select
+    end
+    
+    def submit( name="Submit", label_inner=nil, attributes={} )
+      submit = Campo::Input.new( name, :submit, {value: name}.merge(attributes) )
+      self << submit
+      submit
     end
   end
   
