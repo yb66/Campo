@@ -25,6 +25,7 @@ module Campo
 STR
             s
           }
+          
 
     describe :output do
       context "Given a form with no fields" do
@@ -72,6 +73,14 @@ s.chomp
           it { should_not be_nil }
           it { should be_a_kind_of(Form) }
           
+          context "via convenience method" do
+            let(:form) { Campo.form( "myform" ) }
+            subject { form }
+            it { should_not be_nil }
+            it { should be_a_kind_of(Form) }
+          end
+            
+          
           context "simple output" do
             let(:expected) { %q!%form{ atts[:myform], method: "POST", name: "myform",  }! }
             subject { form.output }
@@ -103,6 +112,9 @@ s.chomp
           }
           it { should_not be_nil }
           it { should == expected }
+        end
+        context "When given a form with a mix of fields" do
+          let(:form) { Campo::Form.new( "myform" ) }
         end
       end
         
@@ -599,11 +611,54 @@ s.chomp
         it { should_not be_nil }
         it { should be_a_kind_of(Textarea) }
         
-        context "and an attribute" do
-          subject { Textarea.new( "textie", cols: 40 ) }
+        context "and using convenience method" do
+          let(:form) { Campo::Form.new( "myform" ) }
+          subject { form.textarea( "textie" ) }
           it { should_not be_nil }
           it { should be_a_kind_of(Textarea) }
+          
+          describe "the full output" do
+            let(:expected) { top_bit + %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "40", rows: "10", name: "textie",  }
+!.strip + "\n\n"}
+            let(:form){ 
+              form = Campo::Form.new( "myform" )
+              form.textarea( "textie" ) 
+              form
+            }
+            subject { Campo.output form }
+            it { should == expected }
+          end    
+        end      
+      
+        context "and an attribute" do
+          subject { Textarea.new( "textie", cols: 60 ) }
+          it { should_not be_nil }
+          it { should be_a_kind_of(Textarea) }
+          
+          context "When using convenience method" do
+            let(:form) { Campo::Form.new( "myform" ) }
+            subject { form.textarea( "textie" ) }
+            it { should_not be_nil }
+            it { should be_a_kind_of(Textarea) }
+
+            describe "the full output" do
+              let(:expected) { top_bit + %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "60", rows: "10", name: "textie",  }
+  !.strip + "\n\n"}
+              let(:form){ 
+                form = Campo::Form.new( "myform" )
+                form.textarea( "textie", cols: 60 ) 
+                form
+              }
+              subject { Campo.output form }
+              it { should == expected }
+            end
+          end
         end
+
       end
     end
 

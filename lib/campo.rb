@@ -159,7 +159,19 @@ STR
       self << submit
       submit
     end
+    
+    def textarea( *args )
+      textarea = Campo::Textarea.new( *args )
+      self << textarea
+      textarea
+    end
   end
+  
+  
+  def self.form( name, *args )
+    Form.new( name, *args )
+  end
+  
   
   class Haml_Ruby_Insert
     def initialize( s )
