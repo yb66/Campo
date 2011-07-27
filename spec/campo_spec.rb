@@ -548,10 +548,11 @@ s.chomp
           }
           let(:form) {
             form = Campo::Form.new( "myform" )
-            myfieldset = form.fieldset( "Alphabetty spaghetti" )
-            Campo::Input.new( "abc", :text ).labelled("abc").fieldset(myfieldset)
-            Campo::Input.new( "def", :text ).labelled("def").fieldset(myfieldset)
-            Campo::Input.new( "ghi", :text ).labelled("ghi").fieldset(myfieldset)
+              myfieldset = form.fieldset( "Alphabetty spaghetti" ) do |f|
+              f << Campo::Input.new( "abc", :text ).labelled("abc")
+              f << Campo::Input.new( "def", :text ).labelled("def")
+              f << Campo::Input.new( "ghi", :text ).labelled("ghi")
+            end
             form
           }
           subject { Campo.output form }
@@ -563,37 +564,39 @@ s.chomp
         
       describe "A form with a group of radio buttons" do
         let(:expected) { 
-          top_bit +  %q! 
-%fieldset{  }
-  %legend{  }Select the colour you like most:
-  %label{ for: "radio1_green",  }
-    green
-    %input{ atts[:radio1_green], tabindex: "#{i += 1}", type: "radio", id: "radio1_green", value: "green", name: "radio1",  }
-  %label{ for: "radio1_yellow",  }
-    yellow
-    %input{ atts[:radio1_yellow], tabindex: "#{i += 1}", type: "radio", id: "radio1_yellow", value: "yellow", name: "radio1",  }
-  %label{ for: "radio1_red",  }
-    red
-    %input{ atts[:radio1_red], tabindex: "#{i += 1}", type: "radio", id: "radio1_red", value: "red", name: "radio1",  }
-  %label{ for: "radio1_blue",  }
-    blue
-    %input{ atts[:radio1_blue], tabindex: "#{i += 1}", type: "radio", id: "radio1_blue", value: "blue", name: "radio1",  }
-  %label{ for: "radio1_purple",  }
-    purple
-    %input{ atts[:radio1_purple], tabindex: "#{i += 1}", type: "radio", id: "radio1_purple", value: "purple", name: "radio1",  }
+          top_bit +  %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %fieldset{  }
+    %legend{  }Select the colour you like most:
+    %label{ for: "radio1_green",  }
+      green
+      %input{ atts[:radio1_green], tabindex: "#{i += 1}", type: "radio", id: "radio1_green", value: "green", name: "radio1",  }
+    %label{ for: "radio1_yellow",  }
+      yellow
+      %input{ atts[:radio1_yellow], tabindex: "#{i += 1}", type: "radio", id: "radio1_yellow", value: "yellow", name: "radio1",  }
+    %label{ for: "radio1_red",  }
+      red
+      %input{ atts[:radio1_red], tabindex: "#{i += 1}", type: "radio", id: "radio1_red", value: "red", name: "radio1",  }
+    %label{ for: "radio1_blue",  }
+      blue
+      %input{ atts[:radio1_blue], tabindex: "#{i += 1}", type: "radio", id: "radio1_blue", value: "blue", name: "radio1",  }
+    %label{ for: "radio1_purple",  }
+      purple
+      %input{ atts[:radio1_purple], tabindex: "#{i += 1}", type: "radio", id: "radio1_purple", value: "purple", name: "radio1",  }
 
 !.strip + "\n\n"
         }
       
         let(:radios) {
           form = Campo::Form.new( "myform" )
-          sel_colours = form.fieldset( "Select the colour you like most:" )
-          Campo::Input.new("radio1", :radio, value: "green" ).labelled( "green" ).fieldset( sel_colours )
-          Campo::Input.new("radio1", :radio, value: "yellow" ).labelled( "yellow" ).fieldset( sel_colours )
-          Campo::Input.new("radio1", :radio, value: "red" ).labelled( "red" ).fieldset( sel_colours )
-          Campo::Input.new("radio1", :radio, value: "blue" ).labelled( "blue" ).fieldset( sel_colours )
-          Campo::Input.new("radio1", :radio, value: "purple" ).labelled( "purple" ).fieldset( sel_colours )
-          sel_colours
+          form.fieldset( "Select the colour you like most:" ) do |f|
+            f << Campo::Input.new("radio1", :radio, value: "green" ).labelled( "green" )
+            f << Campo::Input.new("radio1", :radio, value: "yellow" ).labelled( "yellow" )
+            f << Campo::Input.new("radio1", :radio, value: "red" ).labelled( "red" )
+            f << Campo::Input.new("radio1", :radio, value: "blue" ).labelled( "blue" )
+            f << Campo::Input.new("radio1", :radio, value: "purple" ).labelled( "purple" )
+          end
+          form
         }
         subject { Campo.output radios }
         it { should_not be_nil }

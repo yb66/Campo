@@ -21,8 +21,35 @@ module Campo
   
   module Grouping
     
-    def fieldset( fieldset )
-      fieldset << self
+    def select( *args )
+      select = Campo::Select.new( *args )
+      self << select
+      select
+    end
+    
+    def text( name, label_inner=nil, attributes={} )
+      if label_inner.kind_of? Hash
+        attributes = label_inner
+        label_inner = nil
+      end
+      
+      text = Campo::Input.new( name, :text, attributes ).labelled( label_inner )
+      self << text
+      text
+    end
+    
+    
+    def submit( name="Submit", label_inner=nil, attributes={} )
+      submit = Campo::Input.new( name, :submit, {value: name}.merge(attributes) )
+      self << submit
+      submit
+    end
+    
+    
+    def textarea( *args )
+      textarea = Campo::Textarea.new( *args )
+      self << textarea
+      textarea
     end
   end
   
@@ -55,7 +82,6 @@ module Campo
   class Base 
     include Childish
     include Iding
-    include Grouping
     
     DEFAULT = { tabindex: nil }
 
@@ -77,13 +103,14 @@ module Campo
     def labelled( inner=nil )
       inner ||= self.attributes[:name]
       parent = self.parent
+			puts "labelled parentid: #{parent.object_id}"
       label = Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value]).gsub(/\W/, "_")}!, inner ) << self
       retval = if parent.nil?
         label
       else
         parent.fields.delete self
         parent << label
-        self
+        label
       end
       
       retval
@@ -122,6 +149,7 @@ STR
 
   # opt id
   class Form < Base
+    include Grouping
     DEFAULT = { method: "POST" }
 
     def initialize(name,  attributes={} )
@@ -131,40 +159,14 @@ STR
       end
     end
     
-    def fieldset( text )
-      fieldset = (Fieldset.new() << Legend.new( text ))
-      self << fieldset
+    def fieldset( text, attributes={}, &block )
+      fieldset = (Fieldset.new(attributes) << Legend.new( text ))
+      block.call( fieldset ) if block
+      self << fieldset 
       fieldset
     end
     
-    def text( name, label_inner=nil, attributes={} )
-      if label_inner.kind_of? Hash
-        attributes = label_inner
-        label_inner = nil
-      end
-      
-      text = Campo::Input.new( name, :text, attributes ).labelled( label_inner )
-      self << text
-      text
-    end
-    
-    def select( *args )
-      select = Campo::Select.new( *args )
-      self << select
-      select
-    end
-    
-    def submit( name="Submit", label_inner=nil, attributes={} )
-      submit = Campo::Input.new( name, :submit, {value: name}.merge(attributes) )
-      self << submit
-      submit
-    end
-    
-    def textarea( *args )
-      textarea = Campo::Textarea.new( *args )
-      self << textarea
-      textarea
-    end
+
   end
   
   
@@ -273,7 +275,7 @@ STR
   end
 
   class Fieldset < Base
-    include Childish
+    include Grouping
     
     def initialize( attributes={} )
       super( "", attributes )
@@ -287,7 +289,6 @@ STR
   
   
   class Legend < Base
-    include Childish
     
     def initialize( inner, attributes={} )
       super( "", attributes )
