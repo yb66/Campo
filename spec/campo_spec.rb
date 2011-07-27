@@ -127,15 +127,15 @@ s.chomp
     Favourite tea:
     %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
       %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
-      %option{ atts[:teas_Ceylon], value: "Ceylon", id: "teas_Ceylon", name: "teas",  }Ceylon
-      %option{ atts[:teas_Breakfast], value: "Breakfast", id: "teas_Breakfast", name: "teas",  }Breakfast
-      %option{ atts[:teas_Earl_grey], value: "Earl grey", id: "teas_Earl_grey", name: "teas",  }Earl grey
+      %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
+      %option{ atts[:teas_breakfast], value: "breakfast", id: "teas_breakfast", name: "teas",  }Breakfast
+      %option{ atts[:teas_earl_grey], value: "earl grey", id: "teas_earl_grey", name: "teas",  }Earl grey
 
 !.strip + "\n\n"
           }
                             
           subject {
-            form.select("teas").with_default.option("Ceylon").option("Breakfast").option("Earl grey").labelled("Favourite tea:") 
+            form.select("teas").with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:") 
             Campo.output form
           }
           it { should_not be_nil }
@@ -148,22 +148,22 @@ s.chomp
     Favourite tea:
     %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
       %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
-      %option{ atts[:teas_Ceylon], value: "Ceylon", id: "teas_Ceylon", name: "teas",  }Ceylon
-      %option{ atts[:teas_Breakfast], value: "Breakfast", id: "teas_Breakfast", name: "teas",  }Breakfast
-      %option{ atts[:teas_Earl_grey], value: "Earl grey", id: "teas_Earl_grey", name: "teas",  }Earl grey
+      %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
+      %option{ atts[:teas_breakfast], value: "breakfast", id: "teas_breakfast", name: "teas",  }Breakfast
+      %option{ atts[:teas_earl_grey], value: "earl grey", id: "teas_earl_grey", name: "teas",  }Earl grey
   %label{ for: "coffees",  }
     Favourite coffee:
     %select{ atts[:coffees], tabindex: "#{i += 1}", name: "coffees",  }
       %option{  value: "", disabled: "disabled", name: "coffees",  }Choose one:
-      %option{ atts[:coffees_Blue_mountain], value: "Blue mountain", id: "coffees_Blue_mountain", name: "coffees",  }Blue mountain
-      %option{ atts[:coffees_Kenyan_peaberry], value: "Kenyan peaberry", id: "coffees_Kenyan_peaberry", name: "coffees",  }Kenyan peaberry
-      %option{ atts[:coffees_Colombian], value: "Colombian", id: "coffees_Colombian", name: "coffees",  }Colombian
-      %option{ atts[:coffees_Java], value: "Java", id: "coffees_Java", name: "coffees",  }Java
+      %option{ atts[:coffees_blue_mountain], value: "blue mountain", id: "coffees_blue_mountain", name: "coffees",  }Blue mountain
+      %option{ atts[:coffees_kenyan_peaberry], value: "kenyan peaberry", id: "coffees_kenyan_peaberry", name: "coffees",  }Kenyan peaberry
+      %option{ atts[:coffees_colombian], value: "colombian", id: "coffees_colombian", name: "coffees",  }Colombian
+      %option{ atts[:coffees_java], value: "java", id: "coffees_java", name: "coffees",  }Java
 
 !.strip + "\n\n" }
           before {
-            form.select("teas").with_default.option("Ceylon").option("Breakfast").option("Earl grey").labelled("Favourite tea:")
-            form.select("coffees").with_default.option("Blue mountain").option("Kenyan peaberry").option("Colombian").option("Java").labelled("Favourite coffee:")
+            form.select("teas").with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:")
+            form.select("coffees").with_default.option("blue mountain").option("kenyan peaberry").option("colombian").option("java").labelled("Favourite coffee:")
           }
           
           subject{ Campo.output form }

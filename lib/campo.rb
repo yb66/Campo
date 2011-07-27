@@ -103,8 +103,7 @@ module Campo
     def labelled( inner=nil )
       inner ||= self.attributes[:name]
       parent = self.parent
-			puts "labelled parentid: #{parent.object_id}"
-      label = Label.new( %Q!#{@attributes[:name]}#{id_tag(@attributes[:value]).gsub(/\W/, "_")}!, inner ) << self
+      label = Label.new( %Q!#{@attributes[:name] + id_tag(@attributes[:value]).gsub(/\W/, "_")}!, inner ) << self
       retval = if parent.nil?
         label
       else
@@ -155,7 +154,7 @@ STR
     def initialize(name,  attributes={} )
       super( name, DEFAULT.merge( attributes ) )
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%form{ atts[:#{name.gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }!
+        %Q!#{" " * n * tab}%form{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }!
       end
     end
     
@@ -194,7 +193,7 @@ STR
       super( name, { tabindex: %q!#{i += 1}! }.merge(attributes) )
       
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%select{ atts[:#{name.gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }! 
+        %Q!#{" " * n * tab}%select{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }! 
       end
       
       self.fields += Helpers.options_builder( name, opts ) unless opts.nil? || opts.empty?
@@ -205,7 +204,11 @@ STR
     end # initialize
       
     def option( *args )
-      self << Campo::Option.new( @attributes[:name], *args )
+      value = args.shift
+      inner = args.shift 
+      selected, attributes = *args
+      inner = value.capitalize if inner.nil?
+      self << Campo::Option.new( @attributes[:name], value, inner, selected, attributes )
       self
     end
     
@@ -224,7 +227,7 @@ STR
     attr_accessor :value, :checked
     
     def initialize( name, value, inner=nil, selected=nil, attributes={} )
-      
+      attributes ||= {}
       if inner.kind_of? TrueClass
         selected = attributes
         inner = nil
@@ -237,7 +240,7 @@ STR
         selected = {}
       end 
       
-      attributes = { id: "#{name.gsub(/\W/, "_")}#{id_tag(value).gsub(/\W/, "_")}" }.merge(attributes) unless value.nil? || value.to_s.empty?
+      attributes = { id: "#{(name.gsub(/\W/, "_") + id_tag(value).gsub(/\W/, "_")).downcase}" }.merge(attributes) unless value.nil? || value.to_s.empty?
       
       super( name, {
         value: value,
