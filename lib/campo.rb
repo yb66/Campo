@@ -271,6 +271,9 @@ STR
               tabindex: %q!#{i += 1}!, 
             }.merge( attributes ) )
             
+               
+      @attributes.delete(:name) if type == :submit
+            
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%input{ atts[:#{name.gsub(/\W/, "_")}#{id_tag(attributes[:value]).gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }! 
       end
@@ -343,7 +346,7 @@ STR
       super( name, DEFAULT.merge( attributes ) )
       @inner = inner
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%textarea{ atts[:#{name.gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }#{@inner}!
+        %Q!#{" " * n * tab}%textarea{ atts[:#{name.gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }= inners[:#{name.gsub(/\W/, "_")}] !
       end
     end
   end

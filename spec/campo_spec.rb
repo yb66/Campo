@@ -317,7 +317,7 @@ s.chomp
             context "and a haml ruby insert" do
               let(:tag) {  
                 Campo::Select.new( "pqr", {haml_insert: "= opts"} ) do |s|
-                  s.option "volvo", "Volvo"
+                  s.option "volvo"
                   s.option "saab", "Saab"
                   s.option "audi", "Audi"
                 end
@@ -342,7 +342,7 @@ s.chomp
           end
 
           context "and an array" do
-            let(:opts) { [["ford", "Ford"], ["bmw", "BMW"], ["ferrari", "Ferrari", "checked"]] }
+            let(:opts) { [["ford", "ford"], ["bmw", "BMW"], ["ferrari", "Ferrari", "checked"]] }
             subject { Campo::Select.new( "pqr", {opts: opts} ) }
 
             it { should_not be_nil }
