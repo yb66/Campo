@@ -28,16 +28,24 @@ module Campo
     end
     
     def text( name, label_inner=nil, attributes={} )
-      if label_inner.kind_of? Hash
-        attributes = label_inner
-        label_inner = nil
-      end
-      
-      text = Campo::Input.new( name, :text, attributes ).labelled( label_inner )
-      self << text
-      text
+      input( name, :text, label, attributes )
     end
     
+    
+    def checkbox( name, label=nil, attributes={} )
+      input( name, :checkbox, label, attributes )
+    end
+    
+    def input( name, type, label=nil, attributes={} ) 
+      if label.kind_of? Hash
+        attributes = label
+        label = nil
+      end
+
+      field = Campo::Input.new( name, type, attributes ).labelled( label )
+      self << field
+      field
+    end
     
     def submit( name="Submit", label_inner=nil, attributes={} )
       submit = Campo::Input.new( name, :submit, {value: name}.merge(attributes) )
