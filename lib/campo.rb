@@ -27,7 +27,7 @@ module Campo
       select
     end
     
-    def text( name, label_inner=nil, attributes={} )
+    def text( name, label=nil, attributes={} )
       input( name, :text, label, attributes )
     end
     
