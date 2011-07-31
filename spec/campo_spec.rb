@@ -41,6 +41,46 @@ STR
       end
     end
     
+    describe Grouping do
+      let(:obj) { 
+        class Fakeclass  
+          include Grouping
+          include Childish
+        end
+        Fakeclass.new  
+      }
+      let(:form) { Campo::Form.new( "myform" ) }
+      
+      describe "input" do
+        context "When given type" do
+          context "of text" do
+            let(:expected) { top_bit +  %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %label{ for: "blah_blahdeblah",  }
+    Blahd
+    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n\n" }
+            before { form.input( "blah", :text, "Blahd", value: "blahdeblah" ) }
+            subject { Campo.output form }
+            it { should_not be_nil }
+            it { should == expected }
+          end
+            context "of checkbox" do
+              let(:expected) { top_bit +  %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %label{ for: "blah_blahdeblah",  }
+    Blahd
+    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "checkbox", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n\n" }
+              before { form.input( "blah", :checkbox, "Blahd", value: "blahdeblah" ) }
+              subject { Campo.output form }
+              it { should_not be_nil }
+              it { should == expected }
+            end
+        end
+      end
+        
+    end
+    
+    
     describe Label do
       let(:tag) { Label.new( "abc", "A, B, or C?" ) }
       subject { tag }
@@ -106,7 +146,12 @@ s.chomp
       describe :fieldset do
         context "When given a form with only a name" do
           let(:form) { Campo::Form.new( "myform" ) }
-          let(:expected) { top_bit + %Q!%form{ atts[:myform], method: "POST", name: "myform",  }\n  %fieldset{  }\n    %legend{  }Do you like these colours? Tick for yes:\n\n! }
+          let(:expected) { top_bit + %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %fieldset{  }
+    %legend{  }Do you like these colours? Tick for yes:
+                
+!.strip + "\n\n" }
           subject { form.fieldset("Do you like these colours? Tick for yes:") 
             Campo.output form
           }
@@ -178,7 +223,7 @@ s.chomp
           context "With no arguments" do
             let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
-  %input{ atts[:Submit_Submit], tabindex: "#{i += 1}", type: "submit", id: "Submit_Submit", value: "Submit", name: "Submit",  }
+  %input{ atts[:Submit_Submit], tabindex: "#{i += 1}", type: "submit", id: "Submit_Submit", value: "Submit",  }
 
 !.strip + "\n\n" }
             
@@ -193,7 +238,7 @@ s.chomp
           context "With a name" do
             let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
-  %input{ atts[:Save_Save], tabindex: "#{i += 1}", type: "submit", id: "Save_Save", value: "Save", name: "Save",  }
+  %input{ atts[:Save_Save], tabindex: "#{i += 1}", type: "submit", id: "Save_Save", value: "Save",  }
 
 !.strip + "\n\n" }
             
@@ -497,7 +542,6 @@ s.chomp
             end
           end
 
-
         end # context
       end # initialisation
 
@@ -623,8 +667,7 @@ s.chomp
           describe "the full output" do
             let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
-  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "40", rows: "10", name: "textie",  }
-!.strip + "\n\n"}
+  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n\n"}
             let(:form){ 
               form = Campo::Form.new( "myform" )
               form.textarea( "textie" ) 
@@ -649,8 +692,8 @@ s.chomp
             describe "the full output" do
               let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
-  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "60", rows: "10", name: "textie",  }
-  !.strip + "\n\n"}
+  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "60", rows: "10", name: "textie",  }= inners[:textie] 
+  !.strip + " \n\n"}
               let(:form){ 
                 form = Campo::Form.new( "myform" )
                 form.textarea( "textie", cols: 60 ) 
