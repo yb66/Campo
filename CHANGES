@@ -1,3 +1,5 @@
+v0.0.25 Added checkbox convenience method.
+
 v0.0.24 Fixed inners for textarea, properly evaluated now, and slight change to submit button so it's not passed on submit as a parameter.
 
 v0.0.23 Inners are capitalised and attributes downcased, to make using convenience methods more convenient.
