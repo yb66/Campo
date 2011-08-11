@@ -11,13 +11,13 @@ module Campo
     alias :<< :push=
     
     attr_accessor :parent
-  end
+  end # Childish
   
   module Iding
     def id_tag( val )
       val.nil? ? "" : "_#{val}"
     end
-  end
+  end # Iding
   
   module Grouping
     
@@ -59,7 +59,7 @@ module Campo
       self << textarea
       textarea
     end
-  end
+  end # Grouping
   
   module Helpers
     # [ [id, lookup, selected || false], ... ]
@@ -79,7 +79,7 @@ module Campo
       return "" if opts.nil? || opts.empty?
       opts.map{|o| "#{o.output}\n" }.reduce(:+)
     end
-  end
+  end # Helpers
 
     @atts = {}
 
@@ -140,8 +140,11 @@ module Campo
       so_far
     end
 
-  end
+  end # Base
   
+	
+# Campo methods
+
   def self.output( *args )
     s = <<STR
 - atts = {} if atts.nil?
@@ -152,9 +155,12 @@ module Campo
 
 STR
 output = Base.output( *args )
-output = s + output if args.first.kind_of? Form 
+output = s + output if args..first.kind_of?( Form ) 
 output
   end
+
+# end Campo methods
+
 
   # opt id
   class Form < Base
@@ -176,7 +182,7 @@ output
     end
     
 
-  end
+  end # Form
   
   
   def self.form( name, *args )
@@ -192,7 +198,8 @@ output
     def output(n=0, tab=2)
       (" " * n * tab) + @s
     end
-  end
+  end # Haml_Ruby_Insert
+
   
   class Select < Base
     def initialize( name, params={}, &block )
@@ -342,7 +349,7 @@ output
       %Q!#{" " * n * tab}%label{ for: "#{@name}", #{Base.unhash( @attributes )} }\n#{" " * (n + 1) * tab}#{@inner}! 
     end
 
-  end
+  end # Label
 
 
   class Textarea < Base
@@ -359,6 +366,6 @@ output
         %Q!#{" " * n * tab}%textarea{ atts[:#{name.gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }= inners[:#{name.gsub(/\W/, "_")}] !
       end
     end
-  end
+  end # Textarea
 
 end

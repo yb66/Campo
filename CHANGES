@@ -1,3 +1,5 @@
+v0.0.27 changes to allow fragments to be output without the variable declarations at the top, and for all children to output too.
+
 v0.0.26 Bugfix
 
 v0.0.25 Added checkbox convenience method.
