@@ -150,8 +150,10 @@ module Campo
 - inners.default = "" if inners.default.nil?
 - i = 0 # for tabindex
 
-#{Base.output( *args )}
 STR
+output = Base.output( *args )
+output = s + output if args.first.kind_of? Form 
+output
   end
 
   # opt id

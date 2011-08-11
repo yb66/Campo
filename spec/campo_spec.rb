@@ -30,14 +30,36 @@ STR
     describe :output do
       context "Given a form with no fields" do
         let(:expected) { 
-          expected = top_bit + %q!%form{ atts[:myform], method: "POST", name: "myform",  }
-
-!
+          expected = top_bit + %q!%form{ atts[:myform], method: "POST", name: "myform",  }!.strip + "\n"
         }
 
         subject{ Campo.output Campo::Form.new( "myform" ) }
         it { should_not be_nil }
         it { should == expected }
+      end
+
+      context "Given no form" do
+        context "When given a select field with options" do
+          let(:expected) { %q!
+%label{ for: "teas",  }
+  Favourite tea:
+  %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+    %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
+    %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
+    %option{ atts[:teas_breakfast], value: "breakfast", id: "teas_breakfast", name: "teas",  }Breakfast
+    %option{ atts[:teas_earl_grey], value: "earl grey", id: "teas_earl_grey", name: "teas",  }Earl grey
+!.strip + "\n"
+          }
+          let(:tag) {
+            select = Campo::Select.new( "teas" )
+            tag = select.with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:") 
+            tag
+          }
+          subject { Campo.output tag }
+          it { should_not be_nil }
+          it { should == expected }
+
+        end
       end
     end
     
@@ -58,7 +80,7 @@ STR
 %form{ atts[:myform], method: "POST", name: "myform",  }
   %label{ for: "blah_blahdeblah",  }
     Blahd
-    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n\n" }
+    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
             before { form.input( "blah", :text, "Blahd", value: "blahdeblah" ) }
             subject { Campo.output form }
             it { should_not be_nil }
@@ -69,7 +91,7 @@ STR
 %form{ atts[:myform], method: "POST", name: "myform",  }
   %label{ for: "blah_blahdeblah",  }
     Blahd
-    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "checkbox", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n\n" }
+    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "checkbox", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
               before { form.input( "blah", :checkbox, "Blahd", value: "blahdeblah" ) }
               subject { Campo.output form }
               it { should_not be_nil }
@@ -151,7 +173,7 @@ s.chomp
   %fieldset{  }
     %legend{  }Do you like these colours? Tick for yes:
                 
-!.strip + "\n\n" }
+!.strip + "\n" }
           subject { form.fieldset("Do you like these colours? Tick for yes:") 
             Campo.output form
           }
@@ -176,7 +198,7 @@ s.chomp
       %option{ atts[:teas_breakfast], value: "breakfast", id: "teas_breakfast", name: "teas",  }Breakfast
       %option{ atts[:teas_earl_grey], value: "earl grey", id: "teas_earl_grey", name: "teas",  }Earl grey
 
-!.strip + "\n\n"
+!.strip + "\n"
           }
                             
           subject {
@@ -205,7 +227,7 @@ s.chomp
       %option{ atts[:coffees_colombian], value: "colombian", id: "coffees_colombian", name: "coffees",  }Colombian
       %option{ atts[:coffees_java], value: "java", id: "coffees_java", name: "coffees",  }Java
 
-!.strip + "\n\n" }
+!.strip + "\n" }
           before {
             form.select("teas").with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:")
             form.select("coffees").with_default.option("blue mountain").option("kenyan peaberry").option("colombian").option("java").labelled("Favourite coffee:")
@@ -225,7 +247,7 @@ s.chomp
 %form{ atts[:myform], method: "POST", name: "myform",  }
   %input{ atts[:Submit_Submit], tabindex: "#{i += 1}", type: "submit", id: "Submit_Submit", value: "Submit",  }
 
-!.strip + "\n\n" }
+!.strip + "\n" }
             
             subject { 
               form.submit
@@ -240,7 +262,7 @@ s.chomp
 %form{ atts[:myform], method: "POST", name: "myform",  }
   %input{ atts[:Save_Save], tabindex: "#{i += 1}", type: "submit", id: "Save_Save", value: "Save",  }
 
-!.strip + "\n\n" }
+!.strip + "\n" }
             
             subject { 
               form.submit( "Save" )
@@ -267,7 +289,7 @@ s.chomp
       end
       
       describe "Campo.output" do
-        let(:expected) { top_bit + %Q!= sel_opts\n\n! }
+        let(:expected) { %Q!= sel_opts\n! }
         subject { Campo.output tag }
         it { should == expected }
       end
@@ -284,9 +306,7 @@ s.chomp
             specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
 
             context "Campo.output" do
-              let(:expected) { top_bit + %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
-
-! }
+              let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }!.strip + "\n" }
               subject { Campo.output tag }
               it { should_not be_nil }
               it { should == expected }
@@ -300,10 +320,8 @@ s.chomp
               specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
               
               context "Campo.output" do
-                let(:expected) { top_bit + %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
-  %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:
-
-!  }
+                let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+  %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:!.strip + "\n"  }
                 subject { Campo.output tag.with_default }
                 it { should == expected }
               end
@@ -326,12 +344,11 @@ s.chomp
             specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
             
             context "Campo.output" do
-              let(:expected) { top_bit + %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+              let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
-
-! }
+!.strip + "\n" }
               subject { Campo.output tag }
               it { should_not be_nil }
               it { should == expected }
@@ -346,13 +363,12 @@ s.chomp
               specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
 
               context "Campo.output" do
-                let(:expected) { top_bit + %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+                let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
   %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
-
-!  }
+!.strip + "\n"  }
                 subject { Campo.output tag.with_default }
                 it { should == expected }
               end
@@ -371,13 +387,11 @@ s.chomp
               specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
               
               context "Campo.output" do
-                let(:expected) { top_bit + %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! + %q!
+                let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
   = opts
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
-  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
-
-! }
+  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n" }
                 subject { 
                   Campo.output tag }
                 it { should_not be_nil }
@@ -410,15 +424,13 @@ s.chomp
               specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
               
               context "Campo.output" do
-                let(:expected) { top_bit + %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+                let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
   %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
   %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
   %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
-  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
-
-! }
+  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n" }
                 subject { Campo.output tag }
                 it { should_not be_nil }
                 it { should == expected }
@@ -432,16 +444,14 @@ s.chomp
                 specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
 
                 context "Campo.output" do
-                  let(:expected) { top_bit + %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+                  let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
   %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:
   %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
   %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
   %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
-  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
-
-!  }
+  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n"  }
                   subject { Campo.output tag.with_default }
                   it { should == expected }
                 end
@@ -468,7 +478,7 @@ s.chomp
             specify { subject.attributes[:type].should == "text" }
             specify { subject.output.should == output }
             context "Campo.output" do
-              let(:expected) { top_bit + output + "\n\n" }
+              let(:expected) { output + "\n" }
               subject { Campo.output tag }
               it { should_not be_nil }
               it { should == expected }
@@ -485,7 +495,7 @@ s.chomp
               specify { subject.attributes[:type].should == "text" }
               specify { subject.output.should == output }
               context "Campo.output" do
-                let(:expected) { top_bit + output + "\n\n" }
+                let(:expected) { output + "\n" }
                 subject { Campo.output tag }
                 it { should_not be_nil }
                 it { should == expected }
@@ -501,7 +511,7 @@ s.chomp
               specify { subject.output.should == output }
               
               context "Campo.output" do
-                let(:expected) { top_bit + output + "\n\n" }
+                let(:expected) { output + "\n" }
                 subject { Campo.output tag }
                 it { should_not be_nil }
                 it { should == expected }
@@ -518,7 +528,7 @@ s.chomp
             specify { subject.output.should == output }
             
             context "Campo.output" do
-              let(:expected) { top_bit + output + "\n\n" }
+              let(:expected) { output + "\n" }
               subject { Campo.output tag }
               it { should_not be_nil }
               it { should == expected }
@@ -535,7 +545,7 @@ s.chomp
             specify { subject.output.should == output }
             
             context "Campo.output" do
-              let(:expected) { top_bit + output + "\n\n" }
+              let(:expected) { output + "\n" }
               subject { Campo.output tag }
               it { should_not be_nil }
               it { should == expected }
@@ -559,7 +569,7 @@ s.chomp
     ghi
     %input{ atts[:ghi], tabindex: "#{i += 1}", type: "text", id: "ghi", name: "ghi",  }
 
-!.strip + "\n\n"
+!.strip + "\n"
         }
         let(:form) {
           form = Campo::Form.new( "myform" )
@@ -588,7 +598,7 @@ s.chomp
       ghi
       %input{ atts[:ghi], tabindex: "#{i += 1}", type: "text", id: "ghi", name: "ghi",  }
 
-!.strip + "\n\n"
+!.strip + "\n"
           }
           let(:form) {
             form = Campo::Form.new( "myform" )
@@ -628,7 +638,7 @@ s.chomp
       purple
       %input{ atts[:radio1_purple], tabindex: "#{i += 1}", type: "radio", id: "radio1_purple", value: "purple", name: "radio1",  }
 
-!.strip + "\n\n"
+!.strip + "\n"
         }
       
         let(:radios) {
@@ -667,7 +677,7 @@ s.chomp
           describe "the full output" do
             let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
-  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n\n"}
+  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n"}
             let(:form){ 
               form = Campo::Form.new( "myform" )
               form.textarea( "textie" ) 
@@ -693,7 +703,7 @@ s.chomp
               let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
   %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "60", rows: "10", name: "textie",  }= inners[:textie] 
-  !.strip + " \n\n"}
+  !.strip + " \n"}
               let(:form){ 
                 form = Campo::Form.new( "myform" )
                 form.textarea( "textie", cols: 60 ) 
