@@ -463,6 +463,10 @@ s.chomp
         end
 
       end # initialisation
+      
+      describe :mark_as_selected do
+        pending "write a test for this soon please!"
+      end
     end # Select
 
     describe Input do

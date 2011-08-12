@@ -155,7 +155,7 @@ module Campo
 
 STR
 output = Base.output( *args )
-output = s + output if args..first.kind_of?( Form ) 
+output = s + output if args.first.kind_of?( Form ) 
 output
   end
 
