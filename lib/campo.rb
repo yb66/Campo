@@ -199,7 +199,18 @@ output
       (" " * n * tab) + @s
     end
   end # Haml_Ruby_Insert
+  
 
+  # add whatever you need to with a literal
+  class Literal
+    def initialize( s )
+      @s = s
+    end
+
+    def output(n=0, tab=2)
+      (" " * n * tab) + @s
+    end
+  end # Literal
   
   class Select < Base
     def initialize( name, params={}, &block )

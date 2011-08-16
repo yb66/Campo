@@ -276,6 +276,27 @@ s.chomp
       end
     end
 
+
+    describe Literal do
+      let(:tag) { Literal.new "anything at all at all" }
+      subject { tag }
+      it { should_not be_nil }
+      it { should be_a_kind_of( Literal ) }
+
+      describe :output do
+        let(:expected) { "anything at all at all" }
+        subject { tag.output }
+        it { should == expected }
+      end
+
+      describe "Campo.output" do
+        let(:expected) { "anything at all at all\n" }
+        subject { Campo.output tag }
+        it { should == expected }
+      end
+    end
+
+
     describe Haml_Ruby_Insert do
       let(:tag) { Haml_Ruby_Insert.new "= sel_opts" }
       subject { tag }
