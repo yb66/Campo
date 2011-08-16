@@ -1,5 +1,6 @@
 # encoding: UTF-8
 
+require 'spec_helper'
 require_relative "../lib/campo.rb"
 require "rspec"
 require "logger"
