@@ -21,6 +21,20 @@ module Campo
   
   module Grouping
     
+    def bit_of_ruby( *args )
+      tag = Campo::Haml_Ruby_Insert.new( *args )
+      self << tag
+      tag
+    end
+
+    alias :haml_ruby_insert :bit_of_ruby
+
+    def literal( *args )
+      tag = Campo::Literal.new( *args )
+      self << tag
+      tag
+    end
+
     def select( *args )
       select = Campo::Select.new( *args )
       self << select
@@ -190,13 +204,14 @@ output
   end
   
   
-  class Haml_Ruby_Insert
+  class Haml_Ruby_Insert < Base
     def initialize( s )
+      super( "" )
       @s = s.start_with?( '=' ) ? s : "= #{s}"
-    end
     
-    def output(n=0, tab=2)
-      (" " * n * tab) + @s
+      self.on_output do |n=0, tab=2|
+        (" " * n * tab) + @s
+      end
     end
   end # Haml_Ruby_Insert
   

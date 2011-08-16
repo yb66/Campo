@@ -314,8 +314,29 @@ s.chomp
         subject { Campo.output tag }
         it { should == expected }
       end
+
+      context "When using convenience method" do
+        let(:form) { Campo::Form.new( "myform" ) }
+        subject { form.bit_of_ruby( "= 5 + 1" ) }
+        it { should_not be_nil }
+        it { should be_a_kind_of( Haml_Ruby_Insert ) }
+
+        describe "the full output" do
+          let(:expected) { top_bit + %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  = 5 + 1!.strip + "\n"}
+          let(:form){ 
+            form = Campo::Form.new( "myform" )
+            form.bit_of_ruby( "= 5 + 1" ) 
+            form
+          }
+          subject { Campo.output form }
+          it { should == expected } 
+        end
+      end
     end
-    
+
+
     describe Select do
       context "initialisation" do
         context "Given a name" do
