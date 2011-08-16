@@ -276,11 +276,11 @@ s.chomp
       end
     end
 
-    describe Haml_Ruby_Insert do
-      let(:tag) { Haml_Ruby_Insert.new "= sel_opts" }
+    describe Literal do
+      let(:tag) { Literal.new "= sel_opts" }
       subject { tag }
       it { should_not be_nil }
-      it { should be_a_kind_of(Haml_Ruby_Insert) }
+      it { should be_a_kind_of(Literal) }
       
       describe :output do
         let(:expected) { "= sel_opts" }

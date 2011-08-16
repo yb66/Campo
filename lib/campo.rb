@@ -190,7 +190,7 @@ output
   end
   
   
-  class Haml_Ruby_Insert
+  class Literal
     def initialize( s )
       @s = s.start_with?( '=' ) ? s : "= #{s}"
     end
@@ -198,7 +198,7 @@ output
     def output(n=0, tab=2)
       (" " * n * tab) + @s
     end
-  end # Haml_Ruby_Insert
+  end # Literal
 
   
   class Select < Base
@@ -215,7 +215,7 @@ output
       
       self.fields += Helpers.options_builder( name, opts ) unless opts.nil? || opts.empty?
       
-      self.fields << Haml_Ruby_Insert.new( haml_insert ) unless haml_insert.nil?
+      self.fields << Literal.new( haml_insert ) unless haml_insert.nil?
       
       block.call( self ) if block
     end # initialize
