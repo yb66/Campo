@@ -56,7 +56,7 @@ STR
             tag = select.with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:") 
             tag
           }
-          subject { Campo.output tag }
+          subject { Campo.output false, tag }
           it { should_not be_nil }
           it { should == expected }
 
@@ -315,7 +315,7 @@ s.chomp
 
       describe "Campo.output" do
         let(:expected) { "anything at all at all\n" }
-        subject { Campo.output tag }
+        subject { Campo.output false, tag }
         it { should == expected }
       end
 
@@ -355,7 +355,7 @@ s.chomp
       
       describe "Campo.output" do
         let(:expected) { %Q!= sel_opts\n! }
-        subject { Campo.output tag }
+        subject { Campo.output false, tag }
         it { should == expected }
       end
 
@@ -393,7 +393,7 @@ s.chomp
 
             context "Campo.output" do
               let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }!.strip + "\n" }
-              subject { Campo.output tag }
+              subject { Campo.output false, tag }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -408,7 +408,7 @@ s.chomp
               context "Campo.output" do
                 let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
   %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:!.strip + "\n"  }
-                subject { Campo.output tag.with_default }
+                subject { Campo.output false, tag.with_default }
                 it { should == expected }
               end
             end
@@ -435,7 +435,7 @@ s.chomp
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
 !.strip + "\n" }
-              subject { Campo.output tag }
+              subject { Campo.output false, tag }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -455,7 +455,7 @@ s.chomp
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
 !.strip + "\n"  }
-                subject { Campo.output tag.with_default }
+                subject { Campo.output false, tag.with_default }
                 it { should == expected }
               end
             end
@@ -479,7 +479,8 @@ s.chomp
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n" }
                 subject { 
-                  Campo.output tag }
+                  Campo.output false, tag 
+                }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -517,7 +518,7 @@ s.chomp
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n" }
-                subject { Campo.output tag }
+                subject { Campo.output false, tag }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -538,7 +539,7 @@ s.chomp
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n"  }
-                  subject { Campo.output tag.with_default }
+                  subject { Campo.output false, tag.with_default }
                   it { should == expected }
                 end
               end
@@ -569,7 +570,7 @@ s.chomp
             specify { subject.output.should == output }
             context "Campo.output" do
               let(:expected) { output + "\n" }
-              subject { Campo.output tag }
+              subject { Campo.output false, tag }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -586,7 +587,7 @@ s.chomp
               specify { subject.output.should == output }
               context "Campo.output" do
                 let(:expected) { output + "\n" }
-                subject { Campo.output tag }
+                subject { Campo.output false, tag }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -602,7 +603,7 @@ s.chomp
               
               context "Campo.output" do
                 let(:expected) { output + "\n" }
-                subject { Campo.output tag }
+                subject { Campo.output false, tag }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -619,7 +620,7 @@ s.chomp
             
             context "Campo.output" do
               let(:expected) { output + "\n" }
-              subject { Campo.output tag }
+              subject { Campo.output false, tag }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -636,7 +637,7 @@ s.chomp
             
             context "Campo.output" do
               let(:expected) { output + "\n" }
-              subject { Campo.output tag }
+              subject { Campo.output false, tag }
               it { should_not be_nil }
               it { should == expected }
             end

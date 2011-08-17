@@ -47,7 +47,7 @@ module Campo
     
     
     def checkbox( name, label=nil, attributes={} )
-      self.input( name, :checkbox, label, attributes )
+      input( name, :checkbox, label, attributes )
     end
     
     def input( name, type, label=nil, attributes={} ) 
@@ -168,8 +168,12 @@ module Campo
 - i = 0 # for tabindex
 
 STR
+
+# default to true
+whole_form = args.first.kind_of?( Base ) ? true :  args.shift 
+
 output = Base.output( *args )
-output = s + output if args.first.kind_of?( Form ) 
+output = s + output if whole_form
 output
   end
 
@@ -352,9 +356,7 @@ output
   end # Fieldset
       
 
-  class Label
-    include Childish
-    include Grouping
+  class Label < Base
     
     DEFAULT = { for: nil }
 
@@ -365,15 +367,13 @@ output
         attributes = inner
         inner = nil
       end
+      super( name, attributes )
 
-      @name = name
-      @attributes = attributes || {}
-      @fields = []
       @inner = inner
-    end
     
-    def output( n=0, tab=2 )
-      %Q!#{" " * n * tab}%label{ for: "#{@name}", #{Base.unhash( @attributes )} }\n#{" " * (n + 1) * tab}#{@inner}! 
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%label{ for: "#{@attributes.delete(:name)}", #{Base.unhash( @attributes )} }\n#{" " * (n + 1) * tab}#{@inner}! 
+      end
     end
 
   end # Label
