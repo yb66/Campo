@@ -12,3 +12,4 @@ run/
 app/.sass-cache/
 scratch/
 *.gem
+coverage/
