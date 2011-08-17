@@ -206,7 +206,7 @@ output
   
   class Haml_Ruby_Insert < Base
     def initialize( s )
-      super( "" )
+      super( "" ) # no name needed
       @s = s.start_with?( '=' ) ? s : "= #{s}"
     
       self.on_output do |n=0, tab=2|
@@ -217,13 +217,14 @@ output
   
 
   # add whatever you need to with a literal
-  class Literal
+  class Literal < Base
     def initialize( s )
+      super( "" ) # no name needed
       @s = s
-    end
 
-    def output(n=0, tab=2)
-      (" " * n * tab) + @s
+      self.on_output do |n=0, tab=2|
+        (" " * n * tab) + @s
+      end
     end
   end # Literal
   

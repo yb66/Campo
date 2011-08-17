@@ -295,6 +295,26 @@ s.chomp
         subject { Campo.output tag }
         it { should == expected }
       end
+
+      context "When using convenience method" do
+        let(:form) { Campo::Form.new( "myform" ) }
+        subject { form.literal( "Hello, World!" ) }
+        it { should_not be_nil }
+        it { should be_a_kind_of( Literal ) }
+
+        describe "the full output" do
+          let(:expected) { top_bit + %q<
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  Hello, World!>.strip + "\n"}
+          let(:form){ 
+            form = Campo::Form.new( "myform" )
+            form.literal( "Hello, World!" ) 
+            form
+          }
+          subject { Campo.output form }
+          it { should == expected } 
+        end
+      end
     end
 
 
