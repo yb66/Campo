@@ -1,3 +1,5 @@
+v0.0.29 Added more tests and a couple of convenience methods - bit_of_ruby and literal.
+
 v0.0.28 Somehow a typo that caused a bug got committed. Fixed it.
 
 v0.0.27 changes to allow fragments to be output without the variable declarations at the top, and for all children to output too.
