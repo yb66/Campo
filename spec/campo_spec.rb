@@ -82,26 +82,49 @@ STR
   %label{ for: "blah_blahdeblah",  }
     Blahd
     %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
-            before { form.input( "blah", :text, "Blahd", value: "blahdeblah" ) }
-            subject { Campo.output form }
+            
+            subject { 
+              form.input( "blah", :text, "Blahd", value: "blahdeblah" )
+              Campo.output form   
+            }
             it { should_not be_nil }
             it { should == expected }
-          end
-            context "of checkbox" do
-              let(:expected) { top_bit +  %q!
+            context "via convenience method" do
+              subject {
+                form.text( "blah", "Blahd", value: "blahdeblah" )
+                Campo.output form
+              }
+              it { should_not be_nil }
+              it { should == expected }
+            end
+          end # text
+          context "of checkbox" do
+            let(:expected) { top_bit +  %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
   %label{ for: "blah_blahdeblah",  }
     Blahd
     %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "checkbox", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
-              before { form.input( "blah", :checkbox, "Blahd", value: "blahdeblah" ) }
-              subject { Campo.output form }
+            
+            subject { 
+              form.input( "blah", :checkbox, "Blahd", value: "blahdeblah" )
+              Campo.output form 
+            }
+            it { should_not be_nil }
+            it { should == expected }
+
+            context "via convenience method" do
+              subject { 
+                form.checkbox( "blah", "Blahd", value: "blahdeblah" ) 
+                Campo.output form
+              }
               it { should_not be_nil }
               it { should == expected }
-            end
+            end # conveniece
+          end # checkbox
         end
-      end
+      end # describe input
         
-    end
+    end # Grouping
     
     
     describe Label do

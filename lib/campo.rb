@@ -47,7 +47,7 @@ module Campo
     
     
     def checkbox( name, label=nil, attributes={} )
-      input( name, :checkbox, label, attributes )
+      self.input( name, :checkbox, label, attributes )
     end
     
     def input( name, type, label=nil, attributes={} ) 
