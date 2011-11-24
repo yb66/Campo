@@ -56,18 +56,59 @@ STR
             tag = select.with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:") 
             tag
           }
-          subject { Campo.output false, tag }
+          subject { Campo.output :partial, tag }
           it { should_not be_nil }
           it { should == expected }
 
         end
       end
+      
+      describe "A realish form" do
+        context "Given a form" do
+          let(:form) do
+            form = Campo::Form.new( "personal_details", action: "/my/personal_details/update/" )
+            
+            form.fieldset("Your details") do |f|
+              
+              f.text( "full_name", "Full name: ", size: 60 )
+              f.text( "dob", "Date of birth: ", size: 10 ) #TODO change this
+              f.fieldset( "Gender: " ) do |genders|
+                genders.radio( "gender", "Male", value: 1 )
+                genders.radio( "gender", "Female", value: 2 )
+              end
+              f.select( "ethnicorigin_id", {opts: [[1, "White"],[2,"Asian"],[3,"Black"],[4,"Chinese and Other"], [5,"Mixed"] ] }).with_default.labelled( "Ethnic-origin: " )
+              f.text( "occupation", "Occupation: ", size: 60 )
+              f.text( "phone_landline", "Phone (landline): ", size: 20 )
+              f.text( "phone_mobile", "Phone (mobile): ", size: 20 )
+              f.fieldset( "May we contact you..." ) do |c|
+                c.checkbox( "contactable", "In the day?", value: "day" )
+                c.checkbox( "contactable",  "In the evening?", value: "evening" )
+              end
+              f.submit("Save")
+        
+            end # form
+            form
+          end # let
+            
+          let(:expected) {
+          %Q!- atts = {} if atts.nil?\n- atts.default = {} if atts.default.nil?\n- inners = {} if inners.nil?\n- inners.default = "" if inners.default.nil?\n- i = 0 # for tabindex\n\n%form{ atts[:personal_details], method: "POST", action: "/my/personal_details/update/", name: "personal_details",  }\n  %fieldset{  }\n    %legend{  }Your details\n    %label{ for: "full_name",  }\n      Full name: \n      %input{ atts[:full_name], tabindex: "\#{i += 1}", type: "text", id: "full_name", size: "60", name: "full_name",  }\n    %label{ for: "dob",  }\n      Date of birth: \n      %input{ atts[:dob], tabindex: "\#{i += 1}", type: "text", id: "dob", size: "10", name: "dob",  }\n    %fieldset{  }\n      %legend{  }Gender: \n      %label{ for: "gender_1",  }\n        Male\n        %input{ atts[:gender_1], tabindex: "\#{i += 1}", type: "radio", id: "gender_1", value: "1", name: "gender",  }\n      %label{ for: "gender_2",  }\n        Female\n        %input{ atts[:gender_2], tabindex: "\#{i += 1}", type: "radio", id: "gender_2", value: "2", name: "gender",  }\n    %label{ for: "ethnicorigin_id",  }\n      Ethnic-origin: \n      %select{ atts[:ethnicorigin_id], tabindex: "\#{i += 1}", name: "ethnicorigin_id",  }\n        %option{  value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:\n        %option{ atts[:ethnicorigin_id_1], value: "1", id: "ethnicorigin_id_1", name: "ethnicorigin_id",  }White\n        %option{ atts[:ethnicorigin_id_2], value: "2", id: "ethnicorigin_id_2", name: "ethnicorigin_id",  }Asian\n        %option{ atts[:ethnicorigin_id_3], value: "3", id: "ethnicorigin_id_3", name: "ethnicorigin_id",  }Black\n        %option{ atts[:ethnicorigin_id_4], value: "4", id: "ethnicorigin_id_4", name: "ethnicorigin_id",  }Chinese and Other\n        %option{ atts[:ethnicorigin_id_5], value: "5", id: "ethnicorigin_id_5", name: "ethnicorigin_id",  }Mixed\n    %label{ for: "occupation",  }\n      Occupation: \n      %input{ atts[:occupation], tabindex: "\#{i += 1}", type: "text", id: "occupation", size: "60", name: "occupation",  }\n    %label{ for: "phone_landline",  }\n      Phone (landline): \n      %input{ atts[:phone_landline], tabindex: "\#{i += 1}", type: "text", id: "phone_landline", size: "20", name: "phone_landline",  }\n    %label{ for: "phone_mobile",  }\n      Phone (mobile): \n      %input{ atts[:phone_mobile], tabindex: "\#{i += 1}", type: "text", id: "phone_mobile", size: "20", name: "phone_mobile",  }\n    %fieldset{  }\n      %legend{  }May we contact you...\n      %label{ for: "contactable_day",  }\n        In the day?\n        %input{ atts[:contactable_day], tabindex: "\#{i += 1}", type: "checkbox", id: "contactable_day", value: "day", name: "contactable",  }\n      %label{ for: "contactable_evening",  }\n        In the evening?\n        %input{ atts[:contactable_evening], tabindex: "\#{i += 1}", type: "checkbox", id: "contactable_evening", value: "evening", name: "contactable",  }\n    %input{ atts[:Save_Save], tabindex: "\#{i += 1}", type: "submit", id: "Save_Save", value: "Save",  }\n!
+          } # let form
+  
+          subject{ Campo.output form }
+          it { should == expected }
+          
+      
+          #require "haml"
+      
+          #puts Haml::Engine.new( Campo.output form ).render
+        end # context
+      end # describe a form
     end
     
-    describe Grouping do
+    describe Convenience do
       let(:obj) { 
         class Fakeclass  
-          include Grouping
+          include Convenience
           include Childish
         end
         Fakeclass.new  
@@ -124,7 +165,7 @@ STR
         end
       end # describe input
         
-    end # Grouping
+    end # Convenience
     
     
     describe Label do
@@ -315,7 +356,7 @@ s.chomp
 
       describe "Campo.output" do
         let(:expected) { "anything at all at all\n" }
-        subject { Campo.output false, tag }
+        subject { Campo.output :partial, tag }
         it { should == expected }
       end
 
@@ -326,9 +367,9 @@ s.chomp
         it { should be_a_kind_of( Literal ) }
 
         describe "the full output" do
-          let(:expected) { top_bit + %q<
+          let(:expected) { top_bit + %q$
 %form{ atts[:myform], method: "POST", name: "myform",  }
-  Hello, World!>.strip + "\n"}
+  Hello, World!$.strip + "\n"}
           let(:form){ 
             form = Campo::Form.new( "myform" )
             form.literal( "Hello, World!" ) 
@@ -355,7 +396,7 @@ s.chomp
       
       describe "Campo.output" do
         let(:expected) { %Q!= sel_opts\n! }
-        subject { Campo.output false, tag }
+        subject { Campo.output :partial, tag }
         it { should == expected }
       end
 
@@ -393,7 +434,7 @@ s.chomp
 
             context "Campo.output" do
               let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }!.strip + "\n" }
-              subject { Campo.output false, tag }
+              subject { Campo.output :partial, tag }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -408,7 +449,7 @@ s.chomp
               context "Campo.output" do
                 let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
   %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:!.strip + "\n"  }
-                subject { Campo.output false, tag.with_default }
+                subject { Campo.output :partial, tag.with_default }
                 it { should == expected }
               end
             end
@@ -435,7 +476,7 @@ s.chomp
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
 !.strip + "\n" }
-              subject { Campo.output false, tag }
+              subject { Campo.output :partial, tag }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -455,7 +496,7 @@ s.chomp
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
 !.strip + "\n"  }
-                subject { Campo.output false, tag.with_default }
+                subject { Campo.output :partial, tag.with_default }
                 it { should == expected }
               end
             end
@@ -479,7 +520,7 @@ s.chomp
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n" }
                 subject { 
-                  Campo.output false, tag 
+                  Campo.output :partial, tag 
                 }
                 it { should_not be_nil }
                 it { should == expected }
@@ -518,7 +559,7 @@ s.chomp
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n" }
-                subject { Campo.output false, tag }
+                subject { Campo.output :partial, tag }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -539,7 +580,7 @@ s.chomp
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n"  }
-                  subject { Campo.output false, tag.with_default }
+                  subject { Campo.output :partial, tag.with_default }
                   it { should == expected }
                 end
               end
@@ -570,7 +611,7 @@ s.chomp
             specify { subject.output.should == output }
             context "Campo.output" do
               let(:expected) { output + "\n" }
-              subject { Campo.output false, tag }
+              subject { Campo.output :partial, tag }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -587,7 +628,7 @@ s.chomp
               specify { subject.output.should == output }
               context "Campo.output" do
                 let(:expected) { output + "\n" }
-                subject { Campo.output false, tag }
+                subject { Campo.output :partial, tag }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -603,7 +644,7 @@ s.chomp
               
               context "Campo.output" do
                 let(:expected) { output + "\n" }
-                subject { Campo.output false, tag }
+                subject { Campo.output :partial, tag }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -620,7 +661,7 @@ s.chomp
             
             context "Campo.output" do
               let(:expected) { output + "\n" }
-              subject { Campo.output false, tag }
+              subject { Campo.output :partial, tag }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -637,7 +678,7 @@ s.chomp
             
             context "Campo.output" do
               let(:expected) { output + "\n" }
-              subject { Campo.output false, tag }
+              subject { Campo.output :partial, tag }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -809,63 +850,5 @@ s.chomp
       end
     end
 
-
-    # describe "A form" do
-    #   context "Given a form" do
-    #     let(:form) { Campo::Form.new("myform") }
-    #     
-    #     context "
-
-    # form = Campo::Form.new( "myform" )
-    # form << Campo::Input.new( "abc", :text ).labelled("abc")
-    # form << Campo::Input.new( "def", :text ).labelled("def")
-    # form << Campo::Input.new( "ghi", :text ).labelled("ghi")
-    # form << Campo::Textarea.new( "jkl", "= inners[:jkl]" ).labelled("jkl")
-    # check_colours = form.fieldset( "Do you like these colours? Tick for yes:" )
-    # Campo::Input.new("mno", :checkbox, value: "blue" ).labelled( "blue" ).fieldset( check_colours )
-    # Campo::Input.new("mno", :checkbox, value: "red" ).labelled( "red" ).fieldset( check_colours )
-    # 
-    # sel_colours = form.fieldset( "Select the colour you like most:" )
-    # Campo::Input.new("radio1", :radio, value: "green" ).labelled( "green" ).fieldset( sel_colours )
-    # Campo::Input.new("radio1", :radio, value: "yellow" ).labelled( "yellow" ).fieldset( sel_colours )
-    # Campo::Input.new("radio1", :radio, value: "red" ).labelled( "red" ).fieldset( sel_colours )
-    # Campo::Input.new("radio1", :radio, value: "blue" ).labelled( "blue" ).fieldset( sel_colours )
-    # Campo::Input.new("radio1", :radio, value: "purple" ).labelled( "purple" ).fieldset( sel_colours )
-    # 
-    # form << Campo::Select.new( "pqr" ) do |s|
-    #   s << Campo::Option.new( "pqr", "", "Please choose one option", nil, {disabled: "disabled" } )
-    #   s << Campo::Option.new( "pqr", "volvo", "Volvo" )
-    #   s << Campo::Option.new( "pqr", "saab", "Saab" )
-    #   s << Campo::Option.new( "pqr", "audi", "Audi" )
-    # end.labelled("pqr")
-    # opts = [["ford", "Ford"], ["bmw", "BMW"], ["ferrari", "Ferrari", "checked"]]
-    # form << Campo::Select.new("stu", opts, ).labelled( "stu" )
-    # 
-    # form << Campo::Select.new( "vwx" ) do |s|
-    #   s.option "volvo", "Volvo"
-    #   s.option "saab", "Saab"
-    #   s.option "audi", "Audi"
-    # end.labelled("vwx")
-    # 
-    # form << Campo::Select.new( "yz", opts ) do |s|
-    #   s.option "volvo", "Volvo"
-    #   s.option "saab", "Saab"
-    #   s.option "audi", "Audi"
-    # end.labelled("yz")
-    # 
-    # form << Campo::Select.new( "bands" ).with_default.option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").labelled("Bands")
-    # 
-    # form << Campo::Input.new( "blah", :text ).labelled
-    # form << Campo::Input.new( "deblah", :text ).labelled
-    # form.text( "age", "How old are you?" )
-    # form.text( "cuppa", "What's your favourite tea?", class: "drink" )
-    # 
-    # form.select("teas").with_default.option("Ceylon").option("Breakfast").option("Earl grey").labelled("Favourite tea:")
-    # 
-    # puts Campo.output( form )
-    # 
-    # require "haml"
-    # 
-    # puts Haml::Engine.new( Campo.output form ).render
   end # describe Campo
 end # Campo

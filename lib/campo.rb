@@ -19,7 +19,14 @@ module Campo
     end
   end # Iding
   
-  module Grouping
+  module Convenience
+    
+    def fieldset( text, attributes={}, &block )
+      fieldset = (Fieldset.new(attributes) << Legend.new( text ))
+      block.call( fieldset ) if block
+      self << fieldset 
+      fieldset
+    end
     
     def bit_of_ruby( *args )
       tag = Campo::Haml_Ruby_Insert.new( *args )
@@ -45,6 +52,9 @@ module Campo
       input( name, :text, label, attributes )
     end
     
+    def radio( name, label=nil, attributes={} )
+      input( name, :radio, label, attributes )
+    end
     
     def checkbox( name, label=nil, attributes={} )
       input( name, :checkbox, label, attributes )
@@ -73,7 +83,7 @@ module Campo
       self << textarea
       textarea
     end
-  end # Grouping
+  end # Convenience
   
   module Helpers
     # [ [id, lookup, selected || false], ... ]
@@ -95,11 +105,11 @@ module Campo
     end
   end # Helpers
 
-    @atts = {}
+  @atts = {}
 
-    class << self
-      attr_accessor :atts
-    end
+  class << self
+    attr_accessor :atts
+  end
   
   class Base 
     include Childish
@@ -110,7 +120,7 @@ module Campo
     attr_accessor :attributes, :fields
 
     def initialize( name, attributes={} )
-      @attributes = DEFAULT.merge( attributes.merge({name: name}) )
+      @attributes = DEFAULT.merge( attributes.merge({name: name}) ).reject{|k,v| v.nil? }
       @fields = []
     end
     
@@ -135,10 +145,20 @@ module Campo
       end
       
       retval
-    end
+    end # labelled
 
-    def self.unhash( hash )
-      hash.reject{|k,v| v.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k}: "#{v}", !}
+    def self.unhash( hash, skip=nil )
+      hash.reject{|k,v| v.nil?  }.reject{|k,v| k.to_sym == skip.to_sym unless skip.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k}: #{Base.quotable(v)}, !}
+    end
+    
+    # if the string provided begins with one quote but does not end in one, make it an unquoted string on output
+    # else, wrap it in quotes
+    def self.quotable( s )
+      retval = if s.respond_to?(:start_with) && s.start_with?( %Q!"! ) &! s.end_with?( %Q!"! )
+        s[1.. -1] # chop the first character
+      else
+        %Q!"#{s}"! # wrap
+      end 
     end
 
 
@@ -159,6 +179,10 @@ module Campo
 	
 # Campo methods
 
+  # pass anything but the form for the first argument to *not* have the local variable defaults added to the top
+  # i.e. Campo.output :partial, input_field
+  # i.e. Campo.output false, label
+  # i.e. Campo.output true, fieldset
   def self.output( *args )
     s = <<STR
 - atts = {} if atts.nil?
@@ -169,20 +193,26 @@ module Campo
 
 STR
 
-# default to true
-whole_form = args.first.kind_of?( Base ) ? true :  args.shift 
 
-output = Base.output( *args )
-output = s + output if whole_form
-output
-  end
+    # default to true
+    whole_form = if args.first.kind_of? Campo::Form 
+      true
+    else 
+      args.shift
+      false
+    end
+    
+    output = Base.output( *args )
+    output = s + output if whole_form
+    output
+  end # self.output
 
 # end Campo methods
 
 
   # opt id
   class Form < Base
-    include Grouping
+    include Convenience
     DEFAULT = { method: "POST" }
 
     def initialize(name,  attributes={} )
@@ -190,13 +220,6 @@ output
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%form{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }!
       end
-    end
-    
-    def fieldset( text, attributes={}, &block )
-      fieldset = (Fieldset.new(attributes) << Legend.new( text ))
-      block.call( fieldset ) if block
-      self << fieldset 
-      fieldset
     end
     
 
@@ -210,7 +233,7 @@ output
   
   class Haml_Ruby_Insert < Base
     def initialize( s )
-      super( "" ) # no name needed
+      super( nil ) # no name needed
       @s = s.start_with?( '=' ) ? s : "= #{s}"
     
       self.on_output do |n=0, tab=2|
@@ -223,7 +246,7 @@ output
   # add whatever you need to with a literal
   class Literal < Base
     def initialize( s )
-      super( "" ) # no name needed
+      super( nil ) # no name needed
       @s = s
 
       self.on_output do |n=0, tab=2|
@@ -329,10 +352,10 @@ output
   end
 
   class Fieldset < Base
-    include Grouping
+    include Convenience
     
     def initialize( attributes={} )
-      super( "", attributes )
+      super( nil, attributes )
       @attributes.delete(:name)
       
       self.on_output do |n=0, tab=2|
@@ -345,7 +368,7 @@ output
   class Legend < Base
     
     def initialize( inner, attributes={} )
-      super( "", attributes )
+      super( nil, attributes )
       @attributes.delete(:name)
       @inner = inner
       
@@ -372,7 +395,7 @@ output
       @inner = inner
     
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%label{ for: "#{@attributes.delete(:name)}", #{Base.unhash( @attributes )} }\n#{" " * (n + 1) * tab}#{@inner}! 
+        %Q!#{" " * n * tab}%label{ for: "#{@attributes[:name]}", #{Base.unhash( @attributes, :name )} }\n#{" " * (n + 1) * tab}#{@inner}! 
       end
     end
 
