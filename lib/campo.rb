@@ -154,7 +154,7 @@ module Campo
     # if the string provided begins with one quote but does not end in one, make it an unquoted string on output
     # else, wrap it in quotes
     def self.quotable( s )
-      retval = if s.respond_to?(:start_with) && s.start_with?( %Q!"! ) &! s.end_with?( %Q!"! )
+      retval = if s.respond_to?(:start_with?) && s.start_with?( %Q!"! ) &! s.end_with?( %Q!"! )
         s[1.. -1] # chop the first character
       else
         %Q!"#{s}"! # wrap
