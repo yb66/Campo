@@ -13,3 +13,5 @@ app/.sass-cache/
 scratch/
 *.gem
 coverage/
+.yardoc/
+docs/
