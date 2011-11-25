@@ -1,3 +1,5 @@
+v0.1.0 Added support for helper methods in amongst haml attributes.  More convenience methods like `radio`. Support for nesting of fieldsets. `.select` takes a block too.
+
 v0.0.30 Changed main output to allow a whole form to be wrapped in a literal, for instance when wanting to wrap it in a div. Fragments now require 'false' to be passed along with the tag class. No change for whole forms.
 
 v0.0.29 Added more tests and a couple of convenience methods - bit_of_ruby and literal.

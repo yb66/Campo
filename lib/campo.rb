@@ -42,8 +42,8 @@ module Campo
       tag
     end
 
-    def select( *args )
-      select = Campo::Select.new( *args )
+    def select( *args, &block )
+      select = Campo::Select.new( *args, &block )
       self << select
       select
     end
@@ -215,11 +215,14 @@ STR
     include Convenience
     DEFAULT = { method: "POST" }
 
-    def initialize(name,  attributes={} )
+    def initialize(name,  attributes={}, &block )
       super( name, DEFAULT.merge( attributes ) )
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%form{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }!
       end
+      
+      block.call( self ) if block
+      self
     end
     
 
@@ -272,6 +275,7 @@ STR
       self.fields << Haml_Ruby_Insert.new( haml_insert ) unless haml_insert.nil?
       
       block.call( self ) if block
+      self
     end # initialize
       
     def option( *args )
@@ -288,9 +292,9 @@ STR
       self
     end
     
-    def mark_as_selected( val )
-      fields.find {|field| field.value == val }.selected = {selected: "selected"}
-    end
+    # def mark_as_selected( val )
+    #   fields.find {|field| field.value == val }.selected = {selected: "selected"}
+    # end
   end # Select
   
   
