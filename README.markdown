@@ -17,28 +17,28 @@ Here's an example form:
 
     # Now starts the real action #
     
-    form = Campo::Form.new( "myform", action: "/my/form/update/" )
+    form = Campo.form "myform", action: "/my/form/update/"
 
-    form.fieldset("Your details") do |f|
-      f.text( "full_name",  size: 60 )
-      f.text( "dob", "Date of birth: ", size: 8 )
+    form.fieldset "Your details" do |f|
+      f.text "full_name",  size: 60 
+      f.text "dob", "Date of birth: ", size: 8
       
       f.select( "gender_id", {opts: genders }).with_default.labelled( "Gender: " )
       
-      f.select("teas") do |s|
+      f.select "teas" do |s|
         s.with_default
         s.option("ceylon")
         s.option("breakfast")
         s.option("earl grey")
         s.option("oolong")
         s.option("sencha")
-      end.labelled("Favourite tea:") 
+      end.labelled "Favourite tea:"
       
-      f.text( "occupation", "Occupation: ", size: 60 )
-      f.text( "phone_landline", "Phone (landline): ", size: 20 )
-      f.text( "phone_mobile", "Phone (mobile): ", size: 20 )
+      f.text "occupation", "Occupation: ", size: 60  
+      f.text "phone_landline", "Phone  landline : ", size: 20  
+      f.text "phone_mobile", "Phone  mobile : ", size: 20  
 
-      f.submit("Save")
+      f.submit "Save"
   
     end
 
@@ -150,13 +150,13 @@ In the select tag (below), notice how each tag gets a local variable added to th
 
 Here's the Campo code:
 
-    form = Campo::Form.new "best_bands", action: "/best/bands/" do |form|
+    form = Campo.form "best_bands", action: "/best/bands/" do |form|
       form.select("bands").option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").with_default.labelled("Favourite band:")
     end
     
 or
 
-    form = Campo::Form.new "best_bands", action: "/best/bands/"
+    form = Campo.form "best_bands", action: "/best/bands/"
     form.select("bands") do |s|
       s.with_default
       s.option("Suede")
@@ -224,7 +224,7 @@ outputs:
 It's really just a literal:
 
 
-    form = Campo::Form.new "favourite_teas", action: %Q!"uri("/fav/teas/")! do |form|
+    form = Campo.form "favourite_teas", action: %Q!"uri("/fav/teas/")! do |form|
       form.select("teas").with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:") 
       form.literal %Q<%p= "I like tea!">
     end

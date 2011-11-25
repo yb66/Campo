@@ -21,6 +21,11 @@ module Campo
   
   module Convenience
     
+    # @example Fieldset as a block is easiest to read
+    #   form.fieldset("Your details") do |f|
+    #     f.text( "full_name",  size: 60 )
+    #     f.text( "dob", "Date of birth: ", size: 8 )
+    #   end
     def fieldset( text, attributes={}, &block )
       fieldset = (Fieldset.new(attributes) << Legend.new( text ))
       block.call( fieldset ) if block
@@ -28,6 +33,8 @@ module Campo
       fieldset
     end
     
+    # @example Add a bit of code to the markup
+    #   form.bit_of_ruby( "= 5 + 1" ) }
     def bit_of_ruby( *args )
       tag = Campo::Haml_Ruby_Insert.new( *args )
       self << tag
@@ -36,12 +43,27 @@ module Campo
 
     alias :haml_ruby_insert :bit_of_ruby
 
+    # @example Output a literal string
+    #   form.literal %Q!%p= "This is a paragraph "!
     def literal( *args )
       tag = Campo::Literal.new( *args )
       self << tag
       tag
     end
 
+    # @example Select with a block of options
+    #   f.select("teas") do |s|
+    #     s.with_default
+    #     s.option("ceylon")
+    #     s.option("breakfast")
+    #     s.option("earl grey")
+    #     s.option("oolong")
+    #     s.option("sencha")
+    #   end.labelled("Favourite tea:")
+    #
+    #   #Select using chain of options
+    #   form.select("bands").option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").with_default.labelled("Favourite band:")
+    #
     def select( *args, &block )
       select = Campo::Select.new( *args, &block )
       self << select
@@ -151,7 +173,7 @@ module Campo
       hash.reject{|k,v| v.nil?  }.reject{|k,v| k.to_sym == skip.to_sym unless skip.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k}: #{Base.quotable(v)}, !}
     end
     
-    # if the string provided begins with one quote but does not end in one, make it an unquoted string on output
+    # if the string provided begins with a double quote but does not end in one, make it an unquoted string on output
     # else, wrap it in quotes
     def self.quotable( s )
       retval = if s.respond_to?(:start_with?) && s.start_with?( %Q!"! ) &! s.end_with?( %Q!"! )
@@ -210,7 +232,7 @@ STR
 # end Campo methods
 
 
-  # opt id
+  
   class Form < Base
     include Convenience
     DEFAULT = { method: "POST" }
@@ -228,9 +250,12 @@ STR
 
   end # Form
   
-  
-  def self.form( name, *args )
-    Form.new( name, *args )
+  # @example Form with a block
+  #   form = Campo.form "form1" do |f|
+  #     f.text "Hello"
+  #   end
+  def self.form( name, *args, &block )
+    Form.new( name, *args, &block )
   end
   
   
@@ -278,6 +303,7 @@ STR
       self
     end # initialize
       
+    # @example (see #select)  
     def option( *args )
       value = args.shift
       inner = args.shift 
