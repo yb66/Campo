@@ -1,7 +1,14 @@
+# Campo #
+
 A static dynamic form builder into haml. Yep, static _and_ dynamic. Use it to statically create a form into haml, but you may notice it's taken advantage of haml's "add a hash to the front of the attributes and it'll get merged" property. http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#attribute_methods. More on that below.
 
 Btw, I'll be using this with Sinatra, if you're using Rails you'll need to work out how that's done as I don't know.
 
+## Why though? ##
+
+However nice Haml is, it's still a lot of effort to build a form. If you've got lots of forms it's worse. The long term plan is to link this in to Sequel.
+
+## Example! ##
 
 Here's an example form:
 
@@ -13,7 +20,7 @@ Here's an example form:
     form = Campo::Form.new( "myform", action: "/my/form/update/" )
 
     form.fieldset("Your details") do |f|
-      f.text( "full_name", "Full name: ", size: 60 )
+      f.text( "full_name",  size: 60 )
       f.text( "dob", "Date of birth: ", size: 8 )
       
       f.select( "gender_id", {opts: genders }).with_default.labelled( "Gender: " )

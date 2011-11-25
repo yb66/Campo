@@ -133,7 +133,7 @@ module Campo
     end
 
     def labelled( inner=nil )
-      inner ||= self.attributes[:name]
+      inner ||= self.attributes[:name].gsub("_"," ").capitalize
       parent = self.parent
       label = Label.new( %Q!#{@attributes[:name] + id_tag(@attributes[:value]).gsub(/\W/, "_")}!, inner ) << self
       retval = if parent.nil?

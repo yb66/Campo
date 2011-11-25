@@ -118,26 +118,51 @@ STR
       describe "input" do
         context "When given type" do
           context "of text" do
-            let(:expected) { top_bit +  %q!
+            context "with a label" do
+              let(:expected) { top_bit +  %q!
 %form{ atts[:myform], method: "POST", name: "myform",  }
   %label{ for: "blah_blahdeblah",  }
     Blahd
     %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
-            
-            subject { 
-              form.input( "blah", :text, "Blahd", value: "blahdeblah" )
-              Campo.output form   
-            }
-            it { should_not be_nil }
-            it { should == expected }
-            context "via convenience method" do
-              subject {
-                form.text( "blah", "Blahd", value: "blahdeblah" )
-                Campo.output form
+              
+              subject { 
+                form.input( "blah", :text, "Blahd", value: "blahdeblah" )
+                Campo.output form   
               }
               it { should_not be_nil }
               it { should == expected }
+              context "via convenience method" do
+                subject {
+                  form.text( "blah", "Blahd", value: "blahdeblah" )
+                  Campo.output form
+                }
+                it { should_not be_nil }
+                it { should == expected }
+              end
             end
+            context "without a label" do
+              let(:expected) { top_bit +  %q!
+%form{ atts[:myform], method: "POST", name: "myform",  }
+  %label{ for: "blah_blahdeblah",  }
+    Blah
+    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
+              
+              subject { 
+                form.input( "blah", :text, value: "blahdeblah" )
+                Campo.output form   
+              }
+              it { should_not be_nil }
+              it { should == expected }
+              context "via convenience method" do
+                subject {
+                  form.text( "blah", value: "blahdeblah" )
+                  Campo.output form
+                }
+                it { should_not be_nil }
+                it { should == expected }
+              end
+            end
+            
           end # text
           context "of checkbox" do
             let(:expected) { top_bit +  %q!
