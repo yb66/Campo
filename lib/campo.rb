@@ -221,7 +221,7 @@ module Campo
 
   end # Base
   
-  
+  # @see Convenience#literal
   def self.literal( *args, &block )
     Campo::Literal.new( *args, &block )
 	end
