@@ -540,10 +540,10 @@ s.chomp
               
               context "Campo.output" do
                 let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
-  = opts
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
-  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n" }
+  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
+  = opts!.strip + "\n" }
                 subject { 
                   Campo.output :partial, tag 
                 }
@@ -578,12 +578,12 @@ s.chomp
               
               context "Campo.output" do
                 let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
-  %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
-  %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
-  %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
-  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n" }
+  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
+  %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
+  %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
+  %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari!.strip + "\n" }
                 subject { Campo.output :partial, tag }
                 it { should_not be_nil }
                 it { should == expected }
@@ -599,12 +599,12 @@ s.chomp
                 context "Campo.output" do
                   let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
   %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:
-  %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
-  %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
-  %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
-  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi!.strip + "\n"  }
+  %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
+  %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
+  %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
+  %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari!.strip + "\n"  }
                   subject { Campo.output :partial, tag.with_default }
                   it { should == expected }
                 end

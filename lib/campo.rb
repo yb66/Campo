@@ -21,6 +21,8 @@ module Campo
   
   module Convenience
     
+    
+    # @param [optional, Hash] attributes Any attributes you wish to add to the haml element.
     # @example Fieldset as a block is easiest to read
     #   form.fieldset("Your details") do |f|
     #     f.text( "full_name",  size: 60 )
@@ -51,37 +53,53 @@ module Campo
       tag
     end
 
-    # @example Select with a block of options
-    #   f.select("teas") do |s|
-    #     s.with_default
-    #     s.option("ceylon")
-    #     s.option("breakfast")
-    #     s.option("earl grey")
-    #     s.option("oolong")
-    #     s.option("sencha")
-    #   end.labelled("Favourite tea:")
+    # @example 
+    #     # Select with a block of options
+    #     f.select("teas") do |s|
+    #       s.with_default
+    #       s.option("ceylon")
+    #       s.option("breakfast")
+    #       s.option("earl grey")
+    #       s.option("oolong")
+    #       s.option("sencha")
+    #     end.labelled("Favourite tea:")
     #
-    #   #Select using chain of options
-    #   form.select("bands").option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").with_default.labelled("Favourite band:")
+    #     # Select using chain of options
+    #     form.select("bands").option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").with_default.labelled("Favourite band:")
     #
+    # @see Select
     def select( *args, &block )
       select = Campo::Select.new( *args, &block )
       self << select
       select
     end
     
+    # Add an input with type of text
+    # @param [String] name The name html attribute.
+    # @param [optional, String, nil] label Give the label a name. Defaults to a capitalised name with _ replaced by spaces.
+    # @param [optional, Hash] attributes Any attributes you wish to add to the haml element.
+    # @example
+    #     f.text "full_name",  size: 60 
+    #     f.text "dob", "Date of birth: ", size: 8
+    # @return [Input] 
+    #   With the attribute `type=text`
     def text( name, label=nil, attributes={} )
       input( name, :text, label, attributes )
     end
     
+    # @param (see #text)
     def radio( name, label=nil, attributes={} )
       input( name, :radio, label, attributes )
     end
     
+    # @param (see #text)
     def checkbox( name, label=nil, attributes={} )
       input( name, :checkbox, label, attributes )
     end
     
+    
+    # @param (see #text)
+    # @param [:symbol] type The type html attribute.
     def input( name, type, label=nil, attributes={} ) 
       if label.kind_of? Hash
         attributes = label
@@ -93,6 +111,8 @@ module Campo
       field
     end
     
+    # @param [optional,String] name
+    # @param [optional, Hash] attributes Any attributes you wish to add to the haml element.
     def submit( name="Submit", label_inner=nil, attributes={} )
       submit = Campo::Input.new( name, :submit, {value: name}.merge(attributes) )
       self << submit
@@ -136,14 +156,17 @@ module Campo
   class Base 
     include Childish
     include Iding
+    include Convenience
     
     DEFAULT = { tabindex: nil }
 
     attr_accessor :attributes, :fields
 
-    def initialize( name, attributes={} )
+    def initialize( name, attributes={}, &block )
       @attributes = DEFAULT.merge( attributes.merge({name: name}) ).reject{|k,v| v.nil? }
       @fields = []
+      block.call( self ) if block
+      self
     end
     
     def on_output( &block )
@@ -198,13 +221,16 @@ module Campo
 
   end # Base
   
+  
+  def self.literal( *args, &block )
+    Campo::Literal.new( *args, &block )
+	end
 	
-# Campo methods
-
-  # pass anything but the form for the first argument to *not* have the local variable defaults added to the top
-  # i.e. Campo.output :partial, input_field
-  # i.e. Campo.output false, label
-  # i.e. Campo.output true, fieldset
+  # Pass anything but the form for the first argument to *not* have the local variable defaults added to the top
+  # @example 
+  #     Campo.output :partial, input_field
+  #     Campo.output false, label
+  #     Campo.output true, fieldset
   def self.output( *args )
     s = <<STR
 - atts = {} if atts.nil?
@@ -217,7 +243,7 @@ STR
 
 
     # default to true
-    whole_form = if args.first.kind_of? Campo::Form 
+    whole_form = if args.first.kind_of? Campo::Base 
       true
     else 
       args.shift
@@ -234,28 +260,42 @@ STR
 
   
   class Form < Base
-    include Convenience
     DEFAULT = { method: "POST" }
 
-    def initialize(name,  attributes={}, &block )
+    # @param [String] name The form's name (html) attribute.
+    # @param [optional, Hash] attributes Html attributes. They can be anything you like. Defaults follow:
+    # @option attributes [String] :method ("POST")
+    # @example
+    #     form = Campo::Form.new "example", "/path/to/post/to/" do |form|
+    #       form.text "first_field"
+    #       #... more fields follow
+    #     end
+    def initialize(name,  attributes={} )
       super( name, DEFAULT.merge( attributes ) )
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%form{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }!
       end
       
-      block.call( self ) if block
       self
     end
     
 
   end # Form
   
-  # @example Form with a block
-  #   form = Campo.form "form1" do |f|
-  #     f.text "Hello"
-  #   end
-  def self.form( name, *args, &block )
-    Form.new( name, *args, &block )
+  # Generally, the first method you'll call.
+  # @example 
+  #     # Form with a block
+  #     form = Campo.form "form1", action: "/go/for/it/" do |f|
+  #       f.text "Hello"
+  #       #... more fields follow
+  #     end
+  #
+  # @param [String] name The form's name (html) attribute.  
+  # @param [optional, Hash] attributes Html attributes. They can be anything you like. Defaults follow:
+  # @option attributes [String] :method ("POST") The method attribute for the form.
+  # @see Form#initialize
+  def self.form( name, attributes={}, &block )
+    Form.new( name, attributes, &block )
   end
   
   
@@ -280,11 +320,12 @@ STR
       self.on_output do |n=0, tab=2|
         (" " * n * tab) + @s
       end
+      self
     end
   end # Literal
   
   class Select < Base
-    def initialize( name, params={}, &block )
+    def initialize( name, params={} )
       opts = params[:opts] || []
       attributes = params[:attributes] || {}
       haml_insert = params[:haml_insert] || nil
@@ -299,11 +340,11 @@ STR
       
       self.fields << Haml_Ruby_Insert.new( haml_insert ) unless haml_insert.nil?
       
-      block.call( self ) if block
+      
       self
     end # initialize
       
-    # @example (see #select)  
+    # @example (see Convenience#select)  
     def option( *args )
       value = args.shift
       inner = args.shift 
@@ -313,6 +354,20 @@ STR
       self
     end
     
+    
+    # @example 
+    #     As a default:
+    #     form.select("teas").with_default.option("ceylon")
+    #     # output:
+    #       %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+    #          %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
+    #          %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
+    #
+    #     form.select("teas").with_default("My fave tea is:").option("ceylon")
+    #     # output:
+    #       %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+    #       %option{  value: "", disabled: "disabled", name: "teas",  }My fave tea is:
+    #       %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
     def with_default( inner="Choose one:" )
       self.fields.unshift Campo::Option.new( @attributes[:name], "", inner , nil, {disabled: "disabled" } )
       self
@@ -382,7 +437,6 @@ STR
   end
 
   class Fieldset < Base
-    include Convenience
     
     def initialize( attributes={} )
       super( nil, attributes )
