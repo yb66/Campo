@@ -255,3 +255,22 @@ It's really just a literal:
       </label>
       <p>I like tea!</p>
     </form>
+    
+You can use literals to wrap forms in divs too:
+    
+    doc = Campo.literal ".centred.form" do |wrapper|
+      wrapper << form # the form defined already above
+    end
+    
+    puts Campo.output doc
+    
+    .centred.form
+      %form{ atts[:favourite_teas], method: "POST", action: uri("/fav/teas/"), name: "favourite_teas",  }
+        %label{ for: "teas",  }
+          Favourite tea:
+          %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+            %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
+            %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
+            %option{ atts[:teas_breakfast], value: "breakfast", id: "teas_breakfast", name: "teas",  }Breakfast
+            %option{ atts[:teas_earl_grey], value: "earl grey", id: "teas_earl_grey", name: "teas",  }Earl grey
+        %p= "I like tea!"
