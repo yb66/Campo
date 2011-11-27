@@ -228,6 +228,8 @@ module Campo
 	
   # Pass anything but the form for the first argument to *not* have the local variable defaults added to the top
   # @example 
+  #     Campo.output form # would add the default locals
+  #     # these won't
   #     Campo.output :partial, input_field
   #     Campo.output false, label
   #     Campo.output true, fieldset
