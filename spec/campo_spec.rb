@@ -750,7 +750,7 @@ s.chomp
   
                 it { should_not be_nil }
                 it { should be_a_kind_of(Select) }
-                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{i += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }english_breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }earl_grey\n! }
+                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{i += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl grey\n! }
               end
               context "and a single string value" do
                 let(:opts) {

@@ -403,7 +403,7 @@ STR
         inner = nil
       end
       
-      @inner = inner || value
+      @inner = (inner || value.gsub("_"," ").capitalize)
       
       if selected.kind_of? Hash
         attributes = selected 
