@@ -201,7 +201,82 @@ let(:expected) {
       end # describe input
         
     end # Convenience
-    
+
+    describe Helpers do
+      describe "self.options_builder" do
+        context "Given a name" do
+          let(:name) { "teas" }
+          context "and not given an options argument" do
+            it "raises error because not given any options" do
+              expect { Campo::Helpers.options_builder name }.to raise_error
+            end
+          end         
+          context "and given a nil for the options" do
+            let(:opts) { nil }
+            subject { Campo::Helpers.options_builder name, opts }
+            it { should_not be_nil }
+            it { should be_a_kind_of Array }
+          end 
+          context "and given a hash" do
+            context "that is empty" do
+            subject { Campo::Helpers.options_builder name, Hash.new }
+            it { should_not be_nil }
+            it { should be_a_kind_of Array }
+            end
+          end
+          context "and given an array" do
+            context "that is empty" do
+              let(:opts) { [] }
+              subject { Campo::Helpers.options_builder name, opts }
+              it { should_not be_nil }
+              it { should be_a_kind_of Array }
+              it { should be_empty }
+            end
+            context "that contain [String,String]" do
+              let(:opts) {
+                [ 
+                  ["ceylon", "Ceylon"],
+                  ["english_breakfast", "English Breakfast"],
+                  ["earl_grey", "Earl Grey"],
+                ] 
+              }
+              subject { Campo::Helpers.options_builder name, opts }
+              it { should_not be_nil }
+              it { should be_a_kind_of Array }
+              it { should be_full_of Campo::Option }
+            end
+            context "that contain [String]" do
+              context "formatted for the name attribute (underscores for spaces, lowercase)" do
+                let(:opts) {
+                  [ 
+                    ["ceylon"],
+                    ["english_breakfast"],
+                    ["earl_grey"],
+                  ] 
+                }
+                subject { Campo::Helpers.options_builder name, opts }
+                it { should_not be_nil }
+                it { should be_a_kind_of Array }
+                it { should be_full_of Campo::Option }
+              end
+              context "formatted for display" do
+                let(:opts) {
+                  [ 
+                    ["Ceylon"],
+                    ["English Breakfast"],
+                    ["Earl Grey"],
+                  ] 
+                }
+                subject { Campo::Helpers.options_builder name, opts }
+                it { should_not be_nil }
+                it { should be_a_kind_of Array }
+                it { should be_full_of Campo::Option }
+              end
+            end
+          end
+        end
+      end
+    end    
     
     describe Label do
       let(:tag) { Label.new( "abc", "A, B, or C?" ) }
