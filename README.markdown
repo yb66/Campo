@@ -1,6 +1,6 @@
 # Campo #
 
-A static dynamic form builder into haml. Yep, static _and_ dynamic. Use it to statically create a form into haml, but you may notice it's taken advantage of haml's "add a hash to the front of the attributes and it'll get merged" property. http://haml-lang.com/docs/yardoc/file.HAML\_REFERENCE.html#attribute_methods. More on that below.
+A static dynamic form builder into haml. Yep, static _and_ dynamic. Use it to statically create a form into haml, but you may notice it's taken advantage of haml's "add a hash to the front of the attributes and it'll get merged" property. [See Haml docs for more](http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#attribute_methods). More on that below.
 
 Btw, I'll be using this with Sinatra, if you're using Rails you'll need to work out how that's done as I don't know.
 
