@@ -128,18 +128,30 @@ module Campo
   end # Convenience
   
   module Helpers
+  
+  
     # [ [id, lookup, selected || false], ... ]
     def self.options_builder( name, opts )
       return [] if opts.nil? || opts.empty?
-
-      opts.map do |opt|
-        id, lookup, selected, atts = opt
+      
+      l = ->(id, inner, selected, atts){
         selected = selected ? true : false
         atts = atts.nil? ? { } : atts
 
-        Campo::Option.new( name, id, lookup, selected, atts )
+        Campo::Option.new( name, id, inner, selected, atts )
+      }
+      
+      if opts.respond_to? :each_pair
+        opts.map do |id, (inner, selected, atts)|
+          l.call( id, inner, selected, atts )
+        end
+      else
+        opts.map do |id, inner, selected, atts|
+          l.call( id, inner, selected, atts )
+        end
       end
-    end
+    end # def
+    
     
     def self.options_outputter( opts=[] )
       return "" if opts.nil? || opts.empty?

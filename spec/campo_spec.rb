@@ -219,11 +219,50 @@ let(:expected) {
           end 
           context "and given a hash" do
             context "that is empty" do
-            subject { Campo::Helpers.options_builder name, Hash.new }
-            it { should_not be_nil }
-            it { should be_a_kind_of Array }
+              subject { Campo::Helpers.options_builder name, Hash.new }
+              it { should_not be_nil }
+              it { should be_a_kind_of Array }
+              it { should be_empty }
+            end
+            context "with keys" do
+              context "only" do
+                let(:opts) {
+                  Hash[ ["ceylon", "english_breakfast", "earl_grey"].zip( Array.new(3, nil ) ) ]
+                }
+                subject { Campo::Helpers.options_builder name, opts }
+                it { should_not be_nil }
+                it { should be_a_kind_of Array }
+                it { should be_full_of Campo::Option }
+              end
+              context "and a single string value" do
+                let(:opts) {
+                  Hash[ [ 
+                    ["ceylon", "Ceylon"],
+                    ["english_breakfast", "English Breakfast"],
+                    ["earl_grey", "Earl Grey"],
+                  ] ]
+                }
+                subject { Campo::Helpers.options_builder name, opts }
+                it { should_not be_nil }
+                it { should be_a_kind_of Array }
+                it { should be_full_of Campo::Option }
+              end
+              context "and an array value" do
+                let(:opts) {
+                  {
+                    "ceylon"=>["Ceylon"], 
+                    "english_breakfast"=>["English Breakfast", :selected], 
+                    "earl_grey"=>["Earl Grey"]
+                  }
+                }
+                subject { Campo::Helpers.options_builder name, opts }
+                it { should_not be_nil }
+                it { should be_a_kind_of Array }
+                it { should be_full_of Campo::Option }
+              end
             end
           end
+          
           context "and given an array" do
             context "that is empty" do
               let(:opts) { [] }
@@ -698,6 +737,57 @@ s.chomp
             end
           end
 
+          context "and a hash" do
+            context "with keys" do
+              context "only" do
+                let(:opts) {
+                  Hash[ ["ceylon", "english_breakfast", "earl_grey"].zip( Array.new(3, nil ) ) ]
+                }
+                let(:tag){ 
+                  Campo::Select.new( "tea", {opts: opts} )
+                }
+                subject { tag }
+  
+                it { should_not be_nil }
+                it { should be_a_kind_of(Select) }
+                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{i += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }english_breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }earl_grey\n! }
+              end
+              context "and a single string value" do
+                let(:opts) {
+                  Hash[ [ 
+                    ["ceylon", "Ceylon"],
+                    ["english_breakfast", "English Breakfast"],
+                    ["earl_grey", "Earl Grey"],
+                  ] ]
+                }
+                let(:tag){ 
+                  Campo::Select.new( "tea", {opts: opts} )
+                }
+                subject { tag }
+  
+                it { should_not be_nil }
+                it { should be_a_kind_of(Select) }
+                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{i += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
+              end
+              context "and an array value" do
+                let(:opts) {
+                  {
+                    "ceylon"=>["Ceylon"], 
+                    "english_breakfast"=>["English Breakfast", :selected], 
+                    "earl_grey"=>["Earl Grey"]
+                  }
+                }
+                let(:tag){ 
+                  Campo::Select.new( "tea", {opts: opts} )
+                }
+                subject { tag }
+  
+                it { should_not be_nil }
+                it { should be_a_kind_of(Select) }
+                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{i += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", selected: "selected", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
+              end
+            end
+          end
         end
 
       end # initialisation
