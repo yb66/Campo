@@ -166,7 +166,19 @@ or
       s.option("Pulp")
       s.option("Supergrass")
     end.labelled("Favourite band:")
- 
+    
+or an array of arrays (I like to think of it as a list of tuples:)
+
+    form = Campo.form "best_bands", action: "/best/bands/"
+    form.select( "bands", opts: [ 
+      ["Suede"],
+      ["Blur"],
+      ["Oasis"],
+      ["Echobelly"],
+      ["Pulp"],
+      ["Supergrass"],
+    ] ).labelled("Favourite band:")
+
 (or mix and match blocks, .new, arrays and hashes)   
     
     Campo.output form # generate the haml
