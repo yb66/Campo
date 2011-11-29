@@ -623,6 +623,16 @@ s.chomp
           it { should == expected } 
         end
       end
+      
+      context "When not given a string" do
+        it "should raise" do
+          expect {
+            form = Campo.form "a" do |form|
+              form.bit_of_ruby 2
+            end
+          }.to raise_error( ArgumentError )
+        end
+      end
     end
 
 

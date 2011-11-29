@@ -308,8 +308,9 @@ STR
   
   class Haml_Ruby_Insert < Base
     def initialize( s )
+      raise ArgumentError, "you may only pass a string to Haml_Ruby_Insert/bit_of_ruby" unless s.kind_of?( String )
       super( nil ) # no name needed
-      @s = s.start_with?( '=' ) ? s : "= #{s}"
+      @s = s.start_with?( '=' ) ? s : "= " + s.to_s
     
       self.on_output do |n=0, tab=2|
         (" " * n * tab) + @s

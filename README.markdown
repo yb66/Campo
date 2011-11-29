@@ -317,6 +317,8 @@ outputs:
     
     %form{ atts[:best_bands], method: "POST", action: uri("/best/bands/"), name: "best_bands",  }
       = 5 + 1
+      
+Although, if you forget the "=" sign it will add it for you.
 
 ## And literals ##
 
