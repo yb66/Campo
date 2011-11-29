@@ -368,3 +368,12 @@ You can use literals to wrap forms in divs too:
             %option{ atts[:teas_breakfast], value: "breakfast", id: "teas_breakfast", name: "teas",  }Breakfast
             %option{ atts[:teas_earl_grey], value: "earl grey", id: "teas_earl_grey", name: "teas",  }Earl grey
         %p= "I like tea!"
+        
+## tabindex ##
+
+Each field gets `tabindex: "#{i += 1}"` added to its attributes. This will generate a tabindex easily for you.
+
+Note: I'm considering making this an instance variable so that it can be passed through easily to nested partials, but I need to test it first.
+
+
+
