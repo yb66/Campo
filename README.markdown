@@ -301,7 +301,7 @@ Output:
 
 ## Adding in helpers ##
 
-If you want to use helpers in the attributes, like sinatra's `uri` helper, then add a quote to the front:
+If you want to use helpers in the attributes, like sinatra's `uri` helper, then add a double-quote to the front:
 
     form = Campo::Form.new "best_bands", action: %Q!"uri("/best/bands/")!
 
