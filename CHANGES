@@ -1,3 +1,5 @@
+v0.3.0 Improved passing of hash arguments for options to select tags. More specs.
+
 v0.2.0 All Base fields can now take a block and the convenience methodsl, allowing them to nest other elements regardless of whether the parent is a form or a select. This basically makes it a lot easier to use a literal as the root of the document.
 
 v0.1.1 Label naming a bit better... possibly! It breaks on _ and capitalises when trying for a default.
