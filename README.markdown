@@ -185,10 +185,12 @@ or an array of arrays:
       ["Supergrass"],
     ] ).with_default.labelled("Favourite band:")
 
-(or mix and match blocks, .new, arrays and hashes)   
-    
-    Campo.output form # generate the haml
+(or mix and match blocks, .new, arrays and hashes)  
 
+ 
+Generate the haml:
+    
+    Campo.output form #
 
 And the Haml generated:
 
