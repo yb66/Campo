@@ -134,20 +134,13 @@ module Campo
     def self.options_builder( name, opts )
       return [] if opts.nil? || opts.empty?
       
-      l = ->(id, inner, selected, atts){
-        selected = selected ? true : false
-        atts = atts.nil? ? { } : atts
-
-        Campo::Option.new( name, id, inner, selected, atts )
-      }
-      
       if opts.respond_to? :each_pair
         opts.map do |id, (inner, selected, atts)|
-          l.call( id, inner, selected, atts )
+          Campo::Option.new( name, id, inner, selected, atts )
         end
       else
         opts.map do |id, inner, selected, atts|
-          l.call( id, inner, selected, atts )
+          Campo::Option.new( name, id, inner, selected, atts )
         end
       end
     end # def
@@ -396,19 +389,27 @@ STR
   class Option < Base
     attr_accessor :value, :checked
     
+    # @param [String] name
+    # @param [String] value
     def initialize( name, value, inner=nil, selected=nil, attributes={} )
-      attributes ||= {}
-      if inner.kind_of? TrueClass
-        selected = attributes
+      unless inner.nil? || inner.kind_of?( String )
+        attributes = selected
+        selected = inner
         inner = nil
       end
       
-      @inner = (inner || value.gsub("_"," ").capitalize)
+      unless selected.nil? || selected.kind_of?( TrueClass )
+        if selected.respond_to? :each_pair
+          attributes = selected
+          selected = nil   
+        else
+          selected = true     
+        end
+      end
       
-      if selected.kind_of? Hash
-        attributes = selected 
-        selected = {}
-      end 
+      attributes ||= {}
+      
+      @inner = (inner || value.gsub("_"," ").capitalize)
       
       attributes = { id: "#{(name.gsub(/\W/, "_") + id_tag(value).gsub(/\W/, "_")).downcase}" }.merge(attributes) unless value.nil? || value.to_s.empty?
       
