@@ -140,7 +140,7 @@ and that outputs:
 
 Back to the dynamic attributes mentioned earlier. What does this mean? You can pass in a local to dynamically alter the form based on server side logic.
 
-These get added to the top, to provide sane defaults:
+These get added to the top when calling `Campo.output`, to provide sane defaults:
 
     - atts = {} if atts.nil?
     - atts.default = {} if atts.default.nil?
