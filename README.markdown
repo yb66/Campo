@@ -183,7 +183,7 @@ or an array of arrays:
       ["Echobelly"],
       ["Pulp"],
       ["Supergrass"],
-    ] ).labelled("Favourite band:")
+    ] ).with_default.labelled("Favourite band:")
 
 (or mix and match blocks, .new, arrays and hashes)   
     
