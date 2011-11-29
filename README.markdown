@@ -147,7 +147,7 @@ These get added to the top when calling `Campo.output`, to provide sane defaults
     - inners = {} if inners.nil?
     - inners.default = "" if inners.default.nil?
 
-Note: if you don't want these added, you can do
+Note: if you don't want these added, you can do:
 
     Campo.output :partial, your_tag
     
