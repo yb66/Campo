@@ -136,6 +136,7 @@ and that outputs:
       </fieldset>
     </form>
 
+## Haml attributes ##
 
 Back to the dynamic attributes mentioned earlier. What does this mean? You can pass in a local to dynamically alter the form based on server side logic.
 
@@ -146,9 +147,14 @@ These get added to the top, to provide sane defaults:
     - inners = {} if inners.nil?
     - inners.default = "" if inners.default.nil?
 
+Note: if you don't want these added, you can do
+
+    Campo.output :partial, your_tag
+    
+
 In the select tag (below), notice how each tag gets a local variable added to the front. You can either fill that variable with a hash pair, or an empty hash gets passed and nothing happens.
 
-Here's the Campo code:
+Here's some Campo code for a select tag with options:
 
     form = Campo.form "best_bands", action: "/best/bands/" do |form|
       form.select("bands").option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").with_default.labelled("Favourite band:")
@@ -167,7 +173,7 @@ or
       s.option("Supergrass")
     end.labelled("Favourite band:")
     
-or an array of arrays (I like to think of it as a list of tuples:)
+or an array of arrays:
 
     form = Campo.form "best_bands", action: "/best/bands/"
     form.select( "bands", opts: [ 
@@ -215,6 +221,78 @@ You can do this with any kind of attribute you wish to add. For example:
 
 
     atts[:bands_blur] = {not_worth_listening_to: "selected"}
+    
+## Be selective ##
+    
+    opts = [
+      ["ceylon"], 
+      ["english_breakfast", :selected], 
+      ["earl_grey"]
+    ]
+    
+    form = Campo.form "selective_example"
+    form.select "teas", opts: opts
+    
+    Campo.output form
+
+Output:
+    
+    - atts = {} if atts.nil?
+    - atts.default = {} if atts.default.nil?
+    - inners = {} if inners.nil?
+    - inners.default = "" if inners.default.nil?
+    - i = 0 # for tabindex
+    
+    %form{ atts[:selective_example], method: "POST", name: "selective_example",  }
+      %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+        %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
+        %option{ atts[:teas_english_breakfast], value: "english_breakfast", selected: "selected", id: "teas_english_breakfast", name: "teas",  }English breakfast
+        %option{ atts[:teas_earl_grey], value: "earl_grey", id: "teas_earl_grey", name: "teas",  }Earl grey
+        
+## Pass a hash ##
+
+    opts = {
+      "ceylon"=>"Ceylon",
+      "english_breakfast"=>"English Breakfast",
+      "earl_grey"=>"Earl Grey"
+    }
+    # the keys can be symbols too, it makes no difference to the output
+    
+    form = Campo.form "simple_hash_example"
+    form.select "teas", opts: opts
+    
+    Campo.output :partial, form
+    
+Output:
+    
+    %form{ atts[:simple_hash_example], method: "POST", name: "simple_hash_example",  }
+      %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+        %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
+        %option{ atts[:teas_english_breakfast], value: "english_breakfast", id: "teas_english_breakfast", name: "teas",  }English Breakfast
+        %option{ atts[:teas_earl_grey], value: "earl_grey", id: "teas_earl_grey", name: "teas",  }Earl Grey
+
+With an array for the value:
+
+    opts = {
+      "ceylon"=>["Ceylon"], 
+      "english_breakfast"=>["English Breakfast", :selected], 
+      "earl_grey"=>["Earl Grey"]
+    }
+    
+    form = Campo.form "hash_with_array_example"
+    form.select "teas", opts: opts
+    
+    Campo.output :partial, form
+
+Output:
+    
+    %form{ atts[:hash_with_array_example], method: "POST", name: "hash_with_array_example",  }
+      %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+        %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
+        %option{ atts[:teas_english_breakfast], value: "english_breakfast", selected: "selected", id: "teas_english_breakfast", name: "teas",  }English Breakfast
+        %option{ atts[:teas_earl_grey], value: "earl_grey", id: "teas_earl_grey", name: "teas",  }Earl Grey
+
+## Adding in helpers ##
 
 If you want to use helpers in the attributes, like sinatra's `uri` helper, then add a quote to the front:
 
@@ -232,6 +310,8 @@ outputs:
     
     %form{ atts[:best_bands], method: "POST", action: uri("/best/bands/"), name: "best_bands",  }
       = 5 + 1
+
+## And literals ##
 
 It's really just a literal:
 

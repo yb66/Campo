@@ -259,6 +259,13 @@ let(:expected) {
                 it { should_not be_nil }
                 it { should be_a_kind_of Array }
                 it { should be_full_of Campo::Option }
+                it { should satisfy {|ys|
+                    y = ys.find do |y| 
+                      y.attributes[:selected]
+                    end
+                    y.attributes[:value] == "english_breakfast" 
+                  }
+                }
               end
             end
           end
@@ -283,6 +290,22 @@ let(:expected) {
               it { should_not be_nil }
               it { should be_a_kind_of Array }
               it { should be_full_of Campo::Option }
+              context "with a selected option" do
+                let(:opts_selected) {
+                  [["ceylon", "Ceylon"], ["english_breakfast", "English Breakfast", :selected], ["earl_grey", "Earl Grey"]]
+                }
+                subject { Campo::Helpers.options_builder name, opts_selected }
+                it { should_not be_nil }
+                it { should be_a_kind_of Array }
+                it { should be_full_of Campo::Option }
+                it { should satisfy {|ys|
+                    ys.find do |y| 
+                      y.attributes[:selected]
+                    end.attributes[:value] == "english_breakfast" 
+                  }
+                }
+                
+              end
             end
             context "that contain [String]" do
               context "formatted for the name attribute (underscores for spaces, lowercase)" do
@@ -297,6 +320,22 @@ let(:expected) {
                 it { should_not be_nil }
                 it { should be_a_kind_of Array }
                 it { should be_full_of Campo::Option }
+                context "with a selected option" do
+                  let(:opts_selected) {
+                    [["ceylon"], ["english_breakfast", :selected], ["earl_grey"]]
+                  }
+                  subject { Campo::Helpers.options_builder name, opts_selected }
+                  it { should_not be_nil }
+                  it { should be_a_kind_of Array }
+                  it { should be_full_of Campo::Option }
+                  it { should satisfy {|ys|
+                      ys.find do |y| 
+                        y.attributes[:selected]
+                      end.attributes[:value] == "english_breakfast" 
+                    }
+                  }
+                  
+                end
               end
               context "formatted for display" do
                 let(:opts) {
@@ -310,6 +349,22 @@ let(:expected) {
                 it { should_not be_nil }
                 it { should be_a_kind_of Array }
                 it { should be_full_of Campo::Option }
+                context "with a selected option" do
+                  let(:opts_selected) {
+                    [["Ceylon"], ["English Breakfast", :selected], ["Earl Grey"]]
+                  }
+                  subject { Campo::Helpers.options_builder name, opts_selected }
+                  it { should_not be_nil }
+                  it { should be_a_kind_of Array }
+                  it { should be_full_of Campo::Option }
+                  it { should satisfy {|ys|
+                      ys.find do |y| 
+                        y.attributes[:selected]
+                      end.attributes[:value] == "English Breakfast" 
+                    }
+                  }
+                  
+                end
               end
             end
           end

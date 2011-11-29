@@ -387,7 +387,6 @@ STR
   
   
   class Option < Base
-    attr_accessor :value, :checked
     
     # @param [String] name
     # @param [String] value
@@ -403,7 +402,8 @@ STR
           attributes = selected
           selected = nil   
         else
-          selected = true     
+          selected = true  
+          @selected = true   
         end
       end
       
