@@ -4,7 +4,12 @@ A static dynamic form builder into haml. Yep, static _and_ dynamic. Use it to st
 
 Btw, I'll be using this with Sinatra, if you're using Rails you'll need to work out how that's done as I don't know.
 
-## Why though? ##
+## Note! ##
+
+As always, keep in mind this is an open source project (licence below) and you can contribute! If you find a problem or would like a feature changed or added, let me know, or even better, fork the project and send me a pull request.
+
+
+## Why write this? ##
 
 However nice Haml is, it's still a lot of effort to build a form. If you've got lots of forms it's worse. The long term plan is to link this in to Sequel.
 
@@ -375,5 +380,33 @@ Each field gets `tabindex: "#{i += 1}"` added to its attributes. This will gener
 
 Note: I'm considering making this an instance variable so that it can be passed through easily to nested partials, but I need to test it first.
 
+## Blocks ##
 
+Most fields will accept a block, so you can nest whatever you like. Generally I just use this for forms, fieldsets and selects (and those have specs) but if you want to try something new, do it! Let me know if it breaks.
+
+    form = Campo.literal "%div" do |div| 
+      div.form "nested" do |form|
+        form.fieldset do |f|
+          f.select "blurg" do |s|
+            s.option "oopsie"
+            s.option "daisies"
+          end.labelled "splat"
+          f.text "blah"
+        end
+      end
+    end
+    
+## Licence ##
+
+This is under the MIT Licence.
+
+Copyright (c) 2011 Iain Barnett
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+In other words, be good.    
 
