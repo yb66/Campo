@@ -387,7 +387,7 @@ Note: I'm considering making this an instance variable so that it can be passed 
 Most fields will accept a block, so you can nest whatever you like. Generally I just use this for forms, fieldsets and selects (and those have specs) but if you want to try something new, do it! Let me know if it breaks.
 
     form = Campo.literal "%div" do |div| 
-      div.form "nested" do |form|
+      div << Campo.form( "nested" ) do |form|
         form.fieldset do |f|
           f.select "blurg" do |s|
             s.option "oopsie"
