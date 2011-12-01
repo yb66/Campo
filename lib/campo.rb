@@ -278,6 +278,7 @@ STR
     #       #... more fields follow
     #     end
     def initialize(name,  attributes={} )
+      attributes[:id] = name.gsub(/\W/, "_") if attributes[:id].nil?
       super( name, DEFAULT.merge( attributes ) )
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%form{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }!
