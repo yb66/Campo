@@ -582,6 +582,37 @@ s.chomp
           subject { Campo.output form }
           it { should == expected } 
         end
+        
+        context "With a block" do
+          subject {
+            form.literal "%p" do |para|
+              para.literal "Whatever"
+              para.literal "%br"
+              para.literal "you"
+              para.literal "%br"
+              para.literal "think"
+              para.literal "%br"
+              para.literal "challenge"
+              para.literal "%br"
+              para.literal "it"
+            end
+            Campo.output form
+          }
+          let(:expected) {  top_bit + %q$%form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
+  %p
+    Whatever
+    %br
+    you
+    %br
+    think
+    %br
+    challenge
+    %br
+    it
+$.strip + "\n" }
+          it { should_not be_nil }
+          it { should == expected } 
+        end
       end
     end
 
@@ -621,6 +652,38 @@ s.chomp
           }
           subject { Campo.output form }
           it { should == expected } 
+          
+          context "With a block" do
+            subject {
+              form.bit_of_ruby %q!="%p"! do |para|
+                para.literal "Whatever"
+                para.literal "%br"
+                para.literal "you"
+                para.literal "%br"
+                para.literal "think"
+                para.literal "%br"
+                para.literal "challenge"
+                para.literal "%br"
+                para.literal "it"
+              end
+              Campo.output form
+            }
+            let(:expected) {  top_bit + %q$%form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
+  = 5 + 1
+  ="%p"
+    Whatever
+    %br
+    you
+    %br
+    think
+    %br
+    challenge
+    %br
+    it
+  $.strip + "\n" }
+            it { should_not be_nil }
+            it { should == expected } 
+          end
         end
       end
       

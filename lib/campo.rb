@@ -37,8 +37,8 @@ module Campo
     
     # @example Add a bit of code to the markup
     #   form.bit_of_ruby( "= 5 + 1" ) }
-    def bit_of_ruby( *args )
-      tag = Campo::Haml_Ruby_Insert.new( *args )
+    def bit_of_ruby( *args, &block  )
+      tag = Campo::Haml_Ruby_Insert.new( *args, &block  )
       self << tag
       tag
     end
@@ -47,8 +47,8 @@ module Campo
 
     # @example Output a literal string
     #   form.literal %Q!%p= "This is a paragraph "!
-    def literal( *args )
-      tag = Campo::Literal.new( *args )
+    def literal( *args, &block  )
+      tag = Campo::Literal.new( *args, &block  )
       self << tag
       tag
     end
@@ -83,8 +83,8 @@ module Campo
     #     f.text "dob", "Date of birth: ", size: 8
     # @return [Input] 
     #   With the attribute `type=text`
-    def text( name, label=nil, attributes={} )
-      input( name, :text, label, attributes )
+    def text( name, label=nil, attributes={}  )
+      input( name, :text, label, attributes  )
     end
     
     # @param (see #text)
@@ -120,7 +120,7 @@ module Campo
     end
     
     
-    def textarea( *args )
+    def textarea( *args, &block  )
       textarea = Campo::Textarea.new( *args )
       self << textarea
       textarea
