@@ -1,3 +1,5 @@
+v0.3.2 Blocks are now passed on for .literal and .bit_of_ruby
+
 v0.3.1 Fixed possible bit of dodgy interpolation in Haml_Ruby_Insert
 
 v0.3.0 Improved passing of hash arguments for options to select tags. More specs.
