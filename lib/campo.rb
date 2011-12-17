@@ -90,7 +90,7 @@ module Campo
     
     # @param (see #text)
     def password( name, label=nil, attributes={}  )
-      input( name, :text, label, attributes  )
+      input( name, :password, label, attributes  )
     end
     
     
