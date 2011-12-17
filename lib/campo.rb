@@ -87,6 +87,13 @@ module Campo
       input( name, :text, label, attributes  )
     end
     
+    
+    # @param (see #text)
+    def password( name, label=nil, attributes={}  )
+      input( name, :text, label, attributes  )
+    end
+    
+    
     # @param (see #text)
     def radio( name, label=nil, attributes={} )
       input( name, :radio, label, attributes )
