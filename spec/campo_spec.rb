@@ -806,28 +806,28 @@ $.strip + "\n" }
           end
 
           context "and an array" do
-            # context "of type [String]" do
-#               let(:opts) { [["ford"], ["bmw"], ["ferrari", "checked"]] }
-#               subject { Campo::Select.new( "pqr", {opts: opts} ) }
-#   
-#               it { should_not be_nil }
-#               it { should be_a_kind_of(Select) }
-#               specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
-#               context "Campo.output" do
-#                 let(:tag){ 
-#                   Campo::Select.new( "pqr", {opts: opts} )
-#                 }
-#                 let(:expected) { 
-# %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
-#   %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
-#   %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
-#   %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari!.strip + "\n" }
-#                 subject { Campo.output :partial, tag }
-#                 it { should_not be_nil }
-#                 it { should == expected }
-#               end
-#             
-#             end
+            context "of type [String]" do
+              let(:opts) { [["ford"], ["bmw"], ["ferrari", :selected]] }
+              subject { Campo::Select.new( "pqr", {opts: opts} ) }
+  
+              it { should_not be_nil }
+              it { should be_a_kind_of(Select) }
+              specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+              context "Campo.output" do
+                let(:tag){ 
+                  Campo::Select.new( "pqr", {opts: opts} )
+                }
+                let(:expected) { 
+%q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+  %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
+  %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }Bmw
+  %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari!.strip + "\n" }
+                subject { Campo.output :partial, tag }
+                it { should_not be_nil }
+                it { should == expected }
+              end
+            
+            end
             context "of type [String, String]" do
               let(:opts) { [["ford", "ford"], ["bmw", "BMW"], ["ferrari", "Ferrari", "checked"]] }
               subject { Campo::Select.new( "pqr", {opts: opts} ) }
