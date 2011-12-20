@@ -157,6 +157,18 @@ module Campo
       return "" if opts.nil? || opts.empty?
       opts.map{|o| "#{o.output}\n" }.reduce(:+)
     end
+    
+    
+    def selected_based_on_value( name, type=:select )
+      hash = case type
+        when :select then %q!{selected: "selected"}!
+        when :radio then %q!{checked: "checked"}!
+      end
+      
+<<STR
+- atts["#{name}_\#{atts[:#{name}][:value]}".to_sym ] = atts["#{name}_\#{atts[:#{name}][:value]}".to_sym].merge( #{hash} ) unless atts[:#{name}].empty?
+STR
+    end
   end # Helpers
 
   @atts = {}
