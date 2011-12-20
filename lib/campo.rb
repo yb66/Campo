@@ -19,6 +19,21 @@ module Campo
     end
   end # Iding
   
+  
+  module Plugins
+    def self.plugins
+      @plugins ||= []
+    end
+    
+    def self.include?( x )
+      Plugins.plugins.include? x
+    end
+    
+    def self.<<( m )
+      Plugins.plugins << m
+    end
+  end
+  
   module Convenience
     
     
@@ -187,6 +202,7 @@ STR
     include Childish
     include Iding
     include Convenience
+    include Plugins
     
     DEFAULT = { tabindex: nil }
 
@@ -204,8 +220,21 @@ STR
     end
 
     def output( n=0, tab=2 )
-      @output_listener.call n, tab
+      s = @output_listener.call n, tab
+      s = super(s, n, tab) if defined?( super )
+      s
+    end    
+    
+    def self.plugin( plugin, *args, &block )
+      m = plugin
+      #m = plugin.is_a?(Module) ? plugin : plugin_module(plugin)
+      unless Plugins.include?(m)      
+        Plugins << m
+        include(m::InstanceMethods) if m.const_defined?(:InstanceMethods, false)
+        extend(m::ClassMethods)if m.const_defined?(:ClassMethods, false)
+      end
     end
+
 
     def labelled( inner=nil )
       inner ||= self.attributes[:name].gsub("_"," ").capitalize
