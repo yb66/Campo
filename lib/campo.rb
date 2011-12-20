@@ -112,8 +112,10 @@ module Campo
         attributes = label
         label = nil
       end
-
+      
+      preselector = Helpers.selected_based_on_value name, type.to_sym
       field = Campo::Input.new( name, type, attributes ).labelled( label )
+      self.literal preselector if preselector
       self << field
       field
     end
@@ -159,15 +161,19 @@ module Campo
     end
     
     
-    def selected_based_on_value( name, type=:select )
+    def self.selected_based_on_value( name, type=:select )
       hash = case type
         when :select then %q!{selected: "selected"}!
         when :radio then %q!{checked: "checked"}!
+        when :checkbox then %q!{checked: "checked"}!
+        else nil
       end
       
+      unless hash.nil?      
 <<STR
 - atts["#{name}_\#{atts[:#{name}][:value]}".to_sym ] = atts["#{name}_\#{atts[:#{name}][:value]}".to_sym].merge( #{hash} ) unless atts[:#{name}].empty?
 STR
+      end
     end
   end # Helpers
 
@@ -361,7 +367,7 @@ STR
       super( name, { tabindex: %q!#{@campo_tabindex += 1}! }.merge(attributes) )
       
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%select{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }! 
+        %Q!#{" " * n * tab}#{Helpers.selected_based_on_value name, :select}#{" " * n * tab}%select{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }! 
       end
       
       self.fields += Helpers.options_builder( name, opts ) unless opts.nil? || opts.empty?

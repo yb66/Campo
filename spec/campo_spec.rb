@@ -21,7 +21,7 @@ module Campo
 - atts.default = {} if atts.default.nil?
 - inners = {} if inners.nil?
 - inners.default = "" if inners.default.nil?
-- i = 0 # for tabindex
+- @campo_tabindex ||= 0 # for tabindex
 
 STR
             s
@@ -44,7 +44,8 @@ STR
           let(:expected) { %q!
 %label{ for: "teas",  }
   Favourite tea:
-  %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+  - atts["teas_#{atts[:teas][:value]}".to_sym ] = atts["teas_#{atts[:teas][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:teas].empty?
+  %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", name: "teas",  }
     %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
     %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
     %option{ atts[:teas_breakfast], value: "breakfast", id: "teas_breakfast", name: "teas",  }Breakfast
@@ -91,12 +92,65 @@ STR
           end # let
 
             
-          let(:expected) {
-          %Q!- atts = {} if atts.nil?\n- atts.default = {} if atts.default.nil?\n- inners = {} if inners.nil?\n- inners.default = "" if inners.default.nil?\n- i = 0 # for tabindex\n\n%form{ atts[:personal_details], method: "POST", action: uri("/my/personal_details/update/"), id: "personal_details", name: "personal_details",  }\n  %fieldset{  }\n    %legend{  }Your details\n    %label{ for: "full_name",  }\n      Full name: \n      %input{ atts[:full_name], tabindex: "\#{i += 1}", type: "text", id: "full_name", size: "60", name: "full_name",  }\n    %label{ for: "dob",  }\n      Date of birth: \n      %input{ atts[:dob], tabindex: "\#{i += 1}", type: "text", id: "dob", size: "10", name: "dob",  }\n    %fieldset{  }\n      %legend{  }Gender: \n      %label{ for: "gender_1",  }\n        Male\n        %input{ atts[:gender_1], tabindex: "\#{i += 1}", type: "radio", id: "gender_1", value: "1", name: "gender",  }\n      %label{ for: "gender_2",  }\n        Female\n        %input{ atts[:gender_2], tabindex: "\#{i += 1}", type: "radio", id: "gender_2", value: "2", name: "gender",  }\n    %label{ for: "ethnicorigin_id",  }\n      Ethnic-origin: \n      %select{ atts[:ethnicorigin_id], tabindex: "\#{i += 1}", name: "ethnicorigin_id",  }\n        %option{  value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:\n        %option{ atts[:ethnicorigin_id_1], value: "1", id: "ethnicorigin_id_1", name: "ethnicorigin_id",  }White\n        %option{ atts[:ethnicorigin_id_2], value: "2", id: "ethnicorigin_id_2", name: "ethnicorigin_id",  }Asian\n        %option{ atts[:ethnicorigin_id_3], value: "3", id: "ethnicorigin_id_3", name: "ethnicorigin_id",  }Black\n        %option{ atts[:ethnicorigin_id_4], value: "4", id: "ethnicorigin_id_4", name: "ethnicorigin_id",  }Chinese and Other\n        %option{ atts[:ethnicorigin_id_5], value: "5", id: "ethnicorigin_id_5", name: "ethnicorigin_id",  }Mixed\n    %label{ for: "occupation",  }\n      Occupation: \n      %input{ atts[:occupation], tabindex: "\#{i += 1}", type: "text", id: "occupation", size: "60", name: "occupation",  }\n    %label{ for: "phone_landline",  }\n      Phone (landline): \n      %input{ atts[:phone_landline], tabindex: "\#{i += 1}", type: "text", id: "phone_landline", size: "20", name: "phone_landline",  }\n    %label{ for: "phone_mobile",  }\n      Phone (mobile): \n      %input{ atts[:phone_mobile], tabindex: "\#{i += 1}", type: "text", id: "phone_mobile", size: "20", name: "phone_mobile",  }\n    %fieldset{  }\n      %legend{  }May we contact you...\n      %label{ for: "contactable_day",  }\n        In the day?\n        %input{ atts[:contactable_day], tabindex: "\#{i += 1}", type: "checkbox", id: "contactable_day", value: "day", name: "contactable",  }\n      %label{ for: "contactable_evening",  }\n        In the evening?\n        %input{ atts[:contactable_evening], tabindex: "\#{i += 1}", type: "checkbox", id: "contactable_evening", value: "evening", name: "contactable",  }\n    %input{ atts[:Save_Save], tabindex: "\#{i += 1}", type: "submit", id: "Save_Save", value: "Save",  }\n!
+          let(:expected) {%q!%form{ atts[:personal_details], method: "POST", action: uri("/my/personal_details/update/"), id: "personal_details", name: "personal_details",  }
+  %fieldset{  }
+    %legend{  }Your details
+    %label{ for: "full_name",  }
+      Full name: 
+      %input{ atts[:full_name], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "full_name", size: "60", name: "full_name",  }
+    %label{ for: "dob",  }
+      Date of birth: 
+      %input{ atts[:dob], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "dob", size: "10", name: "dob",  }
+    %fieldset{  }
+      %legend{  }Gender: 
+      - atts["gender_#{atts[:gender][:value]}".to_sym ] = atts["gender_#{atts[:gender][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:gender].empty?
+
+      %label{ for: "gender_1",  }
+        Male
+        %input{ atts[:gender_1], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "gender_1", value: "1", name: "gender",  }
+      - atts["gender_#{atts[:gender][:value]}".to_sym ] = atts["gender_#{atts[:gender][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:gender].empty?
+
+      %label{ for: "gender_2",  }
+        Female
+        %input{ atts[:gender_2], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "gender_2", value: "2", name: "gender",  }
+    %label{ for: "ethnicorigin_id",  }
+      Ethnic-origin: 
+      - atts["ethnicorigin_id_#{atts[:ethnicorigin_id][:value]}".to_sym ] = atts["ethnicorigin_id_#{atts[:ethnicorigin_id][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:ethnicorigin_id].empty?
+      %select{ atts[:ethnicorigin_id], tabindex: "#{@campo_tabindex += 1}", name: "ethnicorigin_id",  }
+        %option{  value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:
+        %option{ atts[:ethnicorigin_id_1], value: "1", id: "ethnicorigin_id_1", name: "ethnicorigin_id",  }White
+        %option{ atts[:ethnicorigin_id_2], value: "2", id: "ethnicorigin_id_2", name: "ethnicorigin_id",  }Asian
+        %option{ atts[:ethnicorigin_id_3], value: "3", id: "ethnicorigin_id_3", name: "ethnicorigin_id",  }Black
+        %option{ atts[:ethnicorigin_id_4], value: "4", id: "ethnicorigin_id_4", name: "ethnicorigin_id",  }Chinese and Other
+        %option{ atts[:ethnicorigin_id_5], value: "5", id: "ethnicorigin_id_5", name: "ethnicorigin_id",  }Mixed
+    %label{ for: "occupation",  }
+      Occupation: 
+      %input{ atts[:occupation], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "occupation", size: "60", name: "occupation",  }
+    %label{ for: "phone_landline",  }
+      Phone (landline): 
+      %input{ atts[:phone_landline], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "phone_landline", size: "20", name: "phone_landline",  }
+    %label{ for: "phone_mobile",  }
+      Phone (mobile): 
+      %input{ atts[:phone_mobile], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "phone_mobile", size: "20", name: "phone_mobile",  }
+    %fieldset{  }
+      %legend{  }May we contact you...
+      - atts["contactable_#{atts[:contactable][:value]}".to_sym ] = atts["contactable_#{atts[:contactable][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:contactable].empty?
+
+      %label{ for: "contactable_day",  }
+        In the day?
+        %input{ atts[:contactable_day], tabindex: "#{@campo_tabindex += 1}", type: "checkbox", id: "contactable_day", value: "day", name: "contactable",  }
+      - atts["contactable_#{atts[:contactable][:value]}".to_sym ] = atts["contactable_#{atts[:contactable][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:contactable].empty?
+
+      %label{ for: "contactable_evening",  }
+        In the evening?
+        %input{ atts[:contactable_evening], tabindex: "#{@campo_tabindex += 1}", type: "checkbox", id: "contactable_evening", value: "evening", name: "contactable",  }
+    %input{ atts[:Save_Save], tabindex: "#{@campo_tabindex += 1}", type: "submit", id: "Save_Save", value: "Save",  }
+!
           } # let expected
   
           subject{ Campo.output form }
-          it { should == expected }
+          it { should == 
+          (top_bit + expected) }
           
       
           context "With a div to wrap it in" do
@@ -105,12 +159,12 @@ STR
                 wrapper << form
               end
             }
-let(:expected) {
-          %Q!- atts = {} if atts.nil?\n- atts.default = {} if atts.default.nil?\n- inners = {} if inners.nil?\n- inners.default = "" if inners.default.nil?\n- i = 0 # for tabindex\n\n.centred.form\n  %form{ atts[:personal_details], method: "POST", action: uri("/my/personal_details/update/"), id: "personal_details", name: "personal_details",  }\n    %fieldset{  }\n      %legend{  }Your details\n      %label{ for: "full_name",  }\n        Full name: \n        %input{ atts[:full_name], tabindex: "\#{i += 1}", type: "text", id: "full_name", size: "60", name: "full_name",  }\n      %label{ for: "dob",  }\n        Date of birth: \n        %input{ atts[:dob], tabindex: "\#{i += 1}", type: "text", id: "dob", size: "10", name: "dob",  }\n      %fieldset{  }\n        %legend{  }Gender: \n        %label{ for: "gender_1",  }\n          Male\n          %input{ atts[:gender_1], tabindex: "\#{i += 1}", type: "radio", id: "gender_1", value: "1", name: "gender",  }\n        %label{ for: "gender_2",  }\n          Female\n          %input{ atts[:gender_2], tabindex: "\#{i += 1}", type: "radio", id: "gender_2", value: "2", name: "gender",  }\n      %label{ for: "ethnicorigin_id",  }\n        Ethnic-origin: \n        %select{ atts[:ethnicorigin_id], tabindex: "\#{i += 1}", name: "ethnicorigin_id",  }\n          %option{  value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:\n          %option{ atts[:ethnicorigin_id_1], value: "1", id: "ethnicorigin_id_1", name: "ethnicorigin_id",  }White\n          %option{ atts[:ethnicorigin_id_2], value: "2", id: "ethnicorigin_id_2", name: "ethnicorigin_id",  }Asian\n          %option{ atts[:ethnicorigin_id_3], value: "3", id: "ethnicorigin_id_3", name: "ethnicorigin_id",  }Black\n          %option{ atts[:ethnicorigin_id_4], value: "4", id: "ethnicorigin_id_4", name: "ethnicorigin_id",  }Chinese and Other\n          %option{ atts[:ethnicorigin_id_5], value: "5", id: "ethnicorigin_id_5", name: "ethnicorigin_id",  }Mixed\n      %label{ for: "occupation",  }\n        Occupation: \n        %input{ atts[:occupation], tabindex: "\#{i += 1}", type: "text", id: "occupation", size: "60", name: "occupation",  }\n      %label{ for: "phone_landline",  }\n        Phone (landline): \n        %input{ atts[:phone_landline], tabindex: "\#{i += 1}", type: "text", id: "phone_landline", size: "20", name: "phone_landline",  }\n      %label{ for: "phone_mobile",  }\n        Phone (mobile): \n        %input{ atts[:phone_mobile], tabindex: "\#{i += 1}", type: "text", id: "phone_mobile", size: "20", name: "phone_mobile",  }\n      %fieldset{  }\n        %legend{  }May we contact you...\n        %label{ for: "contactable_day",  }\n          In the day?\n          %input{ atts[:contactable_day], tabindex: "\#{i += 1}", type: "checkbox", id: "contactable_day", value: "day", name: "contactable",  }\n        %label{ for: "contactable_evening",  }\n          In the evening?\n          %input{ atts[:contactable_evening], tabindex: "\#{i += 1}", type: "checkbox", id: "contactable_evening", value: "evening", name: "contactable",  }\n      %input{ atts[:Save_Save], tabindex: "\#{i += 1}", type: "submit", id: "Save_Save", value: "Save",  }\n!
-          } # let expected
+            let(:wrapped_expected) { 
+          top_bit + ".centred.form\n  " + 
+          expected.gsub("\n\s", "\n   ")  } # let expected
   
             subject{ Campo.output doc }
-            it { should == expected }
+            it { should == wrapped_expected }
           end # context
         end # context
       end # describe a form
@@ -134,7 +188,7 @@ let(:expected) {
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
   %label{ for: "blah_blahdeblah",  }
     Blahd
-    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
+    %input{ atts[:blah_blahdeblah], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
               subject { 
                 form.input( "blah", :text, "Blahd", value: "blahdeblah" )
                 Campo.output form   
@@ -155,7 +209,7 @@ let(:expected) {
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
   %label{ for: "blah_blahdeblah",  }
     Blah
-    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
+    %input{ atts[:blah_blahdeblah], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
               
               subject { 
                 form.input( "blah", :text, value: "blahdeblah" )
@@ -177,9 +231,11 @@ let(:expected) {
           context "of checkbox" do
             let(:expected) { top_bit +  %q!
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
+  - atts["blah_#{atts[:blah][:value]}".to_sym ] = atts["blah_#{atts[:blah][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:blah].empty?
+
   %label{ for: "blah_blahdeblah",  }
     Blahd
-    %input{ atts[:blah_blahdeblah], tabindex: "#{i += 1}", type: "checkbox", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
+    %input{ atts[:blah_blahdeblah], tabindex: "#{@campo_tabindex += 1}", type: "checkbox", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
             
             subject { 
               form.input( "blah", :checkbox, "Blahd", value: "blahdeblah" )
@@ -461,7 +517,8 @@ s.chomp
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
   %label{ for: "teas",  }
     Favourite tea:
-    %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+    - atts["teas_#{atts[:teas][:value]}".to_sym ] = atts["teas_#{atts[:teas][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:teas].empty?
+    %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", name: "teas",  }
       %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
       %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
       %option{ atts[:teas_breakfast], value: "breakfast", id: "teas_breakfast", name: "teas",  }Breakfast
@@ -482,14 +539,16 @@ s.chomp
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
   %label{ for: "teas",  }
     Favourite tea:
-    %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+    - atts["teas_#{atts[:teas][:value]}".to_sym ] = atts["teas_#{atts[:teas][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:teas].empty?
+    %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", name: "teas",  }
       %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
       %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
       %option{ atts[:teas_breakfast], value: "breakfast", id: "teas_breakfast", name: "teas",  }Breakfast
       %option{ atts[:teas_earl_grey], value: "earl grey", id: "teas_earl_grey", name: "teas",  }Earl grey
   %label{ for: "coffees",  }
     Favourite coffee:
-    %select{ atts[:coffees], tabindex: "#{i += 1}", name: "coffees",  }
+    - atts["coffees_#{atts[:coffees][:value]}".to_sym ] = atts["coffees_#{atts[:coffees][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:coffees].empty?
+    %select{ atts[:coffees], tabindex: "#{@campo_tabindex += 1}", name: "coffees",  }
       %option{  value: "", disabled: "disabled", name: "coffees",  }Choose one:
       %option{ atts[:coffees_blue_mountain], value: "blue mountain", id: "coffees_blue_mountain", name: "coffees",  }Blue mountain
       %option{ atts[:coffees_kenyan_peaberry], value: "kenyan peaberry", id: "coffees_kenyan_peaberry", name: "coffees",  }Kenyan peaberry
@@ -514,7 +573,7 @@ s.chomp
           context "With no arguments" do
             let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
-  %input{ atts[:Submit_Submit], tabindex: "#{i += 1}", type: "submit", id: "Submit_Submit", value: "Submit",  }
+  %input{ atts[:Submit_Submit], tabindex: "#{@campo_tabindex += 1}", type: "submit", id: "Submit_Submit", value: "Submit",  }
 
 !.strip + "\n" }
             
@@ -529,7 +588,7 @@ s.chomp
           context "With a name" do
             let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
-  %input{ atts[:Save_Save], tabindex: "#{i += 1}", type: "submit", id: "Save_Save", value: "Save",  }
+  %input{ atts[:Save_Save], tabindex: "#{@campo_tabindex += 1}", type: "submit", id: "Save_Save", value: "Save",  }
 
 !.strip + "\n" }
             
@@ -707,10 +766,12 @@ $.strip + "\n" }
             subject { tag  }
             it { should_not be_nil }
             it { should be_a_kind_of(Select) }
-            specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+            specify { subject.output.should == %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }! }
 
             context "Campo.output" do
-              let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }!.strip + "\n" }
+              let(:expected) { %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }!.strip + "\n" }
               subject { Campo.output :partial, tag }
               it { should_not be_nil }
               it { should == expected }
@@ -721,10 +782,12 @@ $.strip + "\n" }
               subject { tag.with_default }
               it { should_not be_nil }
               it { should be_a_kind_of(Select) }
-              specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+              specify { subject.output.should == %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }! }
               
               context "Campo.output" do
-                let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+                let(:expected) { %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }
   %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:!.strip + "\n"  }
                 subject { Campo.output :partial, tag.with_default }
                 it { should == expected }
@@ -745,10 +808,12 @@ $.strip + "\n" }
 
             it { should_not be_nil }
             it { should be_a_kind_of(Select) }
-            specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+            specify { subject.output.should == %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }! }
             
             context "Campo.output" do
-              let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+              let(:expected) { %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
@@ -764,10 +829,12 @@ $.strip + "\n" }
               subject { tag.with_default }
               it { should_not be_nil }
               it { should be_a_kind_of(Select) }
-              specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+              specify { subject.output.should == %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }! }
 
               context "Campo.output" do
-                let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+                let(:expected) { %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }
   %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
@@ -788,10 +855,12 @@ $.strip + "\n" }
                 end
               }
               subject { tag }
-              specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+              specify { subject.output.should == %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }! }
               
               context "Campo.output" do
-                let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+                let(:expected) { %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
@@ -812,13 +881,15 @@ $.strip + "\n" }
   
               it { should_not be_nil }
               it { should be_a_kind_of(Select) }
-              specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+              specify { subject.output.should == %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }! }
               context "Campo.output" do
                 let(:tag){ 
                   Campo::Select.new( "pqr", {opts: opts} )
                 }
                 let(:expected) { 
-%q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+%q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }
   %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
   %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }Bmw
   %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari!.strip + "\n" }
@@ -834,7 +905,8 @@ $.strip + "\n" }
   
               it { should_not be_nil }
               it { should be_a_kind_of(Select) }
-              specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+              specify { subject.output.should == %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }! }
   
               context "with a block with options" do
                 let(:opts) { [["ford", "Ford"], ["bmw", "BMW"], ["ferrari", "Ferrari", "checked"]] }
@@ -849,10 +921,12 @@ $.strip + "\n" }
   
                 it { should_not be_nil }
                 it { should be_a_kind_of(Select) }
-                specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+                specify { subject.output.should == %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }! }
                 
                 context "Campo.output" do
-                  let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+                  let(:expected) { %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
@@ -872,7 +946,8 @@ $.strip + "\n" }
                         s.option "audi", "Audi"
                       end
                     }
-                    let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+                    let(:expected) { %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
@@ -890,10 +965,12 @@ $.strip + "\n" }
                   subject { tag.with_default }
                   it { should_not be_nil }
                   it { should be_a_kind_of(Select) }
-                  specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }! }
+                  specify { subject.output.should == %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }! }
   
                   context "Campo.output" do
-                    let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{i += 1}", name: "pqr",  }
+                    let(:expected) { %q!- atts["pqr_#{atts[:pqr][:value]}".to_sym ] = atts["pqr_#{atts[:pqr][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:pqr].empty?
+%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }
   %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:
   %option{ atts[:pqr_volvo], value: "volvo", id: "pqr_volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
@@ -923,7 +1000,7 @@ $.strip + "\n" }
   
                 it { should_not be_nil }
                 it { should be_a_kind_of(Select) }
-                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{i += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl grey\n! }
+                specify { Campo.output( :partial, subject ).should == %Q!- atts["tea_\#{atts[:tea][:value]}".to_sym ] = atts["tea_\#{atts[:tea][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:tea].empty?\n%select{ atts[:tea], tabindex: "\#{@campo_tabindex += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl grey\n! }
               end
               context "and a single string value" do
                 let(:opts) {
@@ -940,7 +1017,7 @@ $.strip + "\n" }
   
                 it { should_not be_nil }
                 it { should be_a_kind_of(Select) }
-                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{i += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
+                specify { Campo.output( :partial, subject ).should == %Q!- atts["tea_\#{atts[:tea][:value]}".to_sym ] = atts["tea_\#{atts[:tea][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:tea].empty?\n%select{ atts[:tea], tabindex: "\#{@campo_tabindex += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
               end
               context "and an array value" do
                 let(:opts) {
@@ -957,7 +1034,7 @@ $.strip + "\n" }
   
                 it { should_not be_nil }
                 it { should be_a_kind_of(Select) }
-                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{i += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", selected: "selected", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
+                specify { Campo.output( :partial, subject ).should == %Q!- atts["tea_\#{atts[:tea][:value]}".to_sym ] = atts["tea_\#{atts[:tea][:value]}".to_sym].merge( {selected: "selected"} ) unless atts[:tea].empty?\n%select{ atts[:tea], tabindex: "\#{@campo_tabindex += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", selected: "selected", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
               end
             end
           end
@@ -976,7 +1053,7 @@ $.strip + "\n" }
         context "Given a name" do
           context "and nothing else" do
             let(:tag) { Campo::Input.new( "abc" ) }
-            let(:output) { %q!%input{ atts[:abc], tabindex: "#{i += 1}", type: "text", id: "abc", name: "abc",  }! }
+            let(:output) { %q!%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "abc", name: "abc",  }! }
             subject { tag }
             it { should_not be_nil }
             it { should be_a_kind_of(Input) }
@@ -993,7 +1070,7 @@ $.strip + "\n" }
           context "and a type" do
             context "of text" do
               let(:tag) { Campo::Input.new( "abc", :text ) }
-              let(:output) { %q!%input{ atts[:abc], tabindex: "#{i += 1}", type: "text", id: "abc", name: "abc",  }! }
+              let(:output) { %q!%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "abc", name: "abc",  }! }
               subject { tag }
               it { should_not be_nil }
               it { should be_a_kind_of(Input) }
@@ -1008,7 +1085,7 @@ $.strip + "\n" }
             end
             context "of password" do
               let(:tag) { Campo::Input.new( "abc", :password ) }
-              let(:output) { %q!%input{ atts[:abc], tabindex: "#{i += 1}", type: "password", id: "abc", name: "abc",  }! }
+              let(:output) { %q!%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "password", id: "abc", name: "abc",  }! }
               subject { tag }
               it { should_not be_nil }
               it { should be_a_kind_of(Input) }
@@ -1025,7 +1102,7 @@ $.strip + "\n" }
           end  
           context "of checkbox" do
             let(:tag) { Campo::Input.new( "abc", :checkbox ) }
-            let(:output) { %q!%input{ atts[:abc], tabindex: "#{i += 1}", type: "checkbox", id: "abc", name: "abc",  }! }
+            let(:output) { %q!%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "checkbox", id: "abc", name: "abc",  }! }
             subject { tag }
             it { should_not be_nil }
             it { should be_a_kind_of(Input) }
@@ -1042,7 +1119,7 @@ $.strip + "\n" }
           end  
           context "of radio" do
             let(:tag) { Campo::Input.new( "abc", :radio ) }
-            let(:output) { %q!%input{ atts[:abc], tabindex: "#{i += 1}", type: "radio", id: "abc", name: "abc",  }! }
+            let(:output) { %q!%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "abc", name: "abc",  }! }
             subject { tag }
             it { should_not be_nil }
             it { should be_a_kind_of(Input) }
@@ -1066,13 +1143,13 @@ $.strip + "\n" }
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
   %label{ for: "abc",  }
     abc
-    %input{ atts[:abc], tabindex: "#{i += 1}", type: "text", id: "abc", name: "abc",  }
+    %input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "abc", name: "abc",  }
   %label{ for: "deff",  }
     deff
-    %input{ atts[:deff], tabindex: "#{i += 1}", type: "text", id: "deff", name: "deff",  }
+    %input{ atts[:deff], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "deff", name: "deff",  }
   %label{ for: "ghi",  }
     ghi
-    %input{ atts[:ghi], tabindex: "#{i += 1}", type: "text", id: "ghi", name: "ghi",  }
+    %input{ atts[:ghi], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "ghi", name: "ghi",  }
 
 !.strip + "\n"
         }
@@ -1095,13 +1172,13 @@ $.strip + "\n" }
     %legend{  }Alphabetty spaghetti
     %label{ for: "abc",  }
       abc
-      %input{ atts[:abc], tabindex: "#{i += 1}", type: "text", id: "abc", name: "abc",  }
+      %input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "abc", name: "abc",  }
     %label{ for: "def",  }
       def
-      %input{ atts[:def], tabindex: "#{i += 1}", type: "text", id: "def", name: "def",  }
+      %input{ atts[:def], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "def", name: "def",  }
     %label{ for: "ghi",  }
       ghi
-      %input{ atts[:ghi], tabindex: "#{i += 1}", type: "text", id: "ghi", name: "ghi",  }
+      %input{ atts[:ghi], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "ghi", name: "ghi",  }
 
 !.strip + "\n"
           }
@@ -1129,19 +1206,19 @@ $.strip + "\n" }
     %legend{  }Select the colour you like most:
     %label{ for: "radio1_green",  }
       green
-      %input{ atts[:radio1_green], tabindex: "#{i += 1}", type: "radio", id: "radio1_green", value: "green", name: "radio1",  }
+      %input{ atts[:radio1_green], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "radio1_green", value: "green", name: "radio1",  }
     %label{ for: "radio1_yellow",  }
       yellow
-      %input{ atts[:radio1_yellow], tabindex: "#{i += 1}", type: "radio", id: "radio1_yellow", value: "yellow", name: "radio1",  }
+      %input{ atts[:radio1_yellow], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "radio1_yellow", value: "yellow", name: "radio1",  }
     %label{ for: "radio1_red",  }
       red
-      %input{ atts[:radio1_red], tabindex: "#{i += 1}", type: "radio", id: "radio1_red", value: "red", name: "radio1",  }
+      %input{ atts[:radio1_red], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "radio1_red", value: "red", name: "radio1",  }
     %label{ for: "radio1_blue",  }
       blue
-      %input{ atts[:radio1_blue], tabindex: "#{i += 1}", type: "radio", id: "radio1_blue", value: "blue", name: "radio1",  }
+      %input{ atts[:radio1_blue], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "radio1_blue", value: "blue", name: "radio1",  }
     %label{ for: "radio1_purple",  }
       purple
-      %input{ atts[:radio1_purple], tabindex: "#{i += 1}", type: "radio", id: "radio1_purple", value: "purple", name: "radio1",  }
+      %input{ atts[:radio1_purple], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "radio1_purple", value: "purple", name: "radio1",  }
 
 !.strip + "\n"
         }
@@ -1182,7 +1259,7 @@ $.strip + "\n" }
           describe "the full output" do
             let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
-  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n"}
+  %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n"}
             let(:form){ 
               form = Campo::Form.new( "myform" )
               form.textarea( "textie" ) 
@@ -1207,7 +1284,7 @@ $.strip + "\n" }
             describe "the full output" do
               let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
-  %textarea{ atts[:textie], tabindex: "#{i += 1}", cols: "60", rows: "10", name: "textie",  }= inners[:textie] 
+  %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", cols: "60", rows: "10", name: "textie",  }= inners[:textie] 
   !.strip + " \n"}
               let(:form){ 
                 form = Campo::Form.new( "myform" )
