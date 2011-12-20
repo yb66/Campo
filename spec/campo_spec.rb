@@ -24,8 +24,8 @@ module Campo
 - @campo_tabindex ||= 0 # for tabindex
 
 STR
-            s
-          }
+      s
+    }
           
 
     describe :output do
