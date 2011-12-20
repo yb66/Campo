@@ -251,7 +251,7 @@ module Campo
 - atts.default = {} if atts.default.nil?
 - inners = {} if inners.nil?
 - inners.default = "" if inners.default.nil?
-- i = 0 # for tabindex
+- @campo_tabindex ||= 0 # for tabindex
 
 STR
 
@@ -346,7 +346,7 @@ STR
       attributes = params[:attributes] || {}
       haml_insert = params[:haml_insert] || nil
       
-      super( name, { tabindex: %q!#{i += 1}! }.merge(attributes) )
+      super( name, { tabindex: %q!#{@campo_tabindex += 1}! }.merge(attributes) )
       
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%select{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }! 
@@ -375,13 +375,13 @@ STR
     #     As a default:
     #     form.select("teas").with_default.option("ceylon")
     #     # output:
-    #       %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+    #       %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", name: "teas",  }
     #          %option{  value: "", disabled: "disabled", name: "teas",  }Choose one:
     #          %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
     #
     #     form.select("teas").with_default("My fave tea is:").option("ceylon")
     #     # output:
-    #       %select{ atts[:teas], tabindex: "#{i += 1}", name: "teas",  }
+    #       %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", name: "teas",  }
     #       %option{  value: "", disabled: "disabled", name: "teas",  }My fave tea is:
     #       %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
     def with_default( inner="Choose one:" )
@@ -448,7 +448,7 @@ STR
       super( name, 
             { type: type.to_s, 
               id: "#{name}#{id_tag(attributes[:value]).gsub(/\W/, "_")}",
-              tabindex: %q!#{i += 1}!, 
+              tabindex: %q!#{@campo_tabindex += 1}!, 
             }.merge( attributes ) )
             
                
@@ -511,7 +511,7 @@ STR
 
 
   class Textarea < Base
-    DEFAULT = { cols: 40, rows: 10, tabindex: %q!#{i += 1}! }
+    DEFAULT = { cols: 40, rows: 10, tabindex: %q!#{@campo_tabindex += 1}! }
 
     def initialize( name,  inner=nil, attributes={} )
       if inner.kind_of? Hash
