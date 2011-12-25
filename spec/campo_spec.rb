@@ -26,7 +26,10 @@ module Campo
 STR
       s
     }
-          
+
+    before(:all) do
+      Campo::Base.plugin Campo::Plugins::Preselectable
+    end          
 
     describe :output do
       context "Given a form with no fields" do
@@ -103,13 +106,10 @@ STR
       %input{ atts[:dob], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "dob", size: "10", name: "dob",  }
     %fieldset{  }
       %legend{  }Gender: 
-      - atts["gender_#{atts[:gender][:value]}".to_sym ] = atts["gender_#{atts[:gender][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:gender].empty?
-
       %label{ for: "gender_1",  }
         Male
+        - atts["gender_#{atts[:gender][:value]}".to_sym ] = atts["gender_#{atts[:gender][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:gender].empty?
         %input{ atts[:gender_1], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "gender_1", value: "1", name: "gender",  }
-      - atts["gender_#{atts[:gender][:value]}".to_sym ] = atts["gender_#{atts[:gender][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:gender].empty?
-
       %label{ for: "gender_2",  }
         Female
         %input{ atts[:gender_2], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "gender_2", value: "2", name: "gender",  }
@@ -134,15 +134,13 @@ STR
       %input{ atts[:phone_mobile], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "phone_mobile", size: "20", name: "phone_mobile",  }
     %fieldset{  }
       %legend{  }May we contact you...
-      - atts["contactable_#{atts[:contactable][:value]}".to_sym ] = atts["contactable_#{atts[:contactable][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:contactable].empty?
-
       %label{ for: "contactable_day",  }
         In the day?
+        - atts["contactable_#{atts[:contactable][:value]}".to_sym ] = atts["contactable_#{atts[:contactable][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:contactable].empty?
         %input{ atts[:contactable_day], tabindex: "#{@campo_tabindex += 1}", type: "checkbox", id: "contactable_day", value: "day", name: "contactable",  }
-      - atts["contactable_#{atts[:contactable][:value]}".to_sym ] = atts["contactable_#{atts[:contactable][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:contactable].empty?
-
       %label{ for: "contactable_evening",  }
         In the evening?
+        - atts["contactable_#{atts[:contactable][:value]}".to_sym ] = atts["contactable_#{atts[:contactable][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:contactable].empty?
         %input{ atts[:contactable_evening], tabindex: "#{@campo_tabindex += 1}", type: "checkbox", id: "contactable_evening", value: "evening", name: "contactable",  }
     %input{ atts[:Save_Save], tabindex: "#{@campo_tabindex += 1}", type: "submit", id: "Save_Save", value: "Save",  }
 !
@@ -231,10 +229,9 @@ STR
           context "of checkbox" do
             let(:expected) { top_bit +  %q!
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
-  - atts["blah_#{atts[:blah][:value]}".to_sym ] = atts["blah_#{atts[:blah][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:blah].empty?
-
   %label{ for: "blah_blahdeblah",  }
     Blahd
+    - atts["blah_#{atts[:blah][:value]}".to_sym ] = atts["blah_#{atts[:blah][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:blah].empty?
     %input{ atts[:blah_blahdeblah], tabindex: "#{@campo_tabindex += 1}", type: "checkbox", id: "blah_blahdeblah", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
             
             subject { 
@@ -1099,41 +1096,47 @@ $.strip + "\n" }
                 it { should == expected }
               end
             end
-          end  
-          context "of checkbox" do
-            let(:tag) { Campo::Input.new( "abc", :checkbox ) }
-            let(:output) { %q!%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "checkbox", id: "abc", name: "abc",  }! }
-            subject { tag }
-            it { should_not be_nil }
-            it { should be_a_kind_of(Input) }
-            specify { subject.attributes[:type].should == "checkbox" }
-            specify { subject.output.should == output }
-            
-            context "Campo.output" do
-              let(:expected) { output + "\n" }
-              subject { Campo.output :partial, tag }
+ 
+            context "of checkbox" do
+              let(:tag) { Campo::Input.new( "abc", :checkbox ) }
+              let(:output) { %q!- atts["abc_#{atts[:abc][:value]}".to_sym ] = atts["abc_#{atts[:abc][:value]}".to_sym].merge( {checked: "checked"} ) unless atts[:abc].empty?
+%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "checkbox", id: "abc", name: "abc",  }! }
+              subject { tag }
               it { should_not be_nil }
-              it { should == expected }
-            end
+              it { should be_a_kind_of(Input) }
+              specify { subject.attributes[:type].should == "checkbox" }
+              specify { subject.output.should == output }
+              
+              context "Campo.output" do
+                let(:expected) { output + "\n" }
+                subject { Campo.output :partial, tag }
+                it { should_not be_nil }
+                it { should == expected }
+              end
+              
+            end  
             
-          end  
-          context "of radio" do
-            let(:tag) { Campo::Input.new( "abc", :radio ) }
-            let(:output) { %q!%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "abc", name: "abc",  }! }
-            subject { tag }
-            it { should_not be_nil }
-            it { should be_a_kind_of(Input) }
-            specify { subject.attributes[:type].should == "radio" }
-            specify { subject.output.should == output }
-            
-            context "Campo.output" do
-              let(:expected) { output + "\n" }
-              subject { Campo.output :partial, tag }
+            context "of radio" do
+              let(:tag) { Campo::Input.new( "abc", :radio ) }
+              let(:output) { 
+%q!
+%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "radio", id: "abc", name: "abc",  }!
+                output
+              }                  
+              subject { tag }
               it { should_not be_nil }
-              it { should == expected }
+              it { should be_a_kind_of(Input) }
+              specify { subject.attributes[:type].should == "radio" }
+              specify { subject.output.should == output }
+              
+              context "Campo.output" do
+                let(:expected) { output + "\n" }
+                subject { Campo.output :partial, tag }
+                it { should_not be_nil }
+                it { should == expected }
+              end
             end
-          end
-
+          end 
         end # context
       end # initialisation
 
