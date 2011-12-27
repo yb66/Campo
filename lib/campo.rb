@@ -456,8 +456,9 @@ STR
   end
 
   class Fieldset < Base
-    
-    def initialize( text, attributes={} )
+
+    # @params [String] text Text for the legend tag
+    def initialize( text=nil, attributes={} )
       if text.kind_of? Hash
         attributes = text
         text = nil
@@ -468,7 +469,7 @@ STR
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%fieldset{ #{Base.unhash( @attributes )} }! 
       end
-      @fields.unshift Legend.new( text ) #unless text.nil?
+      @fields.unshift Legend.new( text ) unless text.nil?
     end # initialize
   end # Fieldset
   
