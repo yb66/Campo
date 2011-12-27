@@ -299,9 +299,11 @@ STR
       false
     end
     
+# before_hook
     output = Base.output( *args )
     output = s + output if whole_form
-#    changed && notify_observers
+#    after_hook
+#    s = @after_output_listeners.each{|l| l.call }
     output
   end # self.output
 
