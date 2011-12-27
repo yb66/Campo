@@ -1,10 +1,6 @@
 # encoding: UTF-8
 
-require_relative "./plugins/preselectable.rb"
-
 module Campo
-  #include Observable
-  
   module Childish
     def push=( child )
       @fields << child
@@ -22,21 +18,6 @@ module Campo
       val.nil? ? "" : "_#{val}"
     end
   end # Iding
-  
-  
-  module Plugins
-    def self.plugins
-      @plugins ||= []
-    end
-    
-    def self.include?( x )
-      Plugins.plugins.include? x
-    end
-    
-    def self.<<( m )
-      Plugins.plugins << m
-    end
-  end
   
   module Convenience
     
@@ -131,8 +112,7 @@ module Campo
         attributes = label
         label = nil
       end
-      
-      
+
       field = Campo::Input.new( name, type, attributes ).labelled( label )
       self << field
       field
@@ -177,7 +157,6 @@ module Campo
       return "" if opts.nil? || opts.empty?
       opts.map{|o| "#{o.output}\n" }.reduce(:+)
     end
-    
   end # Helpers
 
   @atts = {}
@@ -190,7 +169,6 @@ module Campo
     include Childish
     include Iding
     include Convenience
-    include Plugins
     
     DEFAULT = { tabindex: nil }
 
@@ -208,21 +186,8 @@ module Campo
     end
 
     def output( n=0, tab=2 )
-      s = @output_listener.call n, tab
-      s = super(s, n, tab) if defined?( super )
-      s
-    end    
-    
-    def self.plugin( plugin, *args, &block )
-      m = plugin
-      #m = plugin.is_a?(Module) ? plugin : plugin_module(plugin)
-      unless Plugins.include?(m)      
-        Plugins << m
-        include(m::InstanceMethods) if m.const_defined?(:InstanceMethods, false)
-        extend(m::ClassMethods)if m.const_defined?(:ClassMethods, false)
-      end
+      @output_listener.call n, tab
     end
-
 
     def labelled( inner=nil )
       inner ||= self.attributes[:name].gsub("_"," ").capitalize
@@ -299,11 +264,8 @@ STR
       false
     end
     
-# before_hook
     output = Base.output( *args )
     output = s + output if whole_form
-#    after_hook
-#    s = @after_output_listeners.each{|l| l.call }
     output
   end # self.output
 
