@@ -177,8 +177,8 @@ module Campo
     def initialize( name, attributes={}, &block )
       @attributes = DEFAULT.merge( attributes.merge({name: name}) ).reject{|k,v| v.nil? }
       @fields = []
-      block.call( self ) if block
-      self
+      
+      instance_eval( &block ) if block
     end
     
     def on_output( &block )
@@ -290,8 +290,6 @@ STR
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%form{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }!
       end
-      
-      self
     end
     
 
