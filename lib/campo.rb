@@ -29,10 +29,7 @@ module Campo
     #     f.text( "dob", "Date of birth: ", size: 8 )
     #   end
     def fieldset( text, attributes={}, &block )
-      fieldset = (Fieldset.new(attributes) << Legend.new( text ))
-      block.call( fieldset ) if block
-      self << fieldset 
-      fieldset
+      self << Fieldset.new( text, attributes, &block )
     end
     
     # @example Add a bit of code to the markup
@@ -460,13 +457,18 @@ STR
 
   class Fieldset < Base
     
-    def initialize( attributes={} )
+    def initialize( text, attributes={} )
+      if text.kind_of? Hash
+        attributes = text
+        text = nil
+      end
       super( nil, attributes )
       @attributes.delete(:name)
       
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%fieldset{ #{Base.unhash( @attributes )} }! 
       end
+      @fields.unshift Legend.new( text ) #unless text.nil?
     end # initialize
   end # Fieldset
   

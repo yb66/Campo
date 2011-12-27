@@ -116,21 +116,21 @@ STR
               
                 fieldset("Your details") do |f|
                   
-                  f.text( "full_name", "Full name: ", size: 60 )
-                  f.text( "dob", "Date of birth: ", size: 10 ) #TODO change this
-                  f.fieldset( "Gender: " ) do |genders|
-                    genders.radio( "gender", "Male", value: 1 )
-                    genders.radio( "gender", "Female", value: 2 )
+                  text( "full_name", "Full name: ", size: 60 )
+                  text( "dob", "Date of birth: ", size: 10 ) #TODO change this
+                  fieldset( "Gender: " ) do
+                    radio( "gender", "Male", value: 1 )
+                    radio( "gender", "Female", value: 2 )
                   end
-                  f.select( "ethnicorigin_id", {opts: [[1, "White"],[2,"Asian"],[3,"Black"],[4,"Chinese and Other"], [5,"Mixed"] ] }).with_default.labelled( "Ethnic-origin: " )
-                  f.text( "occupation", "Occupation: ", size: 60 )
-                  f.text( "phone_landline", "Phone (landline): ", size: 20 )
-                  f.text( "phone_mobile", "Phone (mobile): ", size: 20 )
-                  f.fieldset( "May we contact you..." ) do |c|
-                    c.checkbox( "contactable", "In the day?", value: "day" )
-                    c.checkbox( "contactable",  "In the evening?", value: "evening" )
+                  select( "ethnicorigin_id", {opts: [[1, "White"],[2,"Asian"],[3,"Black"],[4,"Chinese and Other"], [5,"Mixed"] ] }).with_default.labelled( "Ethnic-origin: " )
+                  text( "occupation", "Occupation: ", size: 60 )
+                  text( "phone_landline", "Phone (landline): ", size: 20 )
+                  text( "phone_mobile", "Phone (mobile): ", size: 20 )
+                  fieldset( "May we contact you..." ) do
+                    checkbox( "contactable", "In the day?", value: "day" )
+                    checkbox( "contactable",  "In the evening?", value: "evening" )
                   end
-                  f.submit("Save")
+                  submit("Save")
             
                 end # form
               form
@@ -464,14 +464,14 @@ s.chomp
       
       describe :fieldset do
         context "When given a form with only a name" do
-          let(:form) { Campo::Form.new( "myform" ) }
+          let(:form) { Campo::Form.new( "myform" ).fieldset("Do you like these colours? Tick for yes:") }
           let(:expected) { top_bit + %q!
 %form{ atts[:myform], method: "POST", id: "myform", name: "myform",  }
   %fieldset{  }
     %legend{  }Do you like these colours? Tick for yes:
                 
 !.strip + "\n" }
-          subject { form.fieldset("Do you like these colours? Tick for yes:") 
+          subject { 
             Campo.output form
           }
           it { should_not be_nil }
@@ -1122,23 +1122,24 @@ $.strip + "\n" }
   %fieldset{  }
     %legend{  }Alphabetty spaghetti
     %label{ for: "abc",  }
-      abc
+      Abc
       %input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "abc", name: "abc",  }
     %label{ for: "def",  }
-      def
+      Def
       %input{ atts[:def], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "def", name: "def",  }
     %label{ for: "ghi",  }
-      ghi
+      Ghi
       %input{ atts[:ghi], tabindex: "#{@campo_tabindex += 1}", type: "text", id: "ghi", name: "ghi",  }
 
 !.strip + "\n"
           }
           let(:form) {
-            form = Campo::Form.new( "myform" )
-              myfieldset = form.fieldset( "Alphabetty spaghetti" ) do |f|
-              f << Campo::Input.new( "abc", :text ).labelled("abc")
-              f << Campo::Input.new( "def", :text ).labelled("def")
-              f << Campo::Input.new( "ghi", :text ).labelled("ghi")
+            form = Campo::Form.new( "myform" ) do
+              fieldset( "Alphabetty spaghetti" ) do
+                text( "abc" )
+                text( "def" )
+                text( "ghi" )
+              end
             end
             form
           }
