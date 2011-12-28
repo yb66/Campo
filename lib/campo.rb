@@ -253,7 +253,7 @@ module Campo
       @tab ||= tab || 2
       @before_output = proc {} 
       @path_actions = {} 
-      @after_output = ->(output){ 
+      @afters = [] << ->(output){ 
         @partial ? 
           output : # partial
           DEFAULTS + output # whole form
@@ -283,7 +283,7 @@ STR
       
       @before_output.call( *args ) 
       output = Base.output( *args )
-      output = @after_output.call( output )
+      output = @afters.reduce(output){|mem,obj| obj.call mem }
       output
     end
   end
