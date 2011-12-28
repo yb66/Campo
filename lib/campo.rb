@@ -253,7 +253,11 @@ module Campo
       @tab ||= tab || 2
       @before_output = proc {} 
       @path_actions = {} 
-      @after_output = ->(output){ output } 
+      @after_output = ->(output){ 
+        @partial ? 
+          output : # partial
+          DEFAULTS + output # whole form
+      } 
       instance_eval( &block ) if block
     end
     
@@ -269,18 +273,17 @@ STR
     attr_accessor :output
     
     def run( *args )  
-      # default to true
-      whole_form = if args.first.kind_of? Campo::Base 
-        true
+      # default to false, it's a whole form
+      @partial = if args.first.kind_of? Campo::Base
+        false
       else 
         args.shift
-        false
+        true
       end
       
       @before_output.call( *args ) 
       output = Base.output( *args )
       output = @after_output.call( output )
-      output = DEFAULTS + output if whole_form
       output
     end
   end
