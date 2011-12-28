@@ -251,7 +251,7 @@ module Campo
   class Outputter
     def initialize( tab=2,&block )
       @tab ||= tab || 2
-      @before_output = proc {} 
+      @befores = [ proc {} ]
       @path_actions = {} 
       @afters = [] << ->(output){ 
         @partial ? 
@@ -281,7 +281,7 @@ STR
         true
       end
       
-      @before_output.call( *args ) 
+      @befores.each{|f| f.call( *args ) } 
       output = Base.output( *args )
       output = @afters.reduce(output){|mem,obj| obj.call mem }
       output
