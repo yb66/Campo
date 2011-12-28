@@ -216,12 +216,12 @@ module Campo
     end
 
 
-    def self.output( top, so_far="", count=0, tab=2 )
+    def self.output( top, so_far="", tab=2, count=0 )
       so_far << "#{top.output( count, tab )}\n"
       count += 1
       if top.respond_to?( :fields ) && top.fields.length >= 1
         top.fields.each do |field|
-          so_far = Base.output( field, so_far, count, tab ) 
+          so_far = Base.output( field, so_far, tab, count ) 
         end
       end
 
