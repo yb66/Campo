@@ -249,17 +249,15 @@ module Campo
 # end Campo methods
 
   class Outputter
-    def initialize( &block )
+    def initialize( tab=2,&block )
+      @tab ||= tab || 2
       @before_output = proc {} 
       @path_actions = {} 
       @after_output = ->(output){ output } 
       instance_eval( &block ) if block
     end
     
-    attr_accessor :output
-    
-    def run( *args )
-    s = <<STR
+    DEFAULTS = <<STR
 - atts = {} if atts.nil?
 - atts.default = {} if atts.default.nil?
 - inners = {} if inners.nil?
@@ -267,6 +265,11 @@ module Campo
 - @campo_tabindex ||= 0 # for tabindex
 
 STR
+    
+    attr_accessor :output
+    
+    def run( *args )
+
 
 
     # default to true
@@ -280,7 +283,7 @@ STR
     @before_output.call( *args ) 
     output = Base.output( *args )
     output = @after_output.call( output )
-    output = s + output if whole_form
+    output = DEFAULTS + output if whole_form
     output
     end
   end
