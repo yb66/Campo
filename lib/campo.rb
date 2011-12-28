@@ -19,8 +19,22 @@ module Campo
     end
   end # Iding
   
-  module Convenience
-    
+  # using the lib from http://docs.jquery.com/Plugins/Validation
+  module JQueryValidation
+  
+    # the simplest validation possible
+    def validate
+      field = self.class == Campo::Label ?
+        self.fields.first :
+        self
+        
+      field.attributes.merge!({ :class => "required" } )
+      self
+    end
+  end
+  
+  
+  module Convenience  
     
     # @param [optional, Hash] attributes Any attributes you wish to add to the haml element.
     # @example Fieldset as a block is easiest to read
@@ -166,6 +180,7 @@ module Campo
     include Childish
     include Iding
     include Convenience
+    include JQueryValidation
     
     DEFAULT = { tabindex: nil }
 
