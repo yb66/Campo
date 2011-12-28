@@ -256,11 +256,12 @@ module Campo
         @partial = options[:partial] || false
       end
       @path_actions = {} 
-      @afters = [] << ->(output){ 
+      @afters = [] 
+      after_output do |output| 
         @partial ? 
           output : # partial
           DEFAULTS + output # whole form
-      } 
+      end
       instance_eval( &block ) if block
     end
     
@@ -268,6 +269,10 @@ module Campo
     
     def before_output( &block )
       @befores << block
+    end
+    
+    def after_output( &block )
+      @afters << block
     end
     
     DEFAULTS = <<STR
