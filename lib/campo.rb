@@ -216,12 +216,12 @@ module Campo
     end
 
 
-    def self.output( top, so_far="", tab=2, count=0 )
+    def self.output( top, so_far="", count=0, tab=2)
       so_far << "#{top.output( count, tab )}\n"
       count += 1
       if top.respond_to?( :fields ) && top.fields.length >= 1
         top.fields.each do |field|
-          so_far = Base.output( field, so_far, tab, count ) 
+          so_far = Base.output( field, so_far, count, tab ) 
         end
       end
 
@@ -242,8 +242,8 @@ module Campo
   #     Campo.output :partial, input_field
   #     Campo.output false, label
   #     Campo.output true, fieldset
-  def self.output( *args )
-    Outputter.new(  ).run( *args )
+  def self.output( fields, options={} )
+    Outputter.new( options.delete(:tab)  ).run( fields, options )
   end # self.output
 
 # end Campo methods
@@ -251,7 +251,10 @@ module Campo
   class Outputter
     def initialize( tab=2,&block )
       @tab ||= tab || 2
-      @befores = [ proc {} ]
+      @befores = [ ] 
+      before_output do |fields, options|
+        @partial = options[:partial] || false
+      end
       @path_actions = {} 
       @afters = [] << ->(output){ 
         @partial ? 
@@ -259,6 +262,12 @@ module Campo
           DEFAULTS + output # whole form
       } 
       instance_eval( &block ) if block
+    end
+    
+    attr_accessor :partial
+    
+    def before_output( &block )
+      @befores << block
     end
     
     DEFAULTS = <<STR
@@ -272,17 +281,15 @@ STR
     
     attr_accessor :output
     
-    def run( *args )  
-      # default to false, it's a whole form
-      @partial = if args.first.kind_of? Campo::Base
-        false
-      else 
-        args.shift
-        true
-      end
+    DEFAULT_OPTIONS={n: 0, partial: false}
+    
+    def run( fields, options={} )
+      options = DEFAULT_OPTIONS.merge options
+      tab = options.delete(:tab) || @tab
       
-      @befores.each{|f| f.call( *args ) } 
-      output = Base.output( *args )
+      output = ""
+      @befores.each{|f| f.call( fields, options ) } 
+      output = Base.output( fields, output, options[:n], tab )
       output = @afters.reduce(output){|mem,obj| obj.call mem }
       output
     end

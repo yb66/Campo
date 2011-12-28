@@ -56,7 +56,7 @@ STR
             tag = select.with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:") 
             tag
           }
-          subject { Campo.output :partial, tag }
+          subject { Campo.output tag, :partial=>true }
           it { should_not be_nil }
           it { should == expected }
 
@@ -588,7 +588,7 @@ s.chomp
 
       describe "Campo.output" do
         let(:expected) { "anything at all at all\n" }
-        subject { Campo.output :partial, tag }
+        subject { Campo.output tag, :partial=>true }
         it { should == expected }
       end
 
@@ -659,7 +659,7 @@ $.strip + "\n" }
       
       describe "Campo.output" do
         let(:expected) { %Q!= sel_opts\n! }
-        subject { Campo.output :partial, tag }
+        subject { Campo.output tag,:partial=>true }
         it { should == expected }
       end
 
@@ -739,7 +739,7 @@ $.strip + "\n" }
 
             context "Campo.output" do
               let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }!.strip + "\n" }
-              subject { Campo.output :partial, tag }
+              subject { Campo.output tag,:partial=>true }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -754,7 +754,7 @@ $.strip + "\n" }
               context "Campo.output" do
                 let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", name: "pqr",  }
   %option{  value: "", disabled: "disabled", name: "pqr",  }Choose one:!.strip + "\n"  }
-                subject { Campo.output :partial, tag.with_default }
+                subject { Campo.output tag.with_default, :partial=>true }
                 it { should == expected }
               end
             end
@@ -781,7 +781,7 @@ $.strip + "\n" }
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
 !.strip + "\n" }
-              subject { Campo.output :partial, tag }
+              subject { Campo.output tag, :partial=>true }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -801,7 +801,7 @@ $.strip + "\n" }
   %option{ atts[:pqr_saab], value: "saab", id: "pqr_saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
 !.strip + "\n"  }
-                subject { Campo.output :partial, tag.with_default }
+                subject { Campo.output tag.with_default, :partial=>true }
                 it { should == expected }
               end
             end
@@ -825,7 +825,7 @@ $.strip + "\n" }
   %option{ atts[:pqr_audi], value: "audi", id: "pqr_audi", name: "pqr",  }Audi
   = opts!.strip + "\n" }
                 subject { 
-                  Campo.output :partial, tag 
+                  Campo.output tag, :partial=>true 
                 }
                 it { should_not be_nil }
                 it { should == expected }
@@ -850,7 +850,7 @@ $.strip + "\n" }
   %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
   %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }Bmw
   %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari!.strip + "\n" }
-                subject { Campo.output :partial, tag }
+                subject { Campo.output tag, :partial=>true }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -887,7 +887,7 @@ $.strip + "\n" }
   %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
   %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
   %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari!.strip + "\n" }
-                  subject { Campo.output :partial, tag }
+                  subject { Campo.output tag, :partial=>true }
                   it { should_not be_nil }
                   it { should == expected }
                   
@@ -907,7 +907,7 @@ $.strip + "\n" }
   %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", class: "blue", name: "pqr",  }Ford
   %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
   %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", class: "green", name: "pqr",  }Ferrari!.strip + "\n" }
-                    subject { Campo.output :partial, tag }
+                    subject { Campo.output tag, :partial=>true }
                     it { should_not be_nil }
                     it { should == expected }
                   end
@@ -929,7 +929,7 @@ $.strip + "\n" }
   %option{ atts[:pqr_ford], value: "ford", id: "pqr_ford", name: "pqr",  }Ford
   %option{ atts[:pqr_bmw], value: "bmw", id: "pqr_bmw", name: "pqr",  }BMW
   %option{ atts[:pqr_ferrari], value: "ferrari", selected: "selected", id: "pqr_ferrari", name: "pqr",  }Ferrari!.strip + "\n"  }
-                    subject { Campo.output :partial, tag.with_default }
+                    subject { Campo.output tag.with_default, :partial=>true }
                     it { should == expected }
                   end
                 end
@@ -951,7 +951,7 @@ $.strip + "\n" }
   
                 it { should_not be_nil }
                 it { should be_a_kind_of(Select) }
-                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{@campo_tabindex += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl grey\n! }
+                specify { Campo.output( subject, :partial=>true ).should == %Q!%select{ atts[:tea], tabindex: "\#{@campo_tabindex += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl grey\n! }
               end
               context "and a single string value" do
                 let(:opts) {
@@ -968,7 +968,7 @@ $.strip + "\n" }
   
                 it { should_not be_nil }
                 it { should be_a_kind_of(Select) }
-                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{@campo_tabindex += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
+                specify { Campo.output( subject, :partial=>true ).should == %Q!%select{ atts[:tea], tabindex: "\#{@campo_tabindex += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
               end
               context "and an array value" do
                 let(:opts) {
@@ -985,7 +985,7 @@ $.strip + "\n" }
   
                 it { should_not be_nil }
                 it { should be_a_kind_of(Select) }
-                specify { Campo.output( :partial, subject ).should == %Q!%select{ atts[:tea], tabindex: "\#{@campo_tabindex += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", selected: "selected", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
+                specify { Campo.output( subject, :partial=>true ).should == %Q!%select{ atts[:tea], tabindex: "\#{@campo_tabindex += 1}", name: "tea",  }\n  %option{ atts[:tea_ceylon], value: "ceylon", id: "tea_ceylon", name: "tea",  }Ceylon\n  %option{ atts[:tea_english_breakfast], value: "english_breakfast", selected: "selected", id: "tea_english_breakfast", name: "tea",  }English Breakfast\n  %option{ atts[:tea_earl_grey], value: "earl_grey", id: "tea_earl_grey", name: "tea",  }Earl Grey\n! }
               end
             end
           end
@@ -1012,7 +1012,7 @@ $.strip + "\n" }
             specify { subject.output.should == output }
             context "Campo.output" do
               let(:expected) { output + "\n" }
-              subject { Campo.output :partial, tag }
+              subject { Campo.output tag, :partial=>true }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -1029,7 +1029,7 @@ $.strip + "\n" }
               specify { subject.output.should == output }
               context "Campo.output" do
                 let(:expected) { output + "\n" }
-                subject { Campo.output :partial, tag }
+                subject { Campo.output tag, :partial=>true }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -1045,7 +1045,7 @@ $.strip + "\n" }
               
               context "Campo.output" do
                 let(:expected) { output + "\n" }
-                subject { Campo.output :partial, tag }
+                subject { Campo.output tag, :partial=>true }
                 it { should_not be_nil }
                 it { should == expected }
               end
@@ -1062,7 +1062,7 @@ $.strip + "\n" }
             
             context "Campo.output" do
               let(:expected) { output + "\n" }
-              subject { Campo.output :partial, tag }
+              subject { Campo.output tag, :partial=>true }
               it { should_not be_nil }
               it { should == expected }
             end
@@ -1079,7 +1079,7 @@ $.strip + "\n" }
             
             context "Campo.output" do
               let(:expected) { output + "\n" }
-              subject { Campo.output :partial, tag }
+              subject { Campo.output tag, :partial=>true }
               it { should_not be_nil }
               it { should == expected }
             end
