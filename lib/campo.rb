@@ -268,23 +268,20 @@ STR
     
     attr_accessor :output
     
-    def run( *args )
-
-
-
-    # default to true
-    whole_form = if args.first.kind_of? Campo::Base 
-      true
-    else 
-      args.shift
-      false
-    end
-    
-    @before_output.call( *args ) 
-    output = Base.output( *args )
-    output = @after_output.call( output )
-    output = DEFAULTS + output if whole_form
-    output
+    def run( *args )  
+      # default to true
+      whole_form = if args.first.kind_of? Campo::Base 
+        true
+      else 
+        args.shift
+        false
+      end
+      
+      @before_output.call( *args ) 
+      output = Base.output( *args )
+      output = @after_output.call( output )
+      output = DEFAULTS + output if whole_form
+      output
     end
   end
 
