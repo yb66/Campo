@@ -243,6 +243,22 @@ module Campo
   #     Campo.output false, label
   #     Campo.output true, fieldset
   def self.output( *args )
+    Outputter.new(  ).run( *args )
+  end # self.output
+
+# end Campo methods
+
+  class Outputter
+    def initialize( &block )
+      @before_output = proc {} 
+      @path_actions = {} 
+      @after_output = ->(output){ output } 
+      instance_eval( &block ) if block
+    end
+    
+    attr_accessor :output
+    
+    def run( *args )
     s = <<STR
 - atts = {} if atts.nil?
 - atts.default = {} if atts.default.nil?
@@ -261,12 +277,13 @@ STR
       false
     end
     
+    @before_output.call( *args ) 
     output = Base.output( *args )
+    output = @after_output.call( output )
     output = s + output if whole_form
     output
-  end # self.output
-
-# end Campo methods
+    end
+  end
 
 
   
