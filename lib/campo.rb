@@ -19,6 +19,107 @@ module Campo
     end
   end # Iding
   
+  def self.constantize(camel_cased_word)
+    names = camel_cased_word.split('::')
+    names.shift if names.empty? || names.first.empty?
+
+    constant = Object
+    names.each do |name|
+      constant = constant.const_defined?(name) ? constant.const_get(name,false) : constant.const_missing(name)
+    end
+    constant
+  end
+    
+  # keeps track of the current plugins
+  def self.plugins
+    @plugins ||= {}
+  end
+  
+  def self.plugin( name )
+    unless plugins.include? name
+      plugins[name] = constantize("Campo::Plugins::#{name.to_s.capitalize}").new
+      plugins[name].plugged_in
+    end
+  end
+  
+  module Plugins
+    
+    module Pluggable      
+      def before_output( &block )
+        befores << block
+      end
+      
+      def after_output( &block )
+        afters << block
+      end
+      
+      def on_plugin( &block )
+        @extras = block
+      end
+      
+      def extras
+        @extras ||= proc {}
+      end
+    
+      def plugged_in
+        instance_exec &@extras
+      end
+    end
+    
+    class Plugin
+      include Pluggable   
+      def befores
+        @befores ||= []
+      end   
+      
+      def afters
+        @afters ||= []
+      end
+    end
+    
+    module Partial 
+    
+      def self.new
+        Klass.new
+      end
+      
+      module InstanceMethods 
+        def self.included(klass)
+          puts "InstanceMethods included into #{klass}"
+        end
+        attr_accessor :partial
+        
+        DECLARATIONS = <<STR
+- atts = {} if atts.nil?
+- atts.default = {} if atts.default.nil?
+- inners = {} if inners.nil?
+- inners.default = "" if inners.default.nil?
+- @campo_tabindex ||= 0 # for tabindex
+STR
+        def declarations
+          DECLARATIONS
+        end
+      end
+    
+      class Klass < Plugin
+    
+      def initialize
+        after_output do |output,opts|
+          opts[:partial] ? 
+            output : # partial
+            declarations + output # whole form
+        end
+        on_plugin do
+          Campo::Outputter.send(:include, Campo::Plugins::Partial::InstanceMethods)
+          Campo::Outputter::DEFAULT_OPTIONS.merge!({partial: false})
+        end
+      end
+    
+        DEFAULT_OPTIONS={partial: false}
+      end # Klass
+    end # Partial
+  end # Plugins
+  
   # using the lib from http://docs.jquery.com/Plugins/Validation
   module JQueryValidation
   
@@ -198,6 +299,8 @@ module Campo
     end
 
     def output( n=0, tab=2 )
+      n ||= 0
+      tab ||= 2
       @output_listener.call n, tab
     end
 
@@ -263,54 +366,53 @@ module Campo
 
 # end Campo methods
 
-  class Outputter
-    def initialize( tab=2,&block )
-      @tab ||= tab || 2
-      @befores = [ ] 
-      before_output do |fields, options|
-        @partial = options[:partial] || false
-      end
-      @path_actions = {} 
-      @afters = [] 
-      after_output do |output| 
-        @partial ? 
-          output : # partial
-          DEFAULTS + output # whole form
-      end
-      instance_eval( &block ) if block
-    end
-    
-    attr_accessor :partial
+  class Outputter  
     
     def before_output( &block )
-      @befores << block
+      befores << block
     end
     
     def after_output( &block )
-      @afters << block
+      afters << block
     end
     
-    DEFAULTS = <<STR
-- atts = {} if atts.nil?
-- atts.default = {} if atts.default.nil?
-- inners = {} if inners.nil?
-- inners.default = "" if inners.default.nil?
-- @campo_tabindex ||= 0 # for tabindex
-
-STR
+    def befores
+      @befores ||= check_for_plugins :befores
+    end   
+    
+    def afters
+      @afters ||= check_for_plugins :afters
+    end
+    
+    def check_for_plugins( type )
+      Campo.plugins.reduce [] do |mem, (_,plugin)|
+        mem + plugin.send(:"#{type}" )
+      end
+    end
+    
+    def initialize( tab=nil, &block )
+      options[:tab] = tab unless tab.nil? 
+      instance_eval( &block ) if block
+    end
     
     attr_accessor :output
     
-    DEFAULT_OPTIONS={n: 0, partial: false}
+    DEFAULT_OPTIONS={n: 0, tab: 2}
     
-    def run( fields, options={} )
-      options = DEFAULT_OPTIONS.merge options
-      tab = options.delete(:tab) || @tab
+    def options
+      @options ||= DEFAULT_OPTIONS
+    end
+    
+    def run( fields, opts={} )
+      opts = options.merge opts
+      puts "opts: #{opts.inspect}"
+      puts "@partial: #{@partial}"
+      tab = opts.delete(:tab) || @tab
       
       output = ""
-      @befores.each{|f| f.call( fields, options ) } 
+      befores.each{|f| instance_exec( fields, options, &f ) } 
       output = Base.output( fields, output, options[:n], tab )
-      output = @afters.reduce(output){|mem,obj| obj.call mem }
+      output = afters.reduce(output){|mem,obj| instance_exec mem, opts, &obj }
       output
     end
   end
