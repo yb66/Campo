@@ -83,10 +83,7 @@ module Campo
         Klass.new
       end
       
-      module InstanceMethods 
-        def self.included(klass)
-          puts "InstanceMethods included into #{klass}"
-        end
+      module InstanceMethods
         attr_accessor :partial
         
         DECLARATIONS = <<STR
