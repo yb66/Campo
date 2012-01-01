@@ -37,7 +37,8 @@ module Campo
   
   def self.plugin( name )
     unless plugins.include? name
-      plugins[name] = constantize("Campo::Plugins::#{name.to_s.capitalize}").new
+      modname = (str = name.to_s) && (str[0,1].upcase + str[1..-1])
+      plugins[name] = constantize("Campo::Plugins::#{modname}").new
       plugins[name].plugged_in
     end
   end
@@ -115,21 +116,49 @@ STR
         DEFAULT_OPTIONS={partial: false}
       end # Klass
     end # Partial
+    
+    # using the lib from http://docs.jquery.com/Plugins/Validation
+    module JQueryValidation  
+    
+      def self.new
+        Klass.new
+      end
+        
+      module InstanceMethods
+        # the simplest validation possible
+        module Convenience
+          def validate
+            field = self.class == Campo::Label ?
+              self.fields.first :
+              self
+              
+            field.attributes.merge!({ :class => "required" } )
+            self
+          end
+        end
+        module Outputter        
+          def jquery_script_declaration
+            %Q!:javascript\n  $("#commentForm").validate();\n!
+          end
+        end
+      end # instance methods
+      
+      class Klass < Plugin
+        def initialize
+          after_output do |output,options|
+            jquery_script_declaration + output
+          end
+          on_plugin do
+            Campo::Base.send(:include, Campo::Plugins::JQueryValidation::InstanceMethods::Convenience)
+            Campo::Outputter.send(:include, Campo::Plugins::JQueryValidation::InstanceMethods::Outputter)
+          end
+        end
+      end # klass
+    end # jqueryvalidation
+  
   end # Plugins
   
-  # using the lib from http://docs.jquery.com/Plugins/Validation
-  module JQueryValidation
-  
-    # the simplest validation possible
-    def validate
-      field = self.class == Campo::Label ?
-        self.fields.first :
-        self
-        
-      field.attributes.merge!({ :class => "required" } )
-      self
-    end
-  end
+
   
   
   module Convenience  
@@ -278,7 +307,6 @@ STR
     include Childish
     include Iding
     include Convenience
-    include JQueryValidation
     
     DEFAULT = { tabindex: nil }
 
