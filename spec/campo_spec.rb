@@ -23,8 +23,8 @@ module Campo
 - inners.default = "" if inners.default.nil?
 - @campo_tabindex ||= 0 # for tabindex
 STR
-            s
-          }
+      s
+    }
           
   
     before(:all) { Campo.plugin( :partial ) unless Campo.plugins.keys.include? :partial }
