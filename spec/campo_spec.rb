@@ -27,7 +27,7 @@ STR
           }
           
   
-    before(:all) { Campo.plugin :partial }
+    before(:all) { Campo.plugin( :partial ) unless Campo.plugins.keys.include? :partial }
     after(:all) { Campo.plugins.clear }
 
     describe :output do

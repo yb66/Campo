@@ -729,3 +729,5 @@ STR
   end # Textarea
 
 end
+
+Campo.plugin :partial
