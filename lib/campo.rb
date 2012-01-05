@@ -695,17 +695,17 @@ STR
 
     attr_reader :attributes, :fields
 
-    def initialize( name, inner=nil, attributes={} )
+    def initialize( for_element, inner=nil, attributes={} )
       if inner.kind_of? Hash
         attributes = inner
         inner = nil
       end
-      super( name, attributes )
+      super( nil, attributes.merge(for: for_element) )
 
       @inner = inner
     
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%label{ for: "#{@attributes[:name]}", #{Base.unhash( @attributes, :name )} }\n#{" " * (n + 1) * tab}#{@inner}! 
+        %Q!#{" " * n * tab}%label{ #{Base.unhash( @attributes )} }\n#{" " * (n + 1) * tab}#{@inner}! 
       end
     end
 
