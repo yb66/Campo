@@ -111,13 +111,10 @@ STR
               it { should == expected }
             end # context
           end # context
-          context "with no var for block" do
-            
+          context "with no var for block" do           
             let(:form) do
-              form = Campo::Form.new( "personal_details", action: %Q!"uri("/my/personal_details/update/")! ) do
-              
-                fieldset("Your details") do |f|
-                  
+              form = Campo.form "personal_details", action: %Q!"uri("/my/personal_details/update/")!  do
+                fieldset("Your details") do              
                   text( "full_name", "Full name: ", size: 60 )
                   text( "dob", "Date of birth: ", size: 10 ) #TODO change this
                   fieldset( "Gender: " ) do
@@ -133,12 +130,9 @@ STR
                     checkbox( "contactable",  "In the evening?", value: "evening" )
                   end
                   submit("Save")
-            
-                end # form
-              form
-            end # let
-          end
-      
+                end
+              end
+            end # let      
             subject{ Campo.output form }
             it { should == expected }
           end
