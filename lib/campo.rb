@@ -440,8 +440,6 @@ STR
     
     def run( fields, opts={} )
       opts = options.merge opts
-      puts "opts: #{opts.inspect}"
-      puts "@partial: #{@partial}"
       tab = opts.delete(:tab) || @tab
       
       output = ""
