@@ -306,6 +306,8 @@ STR
   class Base 
     include Childish
     include Iding
+    include Enumerable 
+    alias_method :enumerable_select, :select
     include Convenience
     
     DEFAULT = { tabindex: nil }
@@ -318,6 +320,14 @@ STR
       
       instance_eval( &block ) if block
     end
+    
+    def each(&block)
+      block.call self if block
+      if respond_to?(:fields) &! fields.empty?
+        fields.each{|field| field.each &block }
+      end
+    end
+    
     
     def on_output( &block )
       @output_listener = block
