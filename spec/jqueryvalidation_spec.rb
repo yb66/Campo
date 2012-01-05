@@ -32,8 +32,15 @@ describe :"Campo::Plugins::JQueryValidation" do
       it { should include( Campo::Plugins::JQueryValidation::InstanceMethods::Convenience ) }
     end
     context "included methods" do
-      subject { Campo::Input.new "name"}
-      it { should respond_to( :validate ) }
+      context "Convenience" do
+        subject { Campo::Input.new "name"}
+        it { should respond_to( :validate ) }
+      end
+      context "Outputter" do
+        subject { Campo::Outputter.new }
+        it { should respond_to( :jquery_script_declaration ) }
+        it { should respond_to( :jqv_form_names ) }
+      end
     end
     describe "output" do
       let(:form) {
@@ -47,7 +54,7 @@ describe :"Campo::Plugins::JQueryValidation" do
       it { should_not be_nil }
       it { should be_a_kind_of String }
       it { should include(%Q!:javascript\n  $("#exampleForm").validate();\n!)   }
-      it { should include("# for tabindex\n").should be_true   }
+      it { should include(%Q!class: "required"!)   }
     end
   end
 end
