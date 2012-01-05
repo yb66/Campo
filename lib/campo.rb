@@ -1,5 +1,10 @@
 # encoding: UTF-8
 
+
+require_relative "./campo/plugins.rb"
+require_relative "./campo/plugins/partial.rb"
+require_relative "./campo/plugins/jqueryvalidation.rb"
+
 module Campo
   module Childish
     def push=( child )
@@ -29,11 +34,13 @@ module Campo
     end
     constant
   end
+  
     
   # keeps track of the current plugins
   def self.plugins
     @plugins ||= {}
   end
+  
   
   def self.plugin( name )
     unless plugins.include? name
@@ -43,142 +50,7 @@ module Campo
     end
   end
   
-  module Plugins
     
-    module Pluggable      
-      def before_output( &block )
-        befores << block
-      end
-      
-      def after_output( &block )
-        afters << block
-      end
-      
-      def on_plugin( &block )
-        @extras = block
-      end
-      
-      def extras
-        @extras ||= proc {}
-      end
-    
-      def plugged_in
-        instance_exec &@extras
-      end
-    end
-    
-    class Plugin
-      include Pluggable   
-      def befores
-        @befores ||= []
-      end   
-      
-      def afters
-        @afters ||= []
-      end
-    end
-    
-    module Partial 
-    
-      def self.new
-        Klass.new
-      end
-      
-      module InstanceMethods
-        attr_accessor :partial
-        
-        DECLARATIONS = <<STR
-- atts = {} if atts.nil?
-- atts.default = {} if atts.default.nil?
-- inners = {} if inners.nil?
-- inners.default = "" if inners.default.nil?
-- @campo_tabindex ||= 0 # for tabindex
-STR
-        def declarations
-          DECLARATIONS
-        end
-      end
-    
-      class Klass < Plugin
-    
-      def initialize
-        after_output do |output,opts|
-          opts[:partial] ? 
-            output : # partial
-            declarations + output # whole form
-        end
-        on_plugin do
-          Campo::Outputter.send(:include, Campo::Plugins::Partial::InstanceMethods)
-          Campo::Outputter::DEFAULT_OPTIONS.merge!({partial: false})
-        end
-      end
-    
-        DEFAULT_OPTIONS={partial: false}
-      end # Klass
-    end # Partial
-    
-    # using the lib from http://docs.jquery.com/Plugins/Validation
-    module JQueryValidation  
-    
-      def self.new
-        Klass.new
-      end
-        
-      module InstanceMethods
-        # the simplest validation possible
-        module Convenience
-          def validate
-            field = self.class == Campo::Label ?
-              self.fields.first :
-              self
-              
-            field.attributes.merge!({ :class => "required" } )
-            self
-          end
-        end
-        module Outputter        
-          
-          # holds the names of form(s)
-          attr_accessor :jqv_form_names
-          
-          # builds the declaration for the top of the output
-          def jquery_script_declaration
-            unless jqv_form_names.nil? || jqv_form_names.empty?
-              @jqv_form_names.reduce(":javascript\n") do |mem,name|
-                 mem + %Q!  $("##{name}").validate();\n!
-              end + "\n"
-            else
-              "" # just in case there are no forms for some reason
-            end
-          end
-        end
-      end # instance methods
-      
-      class Klass < Plugin
-        def initialize
-          before_output do |fields,options|
-            #find the form name(s)
-            @jqv_form_names = fields.find_all{|x| x.kind_of? Campo::Form }.map{|x| x.attributes[:name]}
-          end
-          after_output do |output,options|
-            # concat to the current output
-            jquery_script_declaration + output
-          end
-          on_plugin do
-            # adds `validate` to Convenience, it's an easy way to get it where it needs to be
-            Campo::Base.send(:include, Campo::Plugins::JQueryValidation::InstanceMethods::Convenience)
-            # only for the outputter
-            Campo::Outputter.send(:include, Campo::Plugins::JQueryValidation::InstanceMethods::Outputter)
-          end
-        end
-      end # klass
-    end # jqueryvalidation
-  
-  end # Plugins
-  
-
-  
-  
   module Convenience  
     
     # @param [optional, Hash] attributes Any attributes you wish to add to the haml element.
