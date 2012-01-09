@@ -22,29 +22,24 @@ Here's an example form:
 
     # Now starts the real action #
     
-    form = Campo.form "myform", action: "/my/form/update/"
-
-    form.fieldset "Your details" do |f|
-      f.text "full_name",  size: 60 
-      f.text "dob", "Date of birth: ", size: 8
-      
-      f.select( "gender_id", {opts: genders }).with_default.labelled( "Gender: " )
-      
-      f.select "teas" do |s|
-        s.with_default
-        s.option("ceylon")
-        s.option("breakfast")
-        s.option("earl grey")
-        s.option("oolong")
-        s.option("sencha")
-      end.labelled "Favourite tea:"
-      
-      f.text "occupation", "Occupation: ", size: 60  
-      f.text "phone_landline", "Phone  landline : ", size: 20  
-      f.text "phone_mobile", "Phone  mobile : ", size: 20  
-
-      f.submit "Save"
-  
+    form = Campo.form "personal_details", action: %Q!"uri("/my/personal_details/update/")!  do
+      fieldset("Your details") do              
+        text( "full_name", "Full name: ", size: 60 )
+        text( "dob", "Date of birth: ", size: 10 ) #TODO change this
+        fieldset( "Gender: " ) do
+          radio( "gender", "Male", value: 1 )
+          radio( "gender", "Female", value: 2 )
+        end
+        select( "ethnicorigin_id", {opts: [[1, "White"],[2,"Asian"],[3,"Black"],[4,"Chinese and Other"], [5,"Mixed"] ] }).with_default.labelled( "Ethnic-origin: " )
+        text( "occupation", "Occupation: ", size: 60 )
+        text( "phone_landline", "Phone (landline): ", size: 20 )
+        text( "phone_mobile", "Phone (mobile): ", size: 20 )
+        fieldset( "May we contact you..." ) do
+          checkbox( "contactable", "In the day?", value: "day" )
+          checkbox( "contactable",  "In the evening?", value: "evening" )
+        end
+        submit("Save")
+      end
     end
 
 and the output:
