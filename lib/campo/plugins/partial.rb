@@ -18,7 +18,7 @@ module Campo
 - atts = {} if atts.nil?
 - atts.default_proc = proc {|hash, key| hash[key] = {} } if atts.default_proc.nil?
 - inners = {} if inners.nil?
-- inners.default_proc = proc {|hash, key| hash[key] = {} } if inners.default_proc.nil?
+- inners.default = "" if inners.default.nil?
 - @campo_tabindex ||= 0 # for tabindex
 STR
         def declarations

@@ -1,3 +1,7 @@
+v0.5.2b Turns out that you can learn a lot if you run the specs, such as inners didn't need changing to default_proc, just atts.
+
+v0.5.1b Hash defaults for form should work better now as moved to using Hash#default_proc which updates the key the way required.
+
 v0.5.0b Added a JQuery validation plugin.
 
 v0.4.0b Added an outputter class, currently hidden under old API. Improved argument passing, added before and after hooks for output. Extra args to Campo.output are now passed as options, and partials are done this way too instead of the clumsy prepended argument.
