@@ -523,8 +523,6 @@ module Campo
       
       atts_name = "#{name.gsub(/\W/, "_")}#{id_tag}"
       
-      puts "id_tag: #{id_tag}"
-      
       super( name, 
             { type: type.to_s, 
               id: "#{name}#{id_tag}",
