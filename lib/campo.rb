@@ -115,6 +115,10 @@ module Campo
       input( name, :text, label, attributes  )
     end
     
+    def hidden( name, attributes={}  )
+      self << Campo::Input.new( name, :hidden, attributes )
+    end
+    
     
     # @param (see #text)
     def password( name, label=nil, attributes={}  )
@@ -205,7 +209,7 @@ module Campo
     attr_accessor :attributes, :fields
 
     def initialize( name, attributes={}, &block )
-      @attributes = DEFAULT.merge( attributes.merge({name: name}) ).reject{|k,v| v.nil? }
+      @attributes = DEFAULT.merge( {id: name}.merge(attributes.merge({name: name})) ).reject{|k,v| v.nil? }
       @fields = []
       
       instance_eval( &block ) if block
@@ -232,7 +236,7 @@ module Campo
     def labelled( inner=nil )
       inner ||= self.attributes[:name].gsub("_"," ").capitalize
       parent = self.parent
-      label = Label.new( %Q!#{@attributes[:name] + id_tag(@attributes[:value]).gsub(/\W/, "_")}!, inner ) << self
+      label = Label.new( %Q!#{@attributes[:id]}!, inner ) << self
       retval = if parent.nil?
         label
       else
@@ -354,7 +358,6 @@ module Campo
     #       #... more fields follow
     #     end
     def initialize(name,  attributes={} )
-      attributes[:id] = name.gsub(/\W/, "_") if attributes[:id].nil?
       super( name, DEFAULT.merge( attributes ) )
       self.on_output do |n=0, tab=2|
         %Q!#{" " * n * tab}%form{ atts[:#{name.gsub(/\W/, "_").downcase}], #{Base.unhash( @attributes )} }!
@@ -512,17 +515,28 @@ module Campo
     #{ size: nil, maxlength: nil, type: "hidden" }
     #{ type: "submit" }
     def initialize( name, type=:text, attributes={} )
+      id_tag = id_tag(
+        [:text,:hidden,:submit,:password].include?(type) ? 
+          nil : 
+          attributes[:value]
+      ).gsub(/\W/, "_")
+      
+      atts_name = "#{name.gsub(/\W/, "_")}#{id_tag}"
+      
+      puts "id_tag: #{id_tag}"
+      
       super( name, 
             { type: type.to_s, 
-              id: "#{name}#{id_tag(attributes[:value]).gsub(/\W/, "_")}",
+              id: "#{name}#{id_tag}",
               tabindex: %q!#{@campo_tabindex += 1}!, 
             }.merge( attributes ) )
             
                
       @attributes.delete(:name) if type == :submit
+      @attributes.delete(:tabindex) if type == :hidden
             
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%input{ atts[:#{name.gsub(/\W/, "_")}#{id_tag(attributes[:value]).gsub(/\W/, "_")}], #{Base.unhash( @attributes )} }! 
+        %Q!#{" " * n * tab}%input{ atts[:#{atts_name}], #{Base.unhash( @attributes )} }! 
       end
     end
   end
