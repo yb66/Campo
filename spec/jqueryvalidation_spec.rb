@@ -50,11 +50,6 @@ describe :"Campo::Plugins::JQueryValidation" do
           text "c"
         end
       }
-      let(:jquery) { s = <<STR
-
-STR
-        s.chomp
-      }
       let(:expected) { <<'STR'
 :javascript
   $().ready(function(){
