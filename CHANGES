@@ -1,3 +1,5 @@
+v0.6.1b The function for the JQuery validation wasn't right, fixed it now, and updated the specs a little for it.
+
 v0.6.0b All form fields get an id. Added "hidden" input convenience method.
 
 v0.5.2b Turns out that you can learn a lot if you run the specs, such as inners didn't need changing to default_proc, just atts.
