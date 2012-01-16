@@ -8,6 +8,9 @@ Btw, I'll be using this with Sinatra, if you're using Rails you'll need to work 
 
 As always, keep in mind this is an open source project (licence below) and you can contribute! If you find a problem or would like a feature changed or added, let me know, or even better, fork the project and send me a pull request.
 
+## Double note! ##
+
+I use Campo myself, and I'm trying to improve it. As I don't want to push new stuff out before I've had a chance to give it a whirl and see if it makes sense and works (through experience, specs aren't everything) I'll have several versions of this up here, some unreleased. I tend to append a 'b' to the end of an unreleased version. Please make sure you're reading the documentation for the version you're using!
 
 ## Why write this? ##
 
