@@ -50,10 +50,32 @@ describe :"Campo::Plugins::JQueryValidation" do
           text "c"
         end
       }
+      let(:jquery) { s = <<STR
+
+STR
+        s.chomp
+      }
+      let(:expected) { <<'STR'
+:javascript
+  $().ready(function(){
+    $("#exampleForm").validate();
+  });
+%form{ atts[:exampleform], id: "exampleForm", method: "POST", name: "exampleForm",  }
+  %label{ for: "a",  }
+    A
+    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", class: "required",  }
+  %label{ for: "b",  }
+    B
+    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b",  }
+  %label{ for: "c",  }
+    C
+    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c",  }
+STR
+      }
       subject { Campo.output(form) }
       it { should_not be_nil }
       it { should be_a_kind_of String }
-      it { should include(%Q!:javascript\n  $("#exampleForm").validate();\n!)   }
+      it { should == expected }
       it { should include(%Q!class: "required"!)   }
     end
   end

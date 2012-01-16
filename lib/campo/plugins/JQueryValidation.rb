@@ -33,8 +33,12 @@ module Campo
           def jquery_script_declaration
             unless jqv_form_names.nil? || jqv_form_names.empty?
               @jqv_form_names.reduce(":javascript\n") do |mem,name|
-                 mem + %Q!  $("##{name}").validate();\n!
-              end + "\n"
+                 mem + <<STR
+  $().ready(function(){
+    $("##{name}").validate();
+  });
+STR
+              end
             else
               "" # just in case there are no forms for some reason
             end
