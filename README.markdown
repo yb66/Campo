@@ -109,6 +109,7 @@ These get added to the top when calling `Campo.output`, to provide sane defaults
     - atts.default = {} if atts.default.nil?
     - inners = {} if inners.nil?
     - inners.default = "" if inners.default.nil?
+    - @campo_tabindex ||= 0 # for tabindex
 
 Note: if you don't want these added, you can do:
 
