@@ -177,7 +177,7 @@ And the Haml generated:
 
 In the examples above, notice how the output for each tag gets a local variable added to the front. 
 
-> %option{ *atts[:bands_supergrass]*, id: "bands_supergrass", value: "Supergrass", name: "bands",  }Supergrass
+> %option{ **atts[:bands_supergrass]**, id: "bands_supergrass", value: "Supergrass", name: "bands",  }Supergrass
 
 You can either fill that variable with a hash pair, or an empty hash gets passed and nothing happens. Read the Haml docs link at the top of the readme for more info.
 
