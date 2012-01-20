@@ -158,9 +158,16 @@ module Campo
       submit
     end
     
-    
-    def textarea( *args, &block  )
-      textarea = Campo::Textarea.new( *args )
+    # There is no easy way to give this convenience method in the same convention as the other methods, so this uses a hash argument for the label
+    # @example
+    #   textarea "name", "The text wrapped inside", label: "Example textarea"
+    def textarea( name,  inner=nil, attributes={}, &block  ) 
+      if inner.kind_of? Hash
+        attributes = inner
+        inner = nil
+      end
+      label = attributes.delete(:label) || attributes.delete(:labelled)
+      textarea = Campo::Textarea.new( name, inner, attributes ).labelled( label )
       self << textarea
       textarea
     end

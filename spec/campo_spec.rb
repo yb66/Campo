@@ -1248,22 +1248,48 @@ $.strip + "\n" }
         
         context "and using convenience method" do
           let(:form) { Campo::Form.new( "myform" ) }
-          subject { form.textarea( "textie" ) }
-          it { should_not be_nil }
-          it { should be_a_kind_of(Textarea) }
-          
-          describe "the full output" do
-            let(:expected) { top_bit + %q!
+          context "Without an explicit label parameter" do
+            subject { form.textarea( "textie" ) }
+            it { should_not be_nil }
+            it { should be_a_kind_of(Label) }
+            it { should contain_a_kind_of(Textarea) }
+            
+            describe "the full output" do
+              let(:expected) { top_bit + %q!
 %form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
-  %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", id: "textie", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n"}
-            let(:form){ 
-              form = Campo::Form.new( "myform" )
-              form.textarea( "textie" ) 
-              form
-            }
-            subject { Campo.output form }
-            it { should == expected }
-          end    
+  %label{ for: "textie",  }
+    Textie
+    %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", id: "textie", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n"}
+              let(:form){ 
+                form = Campo::Form.new( "myform" )
+                form.textarea( "textie" ) 
+                form
+              }
+              subject { Campo.output form }
+              it { should == expected }
+            end    
+          end
+          context "With an explicit label parameter" do
+            subject { form.textarea( "textie", label: "Textie labelled" ) }
+            it { should_not be_nil }
+            it { should be_a_kind_of(Label) }
+            it { should contain_a_kind_of(Textarea) }
+            
+            describe "the full output" do
+              let(:expected) { top_bit + %q!
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+  %label{ for: "textie",  }
+    Textie labelled
+    %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", id: "textie", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n"}
+              let(:form){ 
+                form = Campo::Form.new( "myform" )
+                form.textarea( "textie", labelled: "Textie labelled") 
+                form
+              }
+              subject { Campo.output form }
+              it { should == expected }
+            end 
+          end
         end      
       
         context "and an attribute" do
@@ -1275,12 +1301,15 @@ $.strip + "\n" }
             let(:form) { Campo::Form.new( "myform" ) }
             subject { form.textarea( "textie" ) }
             it { should_not be_nil }
-            it { should be_a_kind_of(Textarea) }
+            it { should be_a_kind_of(Label) }
+            it { should contain_a_kind_of(Textarea) }
 
             describe "the full output" do
               let(:expected) { top_bit + %q!
 %form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
-  %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", id: "textie", cols: "60", rows: "10", name: "textie",  }= inners[:textie] 
+  %label{ for: "textie",  }
+    Textie
+    %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", id: "textie", cols: "60", rows: "10", name: "textie",  }= inners[:textie] 
   !.strip + " \n"}
               let(:form){ 
                 form = Campo::Form.new( "myform" )
