@@ -601,12 +601,12 @@ s.chomp
           context "With a name" do
             let(:expected) { top_bit + %q!
 %form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
-  %input{ atts[:Save], tabindex: "#{@campo_tabindex += 1}", id: "Save", type: "submit", value: "Save",  }
+  %input{ atts[:save], tabindex: "#{@campo_tabindex += 1}", id: "save", type: "submit", value: "Save",  }
 
 !.strip + "\n" }
             
             subject { 
-              form.submit( "Save" )
+              form.submit( "save", value: "Save" )
               Campo.output form
             }
             

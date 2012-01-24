@@ -152,7 +152,7 @@ module Campo
     
     # @param [optional,String] name
     # @param [optional, Hash] attributes Any attributes you wish to add to the haml element.
-    def submit( name="Submit", label_inner=nil, attributes={} )
+    def submit( name="Submit", attributes={} )
       submit = Campo::Input.new( name, :submit, {value: name}.merge(attributes) )
       self << submit
       submit
