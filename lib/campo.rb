@@ -462,7 +462,7 @@ module Campo
     #       %option{  value: "", disabled: "disabled", name: "teas",  }My fave tea is:
     #       %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
     def with_default( inner="Choose one:" )
-      self.fields.unshift Campo::Option.new( @attributes[:name], "", inner , nil, {disabled: "disabled" } )
+      self.fields.unshift Campo::Option.new( @attributes[:name], "", inner , nil, {disabled: "disabled", id: "#{@attributes[:name]}_default" } )
       self
     end
     

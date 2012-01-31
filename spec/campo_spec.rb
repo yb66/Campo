@@ -47,7 +47,7 @@ STR
 %label{ for: "teas",  }
   Favourite tea:
   %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", id: "teas", name: "teas",  }
-    %option{ atts[:teas], id: "teas", value: "", disabled: "disabled", name: "teas",  }Choose one:
+    %option{ atts[:teas_default], id: "teas_default", value: "", disabled: "disabled", name: "teas",  }Choose one:
     %option{ atts[:teas_ceylon], id: "teas_ceylon", value: "ceylon", name: "teas",  }Ceylon
     %option{ atts[:teas_breakfast], id: "teas_breakfast", value: "breakfast", name: "teas",  }Breakfast
     %option{ atts[:teas_earl_grey], id: "teas_earl_grey", value: "earl grey", name: "teas",  }Earl grey
@@ -68,7 +68,7 @@ STR
       describe "A realish form" do
         context "Given a form" do
           let(:expected) {
-top_bit + %Q!%form{ atts[:personal_details], id: "personal_details", method: "POST", action: uri("/my/personal_details/update/"), name: "personal_details",  }\n  %fieldset{  }\n    %legend{  }Your details\n    %label{ for: "full_name",  }\n      Full name: \n      %input{ atts[:full_name], tabindex: "\#{@campo_tabindex += 1}", id: "full_name", type: "text", size: "60", name: "full_name",  }\n    %label{ for: "dob",  }\n      Date of birth: \n      %input{ atts[:dob], tabindex: "\#{@campo_tabindex += 1}", id: "dob", type: "text", size: "10", name: "dob",  }\n    %fieldset{  }\n      %legend{  }Gender: \n      %label{ for: "gender_1",  }\n        Male\n        %input{ atts[:gender_1], tabindex: "\#{@campo_tabindex += 1}", id: "gender_1", type: "radio", value: "1", name: "gender",  }\n      %label{ for: "gender_2",  }\n        Female\n        %input{ atts[:gender_2], tabindex: "\#{@campo_tabindex += 1}", id: "gender_2", type: "radio", value: "2", name: "gender",  }\n    %label{ for: "ethnicorigin_id",  }\n      Ethnic-origin: \n      %select{ atts[:ethnicorigin_id], tabindex: "\#{@campo_tabindex += 1}", id: "ethnicorigin_id", name: "ethnicorigin_id",  }\n        %option{ atts[:ethnicorigin_id], id: "ethnicorigin_id", value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:\n        %option{ atts[:ethnicorigin_id_1], id: "ethnicorigin_id_1", value: "1", name: "ethnicorigin_id",  }White\n        %option{ atts[:ethnicorigin_id_2], id: "ethnicorigin_id_2", value: "2", name: "ethnicorigin_id",  }Asian\n        %option{ atts[:ethnicorigin_id_3], id: "ethnicorigin_id_3", value: "3", name: "ethnicorigin_id",  }Black\n        %option{ atts[:ethnicorigin_id_4], id: "ethnicorigin_id_4", value: "4", name: "ethnicorigin_id",  }Chinese and Other\n        %option{ atts[:ethnicorigin_id_5], id: "ethnicorigin_id_5", value: "5", name: "ethnicorigin_id",  }Mixed\n    %label{ for: "occupation",  }\n      Occupation: \n      %input{ atts[:occupation], tabindex: "\#{@campo_tabindex += 1}", id: "occupation", type: "text", size: "60", name: "occupation",  }\n    %label{ for: "phone_landline",  }\n      Phone (landline): \n      %input{ atts[:phone_landline], tabindex: "\#{@campo_tabindex += 1}", id: "phone_landline", type: "text", size: "20", name: "phone_landline",  }\n    %label{ for: "phone_mobile",  }\n      Phone (mobile): \n      %input{ atts[:phone_mobile], tabindex: "\#{@campo_tabindex += 1}", id: "phone_mobile", type: "text", size: "20", name: "phone_mobile",  }\n    %fieldset{  }\n      %legend{  }May we contact you...\n      %label{ for: "contactable_day",  }\n        In the day?\n        %input{ atts[:contactable_day], tabindex: "\#{@campo_tabindex += 1}", id: "contactable_day", type: "checkbox", value: "day", name: "contactable",  }\n      %label{ for: "contactable_evening",  }\n        In the evening?\n        %input{ atts[:contactable_evening], tabindex: "\#{@campo_tabindex += 1}", id: "contactable_evening", type: "checkbox", value: "evening", name: "contactable",  }\n    %input{ atts[:method], id: "method", type: "hidden", value: "put", name: "method",  }\n    %input{ atts[:Save], tabindex: "\#{@campo_tabindex += 1}", id: "Save", type: "submit", value: "Save",  }\n!
+top_bit + %Q!%form{ atts[:personal_details], id: "personal_details", method: "POST", action: uri("/my/personal_details/update/"), name: "personal_details",  }\n  %fieldset{  }\n    %legend{  }Your details\n    %label{ for: "full_name",  }\n      Full name: \n      %input{ atts[:full_name], tabindex: "\#{@campo_tabindex += 1}", id: "full_name", type: "text", size: "60", name: "full_name",  }\n    %label{ for: "dob",  }\n      Date of birth: \n      %input{ atts[:dob], tabindex: "\#{@campo_tabindex += 1}", id: "dob", type: "text", size: "10", name: "dob",  }\n    %fieldset{  }\n      %legend{  }Gender: \n      %label{ for: "gender_1",  }\n        Male\n        %input{ atts[:gender_1], tabindex: "\#{@campo_tabindex += 1}", id: "gender_1", type: "radio", value: "1", name: "gender",  }\n      %label{ for: "gender_2",  }\n        Female\n        %input{ atts[:gender_2], tabindex: "\#{@campo_tabindex += 1}", id: "gender_2", type: "radio", value: "2", name: "gender",  }\n    %label{ for: "ethnicorigin_id",  }\n      Ethnic-origin: \n      %select{ atts[:ethnicorigin_id], tabindex: "\#{@campo_tabindex += 1}", id: "ethnicorigin_id", name: "ethnicorigin_id",  }\n        %option{ atts[:ethnicorigin_id_default], id: "ethnicorigin_id_default", value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:\n        %option{ atts[:ethnicorigin_id_1], id: "ethnicorigin_id_1", value: "1", name: "ethnicorigin_id",  }White\n        %option{ atts[:ethnicorigin_id_2], id: "ethnicorigin_id_2", value: "2", name: "ethnicorigin_id",  }Asian\n        %option{ atts[:ethnicorigin_id_3], id: "ethnicorigin_id_3", value: "3", name: "ethnicorigin_id",  }Black\n        %option{ atts[:ethnicorigin_id_4], id: "ethnicorigin_id_4", value: "4", name: "ethnicorigin_id",  }Chinese and Other\n        %option{ atts[:ethnicorigin_id_5], id: "ethnicorigin_id_5", value: "5", name: "ethnicorigin_id",  }Mixed\n    %label{ for: "occupation",  }\n      Occupation: \n      %input{ atts[:occupation], tabindex: "\#{@campo_tabindex += 1}", id: "occupation", type: "text", size: "60", name: "occupation",  }\n    %label{ for: "phone_landline",  }\n      Phone (landline): \n      %input{ atts[:phone_landline], tabindex: "\#{@campo_tabindex += 1}", id: "phone_landline", type: "text", size: "20", name: "phone_landline",  }\n    %label{ for: "phone_mobile",  }\n      Phone (mobile): \n      %input{ atts[:phone_mobile], tabindex: "\#{@campo_tabindex += 1}", id: "phone_mobile", type: "text", size: "20", name: "phone_mobile",  }\n    %fieldset{  }\n      %legend{  }May we contact you...\n      %label{ for: "contactable_day",  }\n        In the day?\n        %input{ atts[:contactable_day], tabindex: "\#{@campo_tabindex += 1}", id: "contactable_day", type: "checkbox", value: "day", name: "contactable",  }\n      %label{ for: "contactable_evening",  }\n        In the evening?\n        %input{ atts[:contactable_evening], tabindex: "\#{@campo_tabindex += 1}", id: "contactable_evening", type: "checkbox", value: "evening", name: "contactable",  }\n    %input{ atts[:method], id: "method", type: "hidden", value: "put", name: "method",  }\n    %input{ atts[:Save], tabindex: "\#{@campo_tabindex += 1}", id: "Save", type: "submit", value: "Save",  }\n!
           } # let expected
           context "block with var style" do
             let(:form) do
@@ -126,7 +126,7 @@ top_bit + %Q!%form{ atts[:personal_details], id: "personal_details", method: "PO
       %label{ for: "ethnicorigin_id",  }
         Ethnic-origin: 
         %select{ atts[:ethnicorigin_id], tabindex: "\#{@campo_tabindex += 1}", id: "ethnicorigin_id", name: "ethnicorigin_id",  }
-          %option{ atts[:ethnicorigin_id], id: "ethnicorigin_id", value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:
+          %option{ atts[:ethnicorigin_id_default], id: "ethnicorigin_id_default", value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:
           %option{ atts[:ethnicorigin_id_1], id: "ethnicorigin_id_1", value: "1", name: "ethnicorigin_id",  }White
           %option{ atts[:ethnicorigin_id_2], id: "ethnicorigin_id_2", value: "2", name: "ethnicorigin_id",  }Asian
           %option{ atts[:ethnicorigin_id_3], id: "ethnicorigin_id_3", value: "3", name: "ethnicorigin_id",  }Black
@@ -534,7 +534,7 @@ s.chomp
   %label{ for: "teas",  }
     Favourite tea:
     %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", id: "teas", name: "teas",  }
-      %option{ atts[:teas], id: "teas", value: "", disabled: "disabled", name: "teas",  }Choose one:
+      %option{ atts[:teas_default], id: "teas_default", value: "", disabled: "disabled", name: "teas",  }Choose one:
       %option{ atts[:teas_ceylon], id: "teas_ceylon", value: "ceylon", name: "teas",  }Ceylon
       %option{ atts[:teas_breakfast], id: "teas_breakfast", value: "breakfast", name: "teas",  }Breakfast
       %option{ atts[:teas_earl_grey], id: "teas_earl_grey", value: "earl grey", name: "teas",  }Earl grey
@@ -555,14 +555,14 @@ s.chomp
   %label{ for: "teas",  }
     Favourite tea:
     %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", id: "teas", name: "teas",  }
-      %option{ atts[:teas], id: "teas", value: "", disabled: "disabled", name: "teas",  }Choose one:
+      %option{ atts[:teas_default], id: "teas_default", value: "", disabled: "disabled", name: "teas",  }Choose one:
       %option{ atts[:teas_ceylon], id: "teas_ceylon", value: "ceylon", name: "teas",  }Ceylon
       %option{ atts[:teas_breakfast], id: "teas_breakfast", value: "breakfast", name: "teas",  }Breakfast
       %option{ atts[:teas_earl_grey], id: "teas_earl_grey", value: "earl grey", name: "teas",  }Earl grey
   %label{ for: "coffees",  }
     Favourite coffee:
     %select{ atts[:coffees], tabindex: "#{@campo_tabindex += 1}", id: "coffees", name: "coffees",  }
-      %option{ atts[:coffees], id: "coffees", value: "", disabled: "disabled", name: "coffees",  }Choose one:
+      %option{ atts[:coffees_default], id: "coffees_default", value: "", disabled: "disabled", name: "coffees",  }Choose one:
       %option{ atts[:coffees_blue_mountain], id: "coffees_blue_mountain", value: "blue mountain", name: "coffees",  }Blue mountain
       %option{ atts[:coffees_kenyan_peaberry], id: "coffees_kenyan_peaberry", value: "kenyan peaberry", name: "coffees",  }Kenyan peaberry
       %option{ atts[:coffees_colombian], id: "coffees_colombian", value: "colombian", name: "coffees",  }Colombian
@@ -797,7 +797,7 @@ $.strip + "\n" }
               
               context "Campo.output" do
                 let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }
-  %option{ atts[:pqr], id: "pqr", value: "", disabled: "disabled", name: "pqr",  }Choose one:!.strip + "\n"  }
+  %option{ atts[:pqr_default], id: "pqr_default", value: "", disabled: "disabled", name: "pqr",  }Choose one:!.strip + "\n"  }
                 subject { Campo.output tag.with_default, :partial=>true }
                 it { should == expected }
               end
@@ -840,7 +840,7 @@ $.strip + "\n" }
 
               context "Campo.output" do
                 let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }
-  %option{ atts[:pqr], id: "pqr", value: "", disabled: "disabled", name: "pqr",  }Choose one:
+  %option{ atts[:pqr_default], id: "pqr_default", value: "", disabled: "disabled", name: "pqr",  }Choose one:
   %option{ atts[:pqr_volvo], id: "pqr_volvo", value: "volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], id: "pqr_saab", value: "saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], id: "pqr_audi", value: "audi", name: "pqr",  }Audi
@@ -966,7 +966,7 @@ $.strip + "\n" }
   
                   context "Campo.output" do
                     let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }
-  %option{ atts[:pqr], id: "pqr", value: "", disabled: "disabled", name: "pqr",  }Choose one:
+  %option{ atts[:pqr_default], id: "pqr_default", value: "", disabled: "disabled", name: "pqr",  }Choose one:
   %option{ atts[:pqr_volvo], id: "pqr_volvo", value: "volvo", name: "pqr",  }Volvo
   %option{ atts[:pqr_saab], id: "pqr_saab", value: "saab", name: "pqr",  }Saab
   %option{ atts[:pqr_audi], id: "pqr_audi", value: "audi", name: "pqr",  }Audi
