@@ -1,3 +1,5 @@
+v0.6.4b Default option for select tags now has its id attribute appended with "_default" to stop the id clashing with the select tag.
+
 v0.6.3b Convenience method `submit` is now more convenient as it takes the value as part of the hash args without a pesky unused parameter getting in the way.
 
 v0.6.2b Added easier labelling for textareas.
