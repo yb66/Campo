@@ -56,7 +56,7 @@ describe :"Campo::Plugins::JQueryValidation" do
     $("#exampleForm").validate();
   });
 %form{ atts[:exampleform], id: "exampleForm", method: "POST", name: "exampleForm",  }
-  %label{ for: "a",  }
+  %label{ for: "a", class: "required",  }
     A
     %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", class: "required",  }
   %label{ for: "b",  }

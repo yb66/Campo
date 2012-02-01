@@ -16,11 +16,14 @@ module Campo
         # the simplest validation possible
         module Convenience
           def validate
-            field = self.class == Campo::Label ?
-              self.fields.first :
-              self
-              
-            field.attributes.merge!({ :class => "required" } )
+            if self.class == Campo::Label
+              self.fields.first.attributes.merge!({ :class => "required" } )
+            else
+              self.parent.attributes.merge!({ :class => "required" } ) if self.parent.kind_of? Campo::Label
+            end      
+                    
+            self.attributes.merge!({ :class => "required" } )
+            
             self
           end
         end
