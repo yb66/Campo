@@ -1,3 +1,3 @@
 module Campo
-  VERSION = "0.6.4b"
+  VERSION = "0.6.5b"
 end
