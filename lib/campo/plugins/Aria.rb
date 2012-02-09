@@ -26,7 +26,7 @@ module Campo
             label.fields.push Campo::Span.new( span_id, message )
             
             field.attributes[:"aria-describedby"] = span_id
-            
+            self
           end # def
         end # Convenience 
       end # InstanceMethods
