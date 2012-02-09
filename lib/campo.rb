@@ -618,6 +618,21 @@ module Campo
       end
     end
   end # Textarea
+  
+  # add whatever you need to with a literal
+  class Span < Base
+  
+    def initialize( id, inner, attributes={} )
+      super( id, attributes )
+      @attributes.delete(:name) # only id for this element
+      @inner = inner
+
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%span{#{Base.unhash( @attributes )}}\n#{" " * (n + 1) * tab}#{@inner}!
+      end
+      self
+    end
+  end # Literal
 
 end
 
