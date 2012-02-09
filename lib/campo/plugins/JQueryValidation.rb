@@ -11,19 +11,78 @@ module Campo
       def self.new
         Klass.new
       end
+      
+      module Rules  
+        def self.render
+          return "" if Rules.rules.empty?
+          output = @jqv_rules.map do |(field,rs)| 
+            "#{field}: { " << 
+            rs.map{|k,v| "#{k}: #{v}" }.join(",") <<
+            " }"
+          end.join(",\n" + "  " * 4)
+          output = <<STR
+rules: {
+        #{output}
+      }
+STR
+   
+          output.chomp
+        end
+        def self.rules
+          if @jqv_rules.nil?
+              @jqv_rules = {}
+              @jqv_rules.default_proc = proc {|hash, key| hash[key] = {} }
+            end
+          puts "### @jqv_rules: #{@jqv_rules.inspect}"
+          @jqv_rules
+        end
+          
+        def self.[](key)
+          Rules.rules[key]
+        end
+        def self.[]=( key,value )
+          value = {value => true} unless value.kind_of? Hash
+          Rules.rules[key].merge! value
+          Rules.rules
+        end
+        def self.reset
+          @jqv_rules = nil
+        end
+      end 
         
       module InstanceMethods
         # the simplest validation possible
         module Convenience
-          def validate
-            if self.kind_of? Campo::Label
-              self.fields.first.attributes.merge!({ :class => "required" } )
-            else
-              self.parent.attributes.merge!({ :class => "required" } ) if self.parent.kind_of? Campo::Label
-            end      
-                    
-            self.attributes.merge!({ :class => "required" } )
+          def validate( *args )
+          
+            label, field = if self.kind_of? Campo::Label
+              [self,self.fields.first] # for the key            
+            elsif self.parent.kind_of? Campo::Label
+              [self.parent, self]  # for the key
+            end
             
+            key = field.attributes[:id] || field.attributes[:name]
+            puts "key: #{key}"
+            
+            # required
+            if args.empty? || args.include?( :required )
+              [label, field].each do |elem|
+                elem.attributes.merge!({ :class => "required" } )
+              end
+              Rules[key] = :required unless key.nil?
+            end
+            
+            if self.attributes.include? :size
+              # maxlength
+            end
+            
+            if self.attributes.include? :size
+              # maxlength
+            end
+            if args.include?( :digits )
+              # digits
+            end
+            puts "### validate Rules.rules: #{Rules.rules.inspect}"
             self
           end
         end
@@ -38,7 +97,9 @@ module Campo
               @jqv_form_names.reduce(":javascript\n") do |mem,name|
                  mem + <<STR
   $().ready(function(){
-    $("##{name}").validate();
+    $("##{name}").validate({
+      #{JQueryValidation::Rules.render}
+    });
   });
 STR
               end
@@ -57,7 +118,9 @@ STR
           end
           after_output do |output,options|
             # concat to the current output
-            jquery_script_declaration + output
+            out = jquery_script_declaration + output
+            Rules.reset
+            out
           end
           on_plugin do
             # adds `validate` to Convenience, it's an easy way to get it where it needs to be
