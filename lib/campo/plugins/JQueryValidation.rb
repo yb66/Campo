@@ -54,24 +54,28 @@ STR
         # the simplest validation possible
         module Convenience
           def validate( *args )
+          
+            label, field = if self.kind_of? Campo::Label
+              [self,self.fields.first] # for the key            
+            elsif self.parent.kind_of? Campo::Label
+              [self.parent, self]  # for the key
+            end
+            
+            key = field.attributes[:id] || field.attributes[:name]
+            puts "key: #{key}"
             
             # required
             if args.empty? || args.include?( :required )
-              field = if self.kind_of? Campo::Label
-                self.fields.first.attributes.merge!({ :class => "required" } )
-                self.fields.first # for the key
-              elsif self.parent.kind_of? Campo::Label
-                self.parent.attributes.merge!({ :class => "required" } ) 
-                self.parent  # for the key
-              end      
-                      
-              self.attributes.merge!({ :class => "required" } )
-              
-              key = field.attributes[:id] || field.attributes[:name]
-              puts "key: #{key}"
+              [label, field].each do |elem|
+                elem.attributes.merge!({ :class => "required" } )
+              end
               Rules[key] = :required unless key.nil?
             end
             
+            if self.attributes.include? :size
+              # maxlength
+            end
+
             if self.attributes.include? :size
               # maxlength
             end
