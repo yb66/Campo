@@ -617,6 +617,25 @@ s.chomp
       end
     end
 
+    describe Span do
+      let(:tag) { Span.new "my_id", "anything at all at all" }
+      subject { tag }
+      it { should_not be_nil }
+      it { should be_a_kind_of( Span ) }
+
+      describe :output do
+        let(:expected) { %Q!%span{id: "my_id", }\n  anything at all at all! }
+        subject { tag.output }
+        it { should == expected }
+      end
+
+      describe "Campo.output" do
+        let(:expected) { %Q!%span{id: "my_id", }\n  anything at all at all\n! }
+        subject { Campo.output tag, :partial=>true }
+        it { should == expected }
+      end
+      
+    end
 
     describe Literal do
       let(:tag) { Literal.new "anything at all at all" }
