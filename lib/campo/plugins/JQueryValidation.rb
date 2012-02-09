@@ -76,6 +76,8 @@ STR
                   Rules[key] = {maxlength: field.attributes[:size]}
                 end
               end
+              # http://docs.jquery.com/Plugins/Validation/Methods/digits
+              Rules[key] = :digits if args.include? :digits
             end
             
             self
