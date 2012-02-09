@@ -4,6 +4,7 @@
 require_relative "./campo/plugins.rb"
 require_relative "./campo/plugins/partial.rb"
 require_relative "./campo/plugins/jqueryvalidation.rb"
+require_relative "./campo/plugins/aria.rb"
 
 module Campo
   module Childish
@@ -42,10 +43,10 @@ module Campo
   end
   
   
-  def self.plugin( name )
+  def self.plugin( name, options={} )
     unless plugins.include? name
       modname = (str = name.to_s) && (str[0,1].upcase + str[1..-1])
-      plugins[name] = constantize("Campo::Plugins::#{modname}").new
+      plugins[name] = constantize("Campo::Plugins::#{modname}").new options
       plugins[name].plugged_in
     end
   end
@@ -256,7 +257,7 @@ module Campo
     end # labelled
 
     def self.unhash( hash, skip=nil )
-      hash.reject{|k,v| v.nil?  }.reject{|k,v| k.to_sym == skip.to_sym unless skip.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k}: #{Base.quotable(v)}, !}
+      hash.reject{|k,v| v.nil?  }.reject{|k,v| k.to_sym == skip.to_sym unless skip.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k.to_s.include?("-") ? ":\"#{k}\" =>" : "#{k}:"} #{Base.quotable(v)}, !}
     end
     
     # if the string provided begins with a double quote but does not end in one, make it an unquoted string on output
@@ -618,7 +619,23 @@ module Campo
       end
     end
   end # Textarea
+  
+  # add whatever you need to with a literal
+  class Span < Base
+  
+    def initialize( id, inner, attributes={} )
+      super( id, attributes )
+      @attributes.delete(:name) # only id for this element
+      @inner = inner
+
+      self.on_output do |n=0, tab=2|
+        %Q!#{" " * n * tab}%span{#{Base.unhash( @attributes )}}\n#{" " * (n + 1) * tab}#{@inner}!
+      end
+      self
+    end
+  end # Literal
 
 end
 
 Campo.plugin :partial
+Campo.plugin :Aria

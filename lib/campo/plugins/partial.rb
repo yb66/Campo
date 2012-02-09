@@ -7,8 +7,8 @@ module Campo
   
     module Partial 
     
-      def self.new
-        Klass.new
+      def self.new( options={} )
+        Klass.new options
       end
       
       module InstanceMethods
@@ -28,9 +28,9 @@ STR
     
       class Klass < Plugin
     
-      def initialize
-        after_output do |output,opts|
-          opts[:partial] ? 
+      def initialize( opts={} )
+        after_output do |output,options|
+          options[:partial] ? 
             output : # partial
             declarations + output # whole form
         end
