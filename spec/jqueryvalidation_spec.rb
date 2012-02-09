@@ -48,6 +48,8 @@ describe :"Campo::Plugins::JQueryValidation" do
           text("a").validate
           text( "b" ).validate
           text "c"
+          text( "d", size: 2 ).validate( :maxlength )
+          text( "e", size: 5 ).validate( :maxlength, :required )
         end
       }
       let(:expected) { <<'STR'
@@ -56,7 +58,9 @@ describe :"Campo::Plugins::JQueryValidation" do
     $("#exampleForm").validate({
       rules: {
         a: { required: true },
-        b: { required: true }
+        b: { required: true },
+        d: { maxlength: 2 },
+        e: { required: true, maxlength: 5 }
       }
     });
   });
@@ -70,6 +74,12 @@ describe :"Campo::Plugins::JQueryValidation" do
   %label{ for: "c",  }
     C
     %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c",  }
+  %label{ for: "d",  }
+    D
+    %input{ atts[:d], tabindex: "#{@campo_tabindex += 1}", id: "d", type: "text", size: "2", name: "d",  }
+  %label{ for: "e", class: "required",  }
+    E
+    %input{ atts[:e], tabindex: "#{@campo_tabindex += 1}", id: "e", type: "text", size: "5", name: "e", class: "required",  }
 STR
       }
       subject { Campo.output(form) }

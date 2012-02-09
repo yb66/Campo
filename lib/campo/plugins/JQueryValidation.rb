@@ -17,7 +17,7 @@ module Campo
           return "" if Rules.rules.empty?
           output = @jqv_rules.map do |(field,rs)| 
             "#{field}: { " << 
-            rs.map{|k,v| "#{k}: #{v}" }.join(",") <<
+            rs.map{|k,v| "#{k}: #{v}" }.join(", ") <<
             " }"
           end.join(",\n" + "  " * 4)
           output = <<STR
@@ -33,7 +33,6 @@ STR
               @jqv_rules = {}
               @jqv_rules.default_proc = proc {|hash, key| hash[key] = {} }
             end
-          puts "### @jqv_rules: #{@jqv_rules.inspect}"
           @jqv_rules
         end
           
@@ -62,29 +61,25 @@ STR
             end
             
             key = field.attributes[:id] || field.attributes[:name]
-            puts "key: #{key}"
             
             # required
             if args.empty? || args.include?( :required )
               [label, field].each do |elem|
                 elem.attributes.merge!({ :class => "required" } )
               end
-              Rules[key] = :required unless key.nil?
+              Rules[key] = :required
             end
             
-            if self.attributes.include? :size
-              # maxlength
+            unless args.empty?  
+              if args.include?( :maxlength )          
+                if field.attributes.include? :size
+                  Rules[key] = {maxlength: field.attributes[:size]}
+                end
+              end
             end
-
-            if self.attributes.include? :size
-              # maxlength
-            end
-            if args.include?( :digits )
-              # digits
-            end
-            puts "### validate Rules.rules: #{Rules.rules.inspect}"
+            
             self
-          end
+          end # def
         end
         module Outputter        
           
