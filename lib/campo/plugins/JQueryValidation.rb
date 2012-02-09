@@ -8,8 +8,8 @@ module Campo
     # using the lib from http://docs.jquery.com/Plugins/Validation
     module JQueryValidation  
     
-      def self.new
-        Klass.new
+      def self.new( options={} )
+        Klass.new options
       end
       
       module Rules  
@@ -108,10 +108,11 @@ STR
       end # instance methods
       
       class Klass < Plugin
-        def initialize
+        def initialize( opts={} )
           before_output do |fields,options|
             #find the form name(s)
             @jqv_form_names = fields.find_all{|x| x.kind_of? Campo::Form }.map{|x| x.attributes[:name]}
+            @jqv_form_names << opts[:form] unless opts[:form].nil? || opts[:form].empty?
           end
           after_output do |output,options|
             # concat to the current output

@@ -42,10 +42,10 @@ module Campo
   end
   
   
-  def self.plugin( name )
+  def self.plugin( name, options={} )
     unless plugins.include? name
       modname = (str = name.to_s) && (str[0,1].upcase + str[1..-1])
-      plugins[name] = constantize("Campo::Plugins::#{modname}").new
+      plugins[name] = constantize("Campo::Plugins::#{modname}").new options
       plugins[name].plugged_in
     end
   end

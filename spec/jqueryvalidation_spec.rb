@@ -25,7 +25,11 @@ describe :"Campo::Plugins::JQueryValidation" do
   end
   
   context "Plugging in the JQueryValidation plugin" do
-    before(:each) { Campo.plugin :JQueryValidation }
+    before(:each) { 
+      Campo.plugins.clear
+      Campo.plugin :partial
+      Campo.plugin :JQueryValidation 
+    }
     after(:each) { Campo.plugins.clear }
     context "ancestors" do
       subject { Campo::Base.ancestors }
@@ -42,7 +46,61 @@ describe :"Campo::Plugins::JQueryValidation" do
         it { should respond_to( :jqv_form_names ) }
       end
     end
-    describe "output" do
+  end
+
+
+  describe "output" do
+    context "Given a partial" do
+      before { 
+        Campo.plugins.clear          
+        Campo.plugin :partial
+        Campo.plugin :JQueryValidation, form: "wrapper_form" }
+      let(:form) {
+        Campo.literal ".form" do
+          text("a").validate
+          text "c"
+          text( "g", size: 3 ).validate( :digits, :maxlength, :required )
+        end
+      }
+      let(:expected) { <<'STR'
+:javascript
+  $().ready(function(){
+    $("#wrapper_form").validate({
+      rules: {
+        a: { required: true },
+        g: { required: true, maxlength: 3, digits: true }
+      }
+    });
+  });
+- atts = {} if atts.nil?
+- atts.default_proc = proc {|hash, key| hash[key] = {} } if atts.default_proc.nil?
+- inners = {} if inners.nil?
+- inners.default = "" if inners.default.nil?
+- @campo_tabindex ||= 0 # for tabindex
+.form
+  %label{ for: "a", class: "required",  }
+    A
+    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", class: "required",  }
+  %label{ for: "c",  }
+    C
+    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c",  }
+  %label{ for: "g", class: "required",  }
+    G
+    %input{ atts[:g], tabindex: "#{@campo_tabindex += 1}", id: "g", type: "text", size: "3", name: "g", class: "required",  }
+STR
+      }
+      subject { Campo.output(form, :partial => true) }
+      it { should_not be_nil }
+      it { should be_a_kind_of String }
+      it { should == expected }
+      it { should include(%Q!class: "required"!)   }
+    end
+    context "Given a whole form" do
+      before(:each) { 
+        Campo.plugins.clear          
+        Campo.plugin :partial
+        Campo.plugin :JQueryValidation
+      }
       let(:form) {
         Campo.form "exampleForm" do
           text("a").validate
@@ -68,6 +126,11 @@ describe :"Campo::Plugins::JQueryValidation" do
       }
     });
   });
+- atts = {} if atts.nil?
+- atts.default_proc = proc {|hash, key| hash[key] = {} } if atts.default_proc.nil?
+- inners = {} if inners.nil?
+- inners.default = "" if inners.default.nil?
+- @campo_tabindex ||= 0 # for tabindex
 %form{ atts[:exampleform], id: "exampleForm", method: "POST", name: "exampleForm",  }
   %label{ for: "a", class: "required",  }
     A
@@ -99,4 +162,5 @@ STR
       it { should include(%Q!class: "required"!)   }
     end
   end
+
 end
