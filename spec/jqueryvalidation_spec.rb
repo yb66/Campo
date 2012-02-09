@@ -46,22 +46,27 @@ describe :"Campo::Plugins::JQueryValidation" do
       let(:form) {
         Campo.form "exampleForm" do
           text("a").validate
-          text "b"
+          text( "b" ).validate
           text "c"
         end
       }
       let(:expected) { <<'STR'
 :javascript
   $().ready(function(){
-    $("#exampleForm").validate();
+    $("#exampleForm").validate({
+      rules: {
+        a: { required: true },
+        b: { required: true }
+      }
+    });
   });
 %form{ atts[:exampleform], id: "exampleForm", method: "POST", name: "exampleForm",  }
   %label{ for: "a", class: "required",  }
     A
     %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", class: "required",  }
-  %label{ for: "b",  }
+  %label{ for: "b", class: "required",  }
     B
-    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b",  }
+    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b", class: "required",  }
   %label{ for: "c",  }
     C
     %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c",  }
