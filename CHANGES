@@ -1,3 +1,5 @@
+v0.6.6b Validation rules are now built. Validations for required, digits and maxlength added.
+
 v0.6.5b Labels get the "required" class too when using JQueryValidation, to make all our styling wishes come true!
 
 v0.6.4b Default option for select tags now has its id attribute appended with "_default" to stop the id clashing with the select tag.
