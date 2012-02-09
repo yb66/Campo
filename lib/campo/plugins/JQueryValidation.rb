@@ -54,6 +54,7 @@ STR
         module Convenience
           def validate( *args )
           
+            # TODO move this to helper
             label, field = if self.kind_of? Campo::Label
               [self,self.fields.first] # for the key            
             elsif self.parent.kind_of? Campo::Label
