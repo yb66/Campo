@@ -1,4 +1,4 @@
-v0.6.8b Added caveats to the gemspec as Bundler seems to want to run everything all the time even when it's obviously not worth it.
+v0.6.9b Added caveats to the gemspec as Bundler seems to want to run everything all the time even when it's obviously not worth it.
 
 v0.6.7b Added `describe` method, via the Aria plugin. It will help to keep the forms accessible.
 
