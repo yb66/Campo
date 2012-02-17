@@ -19,6 +19,6 @@ Gem::Specification.new do |s|
   s.homepage       = "https://github.com/yb66/Campo"
   s.email          = "iainspeed @nospam@ gmail.com"
   s.test_files     = `git ls-files -- {test,spec,features}`.split("\n")
-  s.signing_key    = ENV['HOME'] + '/.ssh/gem-private_key.pem' unless ENV["RACK_ENV"] == "production"
-  s.cert_chain     = [ENV['HOME'] + '/.ssh/gem-public_cert.pem'] unless ENV["RACK_ENV"] == "production"
+  s.signing_key    = (ENV['HOME'] + '/.ssh/gem-private_key.pem') unless ENV["RACK_ENV"] == "production"
+  s.cert_chain     = ([ENV['HOME'] + '/.ssh/gem-public_cert.pem']) unless ENV["RACK_ENV"] == "production"
 end
