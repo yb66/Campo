@@ -1,3 +1,5 @@
+v0.6.11b My mistake this time, not using lowercase for the file names was causing a problem deploying to Heroku.
+
 v0.6.10b Removed ENV vars from gemspec as deployment to Heroku with Bundler is problematic.
 
 v0.6.7b Added `describe` method, via the Aria plugin. It will help to keep the forms accessible.
