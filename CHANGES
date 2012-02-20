@@ -1,3 +1,5 @@
+v0.6.12b Another mistake, an accidental move of a file - this will teach me to run the specs even for trivial changes!
+
 v0.6.11b My mistake this time, not using lowercase for the file names was causing a problem deploying to Heroku.
 
 v0.6.10b Removed ENV vars from gemspec as deployment to Heroku with Bundler is problematic.
