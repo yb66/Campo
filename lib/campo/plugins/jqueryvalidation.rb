@@ -71,14 +71,33 @@ STR
               Rules[key] = :required
             end
             
-            unless args.empty?  
-              if args.include?( :maxlength )          
+            unless args.empty?
+              hashes = {}
+              singles = []
+              args.each do |x|
+                if x.kind_of? Hash
+                  puts "Hash"
+                  hashes.merge! x 
+                else
+                  singles << x
+                end
+              end
+              
+              if hashes.include? :minlength
+                Rules[key] = {minlength: hashes[:minlength] }
+              end
+                                
+              if singles.include?( :maxlength )          
                 if field.attributes.include? :size
                   Rules[key] = {maxlength: field.attributes[:size]}
                 end
               end
+              
+              if hashes.include? :maxlength
+                Rules[key] = {maxlength: hashes[:maxlength] }
+              end
               # http://docs.jquery.com/Plugins/Validation/Methods/digits
-              Rules[key] = :digits if args.include? :digits
+              Rules[key] = :digits if singles.include? :digits
             end
             
             self
