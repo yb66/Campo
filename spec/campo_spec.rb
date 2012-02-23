@@ -25,15 +25,11 @@ module Campo
 STR
       s
     }
-          
-  
-    before(:all) { Campo.plugin( :partial ) unless Campo.plugins.keys.include? :partial }
-    after(:all) { Campo.plugins.clear }
 
     describe :output do
       context "Given a form with no fields" do
         let(:expected) { 
-          expected = top_bit + %q!%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }!.strip + "\n"
+          expected = top_bit + %q!%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }!.strip + "\n"
         }
 
         subject{ Campo.output Campo::Form.new( "myform" ) }
@@ -68,7 +64,7 @@ STR
       describe "A realish form" do
         context "Given a form" do
           let(:expected) {
-top_bit + %Q!%form{ atts[:personal_details], id: "personal_details", method: "POST", action: uri("/my/personal_details/update/"), name: "personal_details",  }\n  %fieldset{  }\n    %legend{  }Your details\n    %label{ for: "full_name",  }\n      Full name: \n      %input{ atts[:full_name], tabindex: "\#{@campo_tabindex += 1}", id: "full_name", type: "text", size: "60", name: "full_name",  }\n    %label{ for: "dob",  }\n      Date of birth: \n      %input{ atts[:dob], tabindex: "\#{@campo_tabindex += 1}", id: "dob", type: "text", size: "10", name: "dob",  }\n    %fieldset{  }\n      %legend{  }Gender: \n      %label{ for: "gender_1",  }\n        Male\n        %input{ atts[:gender_1], tabindex: "\#{@campo_tabindex += 1}", id: "gender_1", type: "radio", value: "1", name: "gender",  }\n      %label{ for: "gender_2",  }\n        Female\n        %input{ atts[:gender_2], tabindex: "\#{@campo_tabindex += 1}", id: "gender_2", type: "radio", value: "2", name: "gender",  }\n    %label{ for: "ethnicorigin_id",  }\n      Ethnic-origin: \n      %select{ atts[:ethnicorigin_id], tabindex: "\#{@campo_tabindex += 1}", id: "ethnicorigin_id", name: "ethnicorigin_id",  }\n        %option{ atts[:ethnicorigin_id_default], id: "ethnicorigin_id_default", value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:\n        %option{ atts[:ethnicorigin_id_1], id: "ethnicorigin_id_1", value: "1", name: "ethnicorigin_id",  }White\n        %option{ atts[:ethnicorigin_id_2], id: "ethnicorigin_id_2", value: "2", name: "ethnicorigin_id",  }Asian\n        %option{ atts[:ethnicorigin_id_3], id: "ethnicorigin_id_3", value: "3", name: "ethnicorigin_id",  }Black\n        %option{ atts[:ethnicorigin_id_4], id: "ethnicorigin_id_4", value: "4", name: "ethnicorigin_id",  }Chinese and Other\n        %option{ atts[:ethnicorigin_id_5], id: "ethnicorigin_id_5", value: "5", name: "ethnicorigin_id",  }Mixed\n    %label{ for: "occupation",  }\n      Occupation: \n      %input{ atts[:occupation], tabindex: "\#{@campo_tabindex += 1}", id: "occupation", type: "text", size: "60", name: "occupation",  }\n    %label{ for: "phone_landline",  }\n      Phone (landline): \n      %input{ atts[:phone_landline], tabindex: "\#{@campo_tabindex += 1}", id: "phone_landline", type: "text", size: "20", name: "phone_landline",  }\n    %label{ for: "phone_mobile",  }\n      Phone (mobile): \n      %input{ atts[:phone_mobile], tabindex: "\#{@campo_tabindex += 1}", id: "phone_mobile", type: "text", size: "20", name: "phone_mobile",  }\n    %fieldset{  }\n      %legend{  }May we contact you...\n      %label{ for: "contactable_day",  }\n        In the day?\n        %input{ atts[:contactable_day], tabindex: "\#{@campo_tabindex += 1}", id: "contactable_day", type: "checkbox", value: "day", name: "contactable",  }\n      %label{ for: "contactable_evening",  }\n        In the evening?\n        %input{ atts[:contactable_evening], tabindex: "\#{@campo_tabindex += 1}", id: "contactable_evening", type: "checkbox", value: "evening", name: "contactable",  }\n    %input{ atts[:method], id: "method", type: "hidden", value: "put", name: "method",  }\n    %input{ atts[:Save], tabindex: "\#{@campo_tabindex += 1}", id: "Save", type: "submit", value: "Save",  }\n!
+top_bit + %Q!%form{ atts[:personal_details], id: "personal_details", method: "POST", action: uri("/my/personal_details/update/"), name: "personal_details", role: "form",  }\n  %fieldset{  }\n    %legend{  }Your details\n    %label{ for: "full_name",  }\n      Full name: \n      %input{ atts[:full_name], tabindex: "\#{@campo_tabindex += 1}", id: "full_name", type: "text", size: "60", name: "full_name",  }\n    %label{ for: "dob",  }\n      Date of birth: \n      %input{ atts[:dob], tabindex: "\#{@campo_tabindex += 1}", id: "dob", type: "text", size: "10", name: "dob",  }\n    %fieldset{  }\n      %legend{  }Gender: \n      %label{ for: "gender_1",  }\n        Male\n        %input{ atts[:gender_1], tabindex: "\#{@campo_tabindex += 1}", id: "gender_1", type: "radio", value: "1", name: "gender",  }\n      %label{ for: "gender_2",  }\n        Female\n        %input{ atts[:gender_2], tabindex: "\#{@campo_tabindex += 1}", id: "gender_2", type: "radio", value: "2", name: "gender",  }\n    %label{ for: "ethnicorigin_id",  }\n      Ethnic-origin: \n      %select{ atts[:ethnicorigin_id], tabindex: "\#{@campo_tabindex += 1}", id: "ethnicorigin_id", name: "ethnicorigin_id",  }\n        %option{ atts[:ethnicorigin_id_default], id: "ethnicorigin_id_default", value: "", disabled: "disabled", name: "ethnicorigin_id",  }Choose one:\n        %option{ atts[:ethnicorigin_id_1], id: "ethnicorigin_id_1", value: "1", name: "ethnicorigin_id",  }White\n        %option{ atts[:ethnicorigin_id_2], id: "ethnicorigin_id_2", value: "2", name: "ethnicorigin_id",  }Asian\n        %option{ atts[:ethnicorigin_id_3], id: "ethnicorigin_id_3", value: "3", name: "ethnicorigin_id",  }Black\n        %option{ atts[:ethnicorigin_id_4], id: "ethnicorigin_id_4", value: "4", name: "ethnicorigin_id",  }Chinese and Other\n        %option{ atts[:ethnicorigin_id_5], id: "ethnicorigin_id_5", value: "5", name: "ethnicorigin_id",  }Mixed\n    %label{ for: "occupation",  }\n      Occupation: \n      %input{ atts[:occupation], tabindex: "\#{@campo_tabindex += 1}", id: "occupation", type: "text", size: "60", name: "occupation",  }\n    %label{ for: "phone_landline",  }\n      Phone (landline): \n      %input{ atts[:phone_landline], tabindex: "\#{@campo_tabindex += 1}", id: "phone_landline", type: "text", size: "20", name: "phone_landline",  }\n    %label{ for: "phone_mobile",  }\n      Phone (mobile): \n      %input{ atts[:phone_mobile], tabindex: "\#{@campo_tabindex += 1}", id: "phone_mobile", type: "text", size: "20", name: "phone_mobile",  }\n    %fieldset{  }\n      %legend{  }May we contact you...\n      %label{ for: "contactable_day",  }\n        In the day?\n        %input{ atts[:contactable_day], tabindex: "\#{@campo_tabindex += 1}", id: "contactable_day", type: "checkbox", value: "day", name: "contactable",  }\n      %label{ for: "contactable_evening",  }\n        In the evening?\n        %input{ atts[:contactable_evening], tabindex: "\#{@campo_tabindex += 1}", id: "contactable_evening", type: "checkbox", value: "evening", name: "contactable",  }\n    %input{ atts[:method], id: "method", type: "hidden", value: "put", name: "method",  }\n    %input{ atts[:Save], tabindex: "\#{@campo_tabindex += 1}", id: "Save", type: "submit", value: "Save",  }\n!
           } # let expected
           context "block with var style" do
             let(:form) do
@@ -106,7 +102,7 @@ top_bit + %Q!%form{ atts[:personal_details], id: "personal_details", method: "PO
               }
   let(:expected) {
     top_bit + %Q!.centred.form
-  %form{ atts[:personal_details], id: "personal_details", method: "POST", action: uri("/my/personal_details/update/"), name: "personal_details",  }
+  %form{ atts[:personal_details], id: "personal_details", method: "POST", action: uri("/my/personal_details/update/"), name: "personal_details", role: "form",  }
     %fieldset{  }
       %legend{  }Your details
       %label{ for: "full_name",  }
@@ -203,7 +199,7 @@ top_bit + %Q!%form{ atts[:personal_details], id: "personal_details", method: "PO
           context "of text" do
             context "with a label" do
               let(:expected) { top_bit +  %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %label{ for: "blah",  }
     Blahd
     %input{ atts[:blah], tabindex: "#{@campo_tabindex += 1}", id: "blah", type: "text", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
@@ -224,7 +220,7 @@ top_bit + %Q!%form{ atts[:personal_details], id: "personal_details", method: "PO
             end
             context "without a label" do
               let(:expected) { top_bit +  %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %label{ for: "blah",  }
     Blah
     %input{ atts[:blah], tabindex: "#{@campo_tabindex += 1}", id: "blah", type: "text", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
@@ -248,7 +244,7 @@ top_bit + %Q!%form{ atts[:personal_details], id: "personal_details", method: "PO
           end # text
           context "of checkbox" do
             let(:expected) { top_bit +  %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %label{ for: "blah_blahdeblah",  }
     Blahd
     %input{ atts[:blah_blahdeblah], tabindex: "#{@campo_tabindex += 1}", id: "blah_blahdeblah", type: "checkbox", value: "blahdeblah", name: "blah",  }!.strip + "\n" }
@@ -510,7 +506,7 @@ s.chomp
         context "When given a form with only a name" do
           let(:form) { Campo::Form.new( "myform" ).fieldset("Do you like these colours? Tick for yes:") }
           let(:expected) { top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %fieldset{  }
     %legend{  }Do you like these colours? Tick for yes:
                 
@@ -530,7 +526,7 @@ s.chomp
         let(:form) { Campo::Form.new( "myform" ) }
         context "Given one select tag" do
           let(:expected) { top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %label{ for: "teas",  }
     Favourite tea:
     %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", id: "teas", name: "teas",  }
@@ -551,7 +547,7 @@ s.chomp
         end
         context "Given several select tags" do
           let(:expected) {  top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %label{ for: "teas",  }
     Favourite tea:
     %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", id: "teas", name: "teas",  }
@@ -585,7 +581,7 @@ s.chomp
         context "Given a submit button" do
           context "With no arguments" do
             let(:expected) { top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %input{ atts[:Submit], tabindex: "#{@campo_tabindex += 1}", id: "Submit", type: "submit", value: "Submit",  }
 
 !.strip + "\n" }
@@ -600,7 +596,7 @@ s.chomp
           end
           context "With a name" do
             let(:expected) { top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %input{ atts[:save], tabindex: "#{@campo_tabindex += 1}", id: "save", type: "submit", value: "Save",  }
 
 !.strip + "\n" }
@@ -663,7 +659,7 @@ s.chomp
 
         describe "the full output" do
           let(:expected) { top_bit + %q$
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   Hello, World!$.strip + "\n"}
           let(:form){ 
             form = Campo::Form.new( "myform" )
@@ -689,7 +685,7 @@ s.chomp
             end
             Campo.output form
           }
-          let(:expected) {  top_bit + %q$%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+          let(:expected) {  top_bit + %q$%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %p
     Whatever
     %br
@@ -734,7 +730,7 @@ $.strip + "\n" }
 
         describe "the full output" do
           let(:expected) { top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   = 5 + 1!.strip + "\n"}
           let(:form){ 
             form = Campo::Form.new( "myform" )
@@ -759,7 +755,7 @@ $.strip + "\n" }
               end
               Campo.output form
             }
-            let(:expected) {  top_bit + %q$%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+            let(:expected) {  top_bit + %q$%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   = 5 + 1
   ="%p"
     Whatever
@@ -1154,7 +1150,7 @@ $.strip + "\n" }
       context "Labelling" do
         let(:expected) { 
           top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %label{ for: "abc",  }
     abc
     %input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", id: "abc", type: "text", name: "abc",  }
@@ -1181,7 +1177,7 @@ $.strip + "\n" }
         context "Within a fieldset" do
           let(:expected) { 
             top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %fieldset{  }
     %legend{  }Alphabetty spaghetti
     %label{ for: "abc",  }
@@ -1216,7 +1212,7 @@ $.strip + "\n" }
       describe "A form with a group of radio buttons" do
         let(:expected) { 
           top_bit +  %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %fieldset{  }
     %legend{  }Select the colour you like most:
     %label{ for: "radio1_green",  }
@@ -1275,7 +1271,7 @@ $.strip + "\n" }
             
             describe "the full output" do
               let(:expected) { top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %label{ for: "textie",  }
     Textie
     %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", id: "textie", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n"}
@@ -1296,7 +1292,7 @@ $.strip + "\n" }
             
             describe "the full output" do
               let(:expected) { top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %label{ for: "textie",  }
     Textie labelled
     %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", id: "textie", cols: "40", rows: "10", name: "textie",  }= inners[:textie] !.strip + " \n"}
@@ -1325,7 +1321,7 @@ $.strip + "\n" }
 
             describe "the full output" do
               let(:expected) { top_bit + %q!
-%form{ atts[:myform], id: "myform", method: "POST", name: "myform",  }
+%form{ atts[:myform], id: "myform", method: "POST", name: "myform", role: "form",  }
   %label{ for: "textie",  }
     Textie
     %textarea{ atts[:textie], tabindex: "#{@campo_tabindex += 1}", id: "textie", cols: "60", rows: "10", name: "textie",  }= inners[:textie] 

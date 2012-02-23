@@ -20,7 +20,7 @@ describe "Aria" do
 - inners = {} if inners.nil?
 - inners.default = "" if inners.default.nil?
 - @campo_tabindex ||= 0 # for tabindex
-%form{ atts[:example], id: "example", method: "POST", name: "example",  }
+%form{ atts[:example], id: "example", method: "POST", name: "example", role: "form",  }
   %label{ for: "a",  }
     A
     %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", :"aria-describedby" => "a_description",  }

@@ -53,7 +53,8 @@ describe :"Campo::Plugins::JQueryValidation" do
     context "Given a partial" do
       before { 
         Campo.plugins.clear          
-        Campo.plugin :partial
+        Campo.plugin :partial        
+        Campo.plugin :Aria
         Campo.plugin :JQueryValidation, form: "wrapper_form" }
       let(:form) {
         Campo.literal ".form" do
@@ -62,7 +63,8 @@ describe :"Campo::Plugins::JQueryValidation" do
           text( "g", size: 3 ).validate( :digits, :maxlength, :required )
         end
       }
-      let(:expected) { <<'STR'
+let(:expected) { 
+<<'STR'
 :javascript
   $().ready(function(){
     $("#wrapper_form").validate({
@@ -72,11 +74,6 @@ describe :"Campo::Plugins::JQueryValidation" do
       }
     });
   });
-- atts = {} if atts.nil?
-- atts.default_proc = proc {|hash, key| hash[key] = {} } if atts.default_proc.nil?
-- inners = {} if inners.nil?
-- inners.default = "" if inners.default.nil?
-- @campo_tabindex ||= 0 # for tabindex
 .form
   %label{ for: "a", class: "required",  }
     A
@@ -88,19 +85,24 @@ describe :"Campo::Plugins::JQueryValidation" do
     G
     %input{ atts[:g], tabindex: "#{@campo_tabindex += 1}", id: "g", type: "text", size: "3", name: "g", class: "required",  }
 STR
-      }
+}
+      
+      
       subject { Campo.output(form, :partial => true) }
       it { should_not be_nil }
       it { should be_a_kind_of String }
       it { should == expected }
       it { should include(%Q!class: "required"!)   }
     end
+    
+    
+    
     context "Given a whole form" do
-      before(:each) { 
+      before { 
         Campo.plugins.clear          
-        Campo.plugin :partial
-        Campo.plugin :JQueryValidation
-      }
+        Campo.plugin :partial        
+        Campo.plugin :Aria
+        Campo.plugin :JQueryValidation}
       let(:form) {
         Campo.form "exampleForm" do
           text("a").validate
@@ -131,7 +133,7 @@ STR
 - inners = {} if inners.nil?
 - inners.default = "" if inners.default.nil?
 - @campo_tabindex ||= 0 # for tabindex
-%form{ atts[:exampleform], id: "exampleForm", method: "POST", name: "exampleForm",  }
+%form{ atts[:exampleform], id: "exampleForm", method: "POST", name: "exampleForm", role: "form",  }
   %label{ for: "a", class: "required",  }
     A
     %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", class: "required",  }
@@ -154,7 +156,7 @@ STR
     G
     %input{ atts[:g], tabindex: "#{@campo_tabindex += 1}", id: "g", type: "text", size: "3", name: "g", class: "required",  }
 STR
-      }
+}
       subject { Campo.output(form) }
       it { should_not be_nil }
       it { should be_a_kind_of String }
