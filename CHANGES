@@ -1,3 +1,5 @@
+v0.7.1b Removed debugging statement that was being output.
+
 v0.7.0b Use of [] in input names now allowed, for grouping inputs like an array.
 
 v0.6.14b Lowercased aria.rb for bundler.
