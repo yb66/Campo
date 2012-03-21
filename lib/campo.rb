@@ -242,7 +242,7 @@ module Campo
     end
 
     def labelled( inner=nil )
-      inner ||= self.attributes[:name].gsub("_"," ").capitalize
+      inner ||= self.attributes[:name].gsub(/\[\]/, "").gsub("_"," ").capitalize
       parent = self.parent
       label = Label.new( %Q!#{@attributes[:id]}!, inner ) << self
       retval = if parent.nil?
@@ -529,11 +529,13 @@ module Campo
           attributes[:value]
       ).gsub(/\W/, "_")
       
-      atts_name = "#{name.gsub(/\W/, "_")}#{id_tag}"
+      name2 = name.gsub(/\[\]/, "") # remove any [] that may have been used for an array like / grouped object
+      
+      atts_name = "#{name2.gsub(/\W/, "_")}#{id_tag}"
       
       super( name, 
             { type: type.to_s, 
-              id: "#{name}#{id_tag}",
+              id: "#{name2}#{id_tag}",
               tabindex: %q!#{@campo_tabindex += 1}!, 
             }.merge( attributes ) )
             

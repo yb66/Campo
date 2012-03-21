@@ -1076,7 +1076,7 @@ $.strip + "\n" }
               it { should == expected }
             end
           end
-
+          
           context "and a type" do
             context "of text" do
               let(:tag) { Campo::Input.new( "abc", :text ) }
@@ -1127,6 +1127,77 @@ $.strip + "\n" }
             end
             
           end  
+
+          context "Given an input with a [] to notify it's an array" do
+            let(:tag) { Campo::Input.new( "abc[]", :checkbox, value: "many" ) }
+            let(:output) { %q!%input{ atts[:abc_many], tabindex: "#{@campo_tabindex += 1}", id: "abc_many", type: "checkbox", value: "many", name: "abc[]",  }! }
+            subject { tag }
+            it { should_not be_nil }
+            it { should be_a_kind_of(Input) }
+            specify { subject.attributes[:type].should == "checkbox" }
+            specify { subject.output.should == output }
+            
+            context "Campo.output" do
+              let(:expected) { output + "\n" }
+              subject { Campo.output tag, :partial=>true }
+              it { should_not be_nil }
+              it { should == expected }
+            end
+            context "Given several inputs, some grouped, some not" do
+              let(:expected) { %q!- atts = {} if atts.nil?
+- atts.default_proc = proc {|hash, key| hash[key] = {} } if atts.default_proc.nil?
+- inners = {} if inners.nil?
+- inners.default = "" if inners.default.nil?
+- @campo_tabindex ||= 0 # for tabindex
+%form{ atts[:example], id: "example", method: "POST", name: "example", role: "form",  }
+  %label{ for: "a",  }
+    A
+    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a",  }
+  %label{ for: "b",  }
+    B
+    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b",  }
+  %fieldset{  }
+    %legend{  }Which C?
+    %label{ for: "c_grouped",  }
+      Grouped
+      %input{ atts[:c_grouped], tabindex: "#{@campo_tabindex += 1}", id: "c_grouped", type: "checkbox", value: "grouped", name: "c",  }
+    %label{ for: "c",  }
+      Also grouped
+      %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "checkbox", valued: "also grouped", name: "c",  }
+  %fieldset{  }
+    %legend{  }Which D?
+    %label{ for: "d_grouped",  }
+      Grouped
+      %input{ atts[:d_grouped], tabindex: "#{@campo_tabindex += 1}", id: "d_grouped", type: "checkbox", value: "grouped", name: "d[]",  }
+    %label{ for: "d_also_grouped",  }
+      Also grouped
+      %input{ atts[:d_also_grouped], tabindex: "#{@campo_tabindex += 1}", id: "d_also_grouped", type: "checkbox", value: "also grouped", name: "d[]",  }
+  %input{ atts[:Submit], tabindex: "#{@campo_tabindex += 1}", id: "Submit", type: "submit", value: "Submit",  }
+!
+              }
+              let(:form) {  
+                form = Campo.form "example" do
+                  text "a"
+                  text "b"
+                  fieldset "Which C?" do
+                    checkbox "c", "Grouped", value: "grouped"
+                    checkbox "c", "Also grouped", valued: "also grouped"
+                  end
+                  fieldset "Which D?" do
+                    checkbox "d[]", "Grouped", value: "grouped"
+                    checkbox "d[]", "Also grouped", value: "also grouped"
+                  end
+                  submit
+                end
+                form
+              }
+                            
+              subject { Campo.output form }
+              it { should_not be_nil }
+              it { should == expected }
+            end
+          end
+          
           context "of radio" do
             let(:tag) { Campo::Input.new( "abc", :radio ) }
             let(:output) { %q!%input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", id: "abc", type: "radio", name: "abc",  }! }
