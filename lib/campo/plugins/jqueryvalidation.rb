@@ -76,7 +76,6 @@ STR
               singles = []
               args.each do |x|
                 if x.kind_of? Hash
-                  puts "Hash"
                   hashes.merge! x 
                 else
                   singles << x
