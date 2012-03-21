@@ -1,3 +1,5 @@
+v0.7.0b Use of [] in input names now allowed, for grouping inputs like an array.
+
 v0.6.14b Lowercased aria.rb for bundler.
 
 v0.6.12b Another mistake, an accidental move of a file - this will teach me to run the specs even for trivial changes!
