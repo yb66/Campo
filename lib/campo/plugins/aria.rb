@@ -54,9 +54,7 @@ module Campo
           # @private
           before_output do |fields,options|
             fields.find_all{|x| x.kind_of? Campo::Form }.each do |form|
-              if form.attributes[:role].nil? || form.attributes[:role].empty?
-                form.attributes[:role] = "form"
-              end
+              form.attributes[:role] = "form" if form.attributes[:role].nil? || form.attributes[:role].empty?
             end
           end
         end
