@@ -27,8 +27,8 @@ module Campo
           def describe( message, opts={} )
             label, field = if self.kind_of? Campo::Label
               [self,self.fields.first]       
-            elsif self.parent.kind_of? Campo::Label
-              [self.parent, self]
+            elsif (parent = self.parent).kind_of? Campo::Label
+              [parent, self]
             end
             
             span_id = "#{label.attributes[:for]}_description"
