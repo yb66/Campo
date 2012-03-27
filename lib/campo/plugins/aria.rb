@@ -15,7 +15,7 @@ module Campo
       
       module InstanceMethods
         module Convenience
-          def describe( message )
+          def describe( message, opts={} )
             label, field = if self.kind_of? Campo::Label
               [self,self.fields.first]       
             elsif self.parent.kind_of? Campo::Label
@@ -23,7 +23,7 @@ module Campo
             end
             
             span_id = "#{label.attributes[:for]}_description"
-            label.fields.push Campo::Span.new( span_id, message )
+            label.fields.push Campo::Span.new( span_id, message, opts )
             
             field.attributes[:"aria-describedby"] = span_id
             self

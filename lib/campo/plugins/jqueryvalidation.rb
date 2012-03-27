@@ -82,6 +82,8 @@ STR
                 end
               end
               
+              # TODO required letters/symbols/numbers
+              
               if hashes.include? :minlength
                 Rules[key] = {minlength: hashes[:minlength] }
               end

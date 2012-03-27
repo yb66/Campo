@@ -11,6 +11,7 @@ describe "Aria" do
   let(:form) { 
     Campo.form "example" do
       text("a").describe("mm/yy")
+      text("b").describe("All in caps", class: "description")
     end
   }
   
@@ -26,6 +27,11 @@ describe "Aria" do
     %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", :"aria-describedby" => "a_description",  }
     %span{id: "a_description", }
       mm/yy
+  %label{ for: "b",  }
+    B
+    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b", :"aria-describedby" => "b_description",  }
+    %span{id: "b_description", class: "description", }
+      All in caps
 STR
   }
 
