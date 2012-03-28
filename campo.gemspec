@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.files          = `git ls-files`.split("\n")
   s.add_development_dependency("haml", "~> 3.1.1")
   s.add_development_dependency("yard")
+  s.add_development_dependency("rake")
   s.homepage       = "https://github.com/yb66/Campo"
   s.email          = "iainspeed @nospam@ gmail.com"
   s.test_files     = `git ls-files -- {test,spec,features}`.split("\n")
