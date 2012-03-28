@@ -551,8 +551,8 @@ module Campo
 
   class Fieldset < Base
 
-    # @params [String,nil] text Text for the legend tag
-    # @params [Hash] attributes Hash of html attributes
+    # @param [String,nil] text Text for the legend tag
+    # @param [Hash] attributes Hash of html attributes
     def initialize( text=nil, attributes={} )
       if text.kind_of? Hash
         attributes = text
