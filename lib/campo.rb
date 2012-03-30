@@ -407,12 +407,17 @@ module Campo
 
   # add whatever you need to with a literal
   class Literal < Base
-    def initialize( s )
-      super( nil ) # no name needed
+    def initialize( s, attributes={} )
+      super( nil, attributes ) # no name needed
       @s = s
 
       self.on_output do |n=0, tab=2|
-        (" " * n * tab) + @s
+        left,right = if @attributes.empty?
+          ['','']
+        else
+          ['{ ', '}']
+        end
+        %Q!#{" " * n * tab}#{@s}! + left + Base.unhash( @attributes ) + right
       end
       self
     end
@@ -626,12 +631,20 @@ module Campo
   class Span < Base
   
     def initialize( id, inner, attributes={} )
+      if inner.kind_of? Hash
+        attributes = inner
+        inner = nil
+      end
       super( id, attributes )
       @attributes.delete(:name) # only id for this element
       @inner = inner
-
+      
+      unless @inner.nil? or @inner.empty?
+        self.fields.push Campo.literal(@inner)
+      end
+      
       self.on_output do |n=0, tab=2|
-        %Q!#{" " * n * tab}%span{#{Base.unhash( @attributes )}}\n#{" " * (n + 1) * tab}#{@inner}!
+        %Q!#{" " * n * tab}%span{#{Base.unhash( @attributes )}}!
       end
       self
     end

@@ -32,7 +32,19 @@ module Campo
             end
             
             span_id = "#{label.attributes[:for]}_description"
-            label.fields.push Campo::Span.new( span_id, message, opts )
+            
+            if message.respond_to? :map
+              # array
+              span = Campo::Span.new( span_id, "%ul", opts )
+              message.each do |(x,o)|     
+                li = Campo.literal("%li",o) << Campo.literal(x)
+                span.fields.first << li
+              end
+            else              
+              span = Campo::Span.new( span_id, message, opts )
+            end
+              
+            label.fields.push span 
             
             field.attributes[:"aria-describedby"] = span_id
             self

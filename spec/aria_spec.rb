@@ -12,6 +12,7 @@ describe "Aria" do
     Campo.form "example" do
       text("a").describe("mm/yy")
       text("b").describe("All in caps", class: "description")
+      text("c").describe([["Must be 8 characters at least.",class: "password validate", id: "password_length"], ["It's better to add some numbers/punctuation.", id: "password_not_email_address", class: "password validate"]], class: "description")
     end
   }
   
@@ -32,6 +33,15 @@ describe "Aria" do
     %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b", :"aria-describedby" => "b_description",  }
     %span{id: "b_description", class: "description", }
       All in caps
+  %label{ for: "c",  }
+    C
+    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c", :"aria-describedby" => "c_description",  }
+    %span{id: "c_description", class: "description", }
+      %ul
+        %li{ id: "password_length", class: "password validate", }
+          Must be 8 characters at least.
+        %li{ id: "password_not_email_address", class: "password validate", }
+          It's better to add some numbers/punctuation.
 STR
   }
 

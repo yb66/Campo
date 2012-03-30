@@ -620,7 +620,7 @@ s.chomp
       it { should be_a_kind_of( Span ) }
 
       describe :output do
-        let(:expected) { %Q!%span{id: "my_id", }\n  anything at all at all! }
+        let(:expected) { %Q!%span{id: "my_id", }! }
         subject { tag.output }
         it { should == expected }
       end
