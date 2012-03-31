@@ -18,11 +18,18 @@ module Campo
         module Convenience
           
           # Adds aria-describedby along with a span.
-          # @param [String] message The text for the aria-describedby attribute.
-          # @param [optional,Hash] options Any attributes for the span.
-          # @example
-          #   text("postcode").describe("All in caps", class: "description")
-          # @return [String] A span with an id (and any options passed in as attributes) as Haml.
+          # @overload text(message, opts)
+          #   @param [String] message The text for the aria-describedby attribute.
+          #   @param [optional,Hash] options Any attributes for the span.
+          #   @example
+          #     text("postcode").describe("All in caps", class: "description")
+          #   @return [String] A span with an id (and any options passed in as attributes) as Haml.
+          # @overload text(messages, opts)
+          #   @param [Array<Array<String,Hash>>] messages An array of tuples, each tuple containing the message string and an options hash for attributes.
+          #   @param [optional,Hash] options Any attributes for the span.
+          #   @example
+          #     text("Address").describe([["postcode",{class: "British"}],["zipcode", {class: "American"}]], class: "description")
+          #   @return [String] A span with an id (and any options passed in as attributes) as Haml, wrapped around an unordered list with a list-item for each message.
           # @see http://www.w3.org/TR/WCAG20-TECHS/ARIA1.html
           def describe( message, opts={} )
             label, field = if self.kind_of? Campo::Label
