@@ -1,3 +1,5 @@
+v0.8.2b Literals can have attributes passed. Aria plugin's `describe` can take a list of messages and create an unordered list.
+
 v0.8.1b Added a Rakefile with a task to generate the docs, for convenience. Fixed a couple of typos in the docs.
 
 v0.8.0b The Aria plugin's `describe` now takes options for adding attributes.
