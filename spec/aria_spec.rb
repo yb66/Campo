@@ -25,23 +25,23 @@ describe "Aria" do
 %form{ atts[:example], id: "example", method: "POST", name: "example", role: "form",  }
   %label{ for: "a",  }
     A
-    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", :"aria-describedby" => "a_description",  }
     %span{id: "a_description", }
       mm/yy
+    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", :"aria-describedby" => "a_description",  }
   %label{ for: "b",  }
     B
-    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b", :"aria-describedby" => "b_description",  }
     %span{id: "b_description", class: "description", }
       All in caps
+    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b", :"aria-describedby" => "b_description",  }
   %label{ for: "c",  }
     C
-    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c", :"aria-describedby" => "c_description",  }
     %span{id: "c_description", class: "description", }
       %ul
         %li{ id: "password_length", class: "password validate", }
           Must be 8 characters at least.
         %li{ id: "password_not_email_address", class: "password validate", }
           It's better to add some numbers/punctuation.
+    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c", :"aria-describedby" => "c_description",  }
 STR
   }
 

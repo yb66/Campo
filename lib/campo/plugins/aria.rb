@@ -51,7 +51,7 @@ module Campo
               span = Campo::Span.new( span_id, message, opts )
             end
               
-            label.fields.push span 
+            label.fields.unshift span 
             
             field.attributes[:"aria-describedby"] = span_id
             self
