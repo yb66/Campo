@@ -1,3 +1,10 @@
+## v0.8.3b 14th of May 2012 ##
+
+* `with_default` can now have the 'disabled' attribute turned off. 
+* Added a lot of docs.
+
+----
+
 v0.8.2b Literals can have attributes passed. Aria plugin's `describe` can take a list of messages and create an unordered list.
 
 v0.8.1b Added a Rakefile with a task to generate the docs, for convenience. Fixed a couple of typos in the docs.
