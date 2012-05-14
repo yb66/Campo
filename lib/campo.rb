@@ -301,9 +301,10 @@ module Campo
 
     # Takes a hash and transforms the key value pairs into a stringified version that Haml can consume.
     # @param [Hash] hash The hash to stringify.
-    # @skip [Symbol,String] skip Key to skip. 
-    def self.unhash( hash, skip=nil )
-      hash.reject{|k,v| v.nil?  }.reject{|k,v| k.to_sym == skip.to_sym unless skip.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k.to_s.include?("-") ? ":\"#{k}\" =>" : "#{k}:"} #{Base.quotable(v)}, !}
+    # @skip [Array<#to_s>] skips Keys to skip.
+    def self.unhash( hash, skips=nil )
+      skips = skips.nil? ? [] : skips.map(&:to_sym) # all keys are symbols
+      hash.reject{|k,v| v.nil?  }.reject{|k,v| skips.include? k.to_sym }.reduce(""){|mem, (k,v)| mem + %Q!#{k.to_s.include?("-") ? ":\"#{k}\" =>" : "#{k}:"} #{Base.quotable(v)}, !}
     end
     
     
