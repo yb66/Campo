@@ -19,11 +19,13 @@ module Campo
     attr_accessor :parent
   end # Childish
   
+  
   module Iding
     def id_tag( val )
       val.nil? ? "" : "_#{val}"
     end
   end # Iding
+  
   
   def self.constantize(camel_cased_word)
     names = camel_cased_word.split('::')
@@ -64,6 +66,7 @@ module Campo
       self << Fieldset.new( text, attributes, &block )
     end
     
+    
     # @example Add a bit of code to the markup
     #   form.bit_of_ruby( "= 5 + 1" ) }
     def bit_of_ruby( *args, &block  )
@@ -74,6 +77,7 @@ module Campo
 
     alias :haml_ruby_insert :bit_of_ruby
 
+
     # @example Output a literal string
     #   form.literal %Q!%p= "This is a paragraph "!
     def literal( *args, &block  )
@@ -81,6 +85,7 @@ module Campo
       self << tag
       tag
     end
+
 
     # @example 
     #     # Select with a block of options
@@ -103,6 +108,7 @@ module Campo
       select
     end
     
+    
     # Add an input with type of text
     # @param [String] name The name html attribute.
     # @param [optional, String, nil] label Give the label a name. Defaults to a capitalised name with _ replaced by spaces.
@@ -115,6 +121,7 @@ module Campo
     def text( name, label=nil, attributes={}  )
       input( name, :text, label, attributes  )
     end
+    
     
     def hidden( name, attributes={}  )
       self << Campo::Input.new( name, :hidden, attributes )
@@ -131,6 +138,7 @@ module Campo
     def radio( name, label=nil, attributes={} )
       input( name, :radio, label, attributes )
     end
+    
     
     # @param (see #text)
     def checkbox( name, label=nil, attributes={} )
@@ -151,6 +159,7 @@ module Campo
       field
     end
     
+    
     # @param [optional,String] name
     # @param [optional, Hash] attributes Any attributes you wish to add to the haml element.
     def submit( name="Submit", attributes={} )
@@ -158,6 +167,7 @@ module Campo
       self << submit
       submit
     end
+    
     
     # There is no easy way to give this convenience method in the same convention as the other methods, so this uses a hash argument for the label
     # @example
@@ -174,8 +184,8 @@ module Campo
     end
   end # Convenience
   
-  module Helpers
   
+  module Helpers
   
     # [ [id, lookup, selected || false], ... ]
     def self.options_builder( name, opts )
@@ -201,9 +211,11 @@ module Campo
 
   @atts = {}
 
+
   class << self
     attr_accessor :atts
   end
+  
   
   class Base 
     include Childish
@@ -216,12 +228,14 @@ module Campo
 
     attr_accessor :attributes, :fields
 
+
     def initialize( name, attributes={}, &block )
       @attributes = DEFAULT.merge( {id: name}.merge(attributes.merge({name: name})) ).reject{|k,v| v.nil? }
       @fields = []
       
       instance_eval( &block ) if block
     end
+    
     
     def each(&block)
       block.call self if block
@@ -235,11 +249,13 @@ module Campo
       @output_listener = block
     end
 
+
     def output( n=0, tab=2 )
       n ||= 0
       tab ||= 2
       @output_listener.call n, tab
     end
+
 
     def labelled( inner=nil )
       inner ||= self.attributes[:name].gsub(/\[\]/, "").gsub("_"," ").capitalize
@@ -256,9 +272,11 @@ module Campo
       retval
     end # labelled
 
+
     def self.unhash( hash, skip=nil )
       hash.reject{|k,v| v.nil?  }.reject{|k,v| k.to_sym == skip.to_sym unless skip.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k.to_s.include?("-") ? ":\"#{k}\" =>" : "#{k}:"} #{Base.quotable(v)}, !}
     end
+    
     
     # if the string provided begins with a double quote but does not end in one, make it an unquoted string on output
     # else, wrap it in quotes
@@ -285,10 +303,12 @@ module Campo
 
   end # Base
   
+  
   # @see Convenience#literal
   def self.literal( *args, &block )
     Campo::Literal.new( *args, &block )
 	end
+	
 	
   # Pass anything but the form for the first argument to *not* have the local variable defaults added to the top
   # @example 
@@ -303,29 +323,35 @@ module Campo
 
 # end Campo methods
 
+
   class Outputter  
     
     def before_output( &block )
       befores << block
     end
     
+    
     def after_output( &block )
       afters << block
     end
+    
     
     def befores
       @befores ||= check_for_plugins :befores
     end   
     
+    
     def afters
       @afters ||= check_for_plugins :afters
     end
+    
     
     def check_for_plugins( type )
       Campo.plugins.reduce [] do |mem, (_,plugin)|
         mem + plugin.send(:"#{type}" )
       end
     end
+    
     
     def initialize( tab=nil, &block )
       options[:tab] = tab unless tab.nil? 
@@ -336,9 +362,11 @@ module Campo
     
     DEFAULT_OPTIONS={n: 0, tab: 2}
     
+    
     def options
       @options ||= DEFAULT_OPTIONS
     end
+    
     
     def run( fields, opts={} )
       opts = options.merge opts
@@ -353,7 +381,6 @@ module Campo
   end
 
 
-  
   class Form < Base
     DEFAULT = { method: "POST" }
 
@@ -372,8 +399,8 @@ module Campo
       end
     end
     
-
   end # Form
+  
   
   # Generally, the first method you'll call.
   # @example 
@@ -423,6 +450,7 @@ module Campo
     end
   end # Literal
   
+  
   class Select < Base
     def initialize( name, params={} )
       opts = params[:opts] || []
@@ -438,11 +466,11 @@ module Campo
       self.fields += Helpers.options_builder( name, opts ) unless opts.nil? || opts.empty?
       
       self.fields << Haml_Ruby_Insert.new( haml_insert ) unless haml_insert.nil?
-      
-      
+        
       self
     end # initialize
-      
+
+
     # @example (see Convenience#select)  
     def option( *args )
       value = args.shift
@@ -452,6 +480,7 @@ module Campo
       self << Campo::Option.new( @attributes[:name], value, inner, selected, attributes )
       self
     end
+    
     
     # Adds a default selection to a select list. By default it is disabled.
     # @param [String,nil] The display string for the option. Default is "Choose one:".
@@ -482,9 +511,6 @@ module Campo
       self
     end
     
-    # def mark_as_selected( val )
-    #   fields.find {|field| field.value == val }.selected = {selected: "selected"}
-    # end
   end # Select
   
   
@@ -563,6 +589,7 @@ module Campo
       end
     end
   end
+
 
   class Fieldset < Base
 
