@@ -333,11 +333,11 @@ module Campo
     # @param [Integer] depth
     # @param [Integer] tab Number of spaces for a tab.
     def self.output( top, so_far="", depth=0, tab=2)
-      so_far << "#{top.output( count, tab )}\n"
-      count += 1
+      so_far << "#{top.output( depth, tab )}\n"
+      depth += 1
       if top.respond_to?( :fields ) && top.fields.length >= 1
         top.fields.each do |field|
-          so_far = Base.output( field, so_far, count, tab ) 
+          so_far = Base.output( field, so_far, depth, tab ) 
         end
       end
 
