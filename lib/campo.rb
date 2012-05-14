@@ -339,6 +339,8 @@ module Campo
 
       so_far
     end
+    
+    alias :render :output
 
   end # Base
   
