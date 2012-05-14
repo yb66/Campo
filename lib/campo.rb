@@ -453,7 +453,9 @@ module Campo
       self
     end
     
-    
+    # Adds a default selection to a select list. By default it is disabled.
+    # @param [String,nil] The display string for the option. Default is "Choose one:".
+    # @param [Hash,nil] attributes Attributes for the option. Defaults to {disabled: "disabled"}, pass in an empty hash to override (or a filled one), or nil for the default.
     # @example 
     #     As a default:
     #     form.select("teas").with_default.option("ceylon")
@@ -467,8 +469,16 @@ module Campo
     #       %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", name: "teas",  }
     #       %option{  value: "", disabled: "disabled", name: "teas",  }My fave tea is:
     #       %option{ atts[:teas_ceylon], value: "ceylon", id: "teas_ceylon", name: "teas",  }Ceylon
-    def with_default( inner="Choose one:" )
-      self.fields.unshift Campo::Option.new( @attributes[:name], "", inner , nil, {disabled: "disabled", id: "#{@attributes[:name]}_default" } )
+    def with_default( inner="Choose one:", attributes={disabled: "disabled"} )
+      unless inner.nil? || inner.kind_of?( String )
+        attributes = inner
+        inner = nil
+      end
+      
+      inner ||="Choose one:"
+      attributes ||= {disabled: "disabled"}
+      attributes = {id: "#{@attributes[:name]}_default" }.merge! attributes
+      self.fields.unshift Campo::Option.new( @attributes[:name], "", inner , nil, attributes )
       self
     end
     

@@ -804,17 +804,61 @@ $.strip + "\n" }
             end
             
             context "and a default" do
+              context "With no arguments" do
               
-              subject { tag.with_default }
-              it { should_not be_nil }
-              it { should be_a_kind_of(Select) }
-              specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }! }
-              
-              context "Campo.output" do
-                let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }
+                subject { tag.with_default }
+                it { should_not be_nil }
+                it { should be_a_kind_of(Select) }
+                specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }! }
+                
+                context "Campo.output" do
+                  let(:expected) { %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }
   %option{ atts[:pqr_default], id: "pqr_default", value: "", disabled: "disabled", name: "pqr",  }Choose one:!.strip + "\n"  }
-                subject { Campo.output tag.with_default, :partial=>true }
-                it { should == expected }
+                  subject { Campo.output tag.with_default, :partial=>true }
+                  it { should == expected }
+                end
+              end
+              context "Given an inner text" do
+                context "And no other args" do
+                  subject { tag.with_default("Choose wisely!") }
+                  it { should_not be_nil }
+                  it { should be_a_kind_of(Select) }
+                  specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }! }
+                  
+                  context "Campo.output" do
+                    let(:expected) { %q<%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }
+  %option{ atts[:pqr_default], id: "pqr_default", value: "", disabled: "disabled", name: "pqr",  }Choose wisely!>.strip + "\n"  }
+                    subject { Campo.output tag.with_default("Choose wisely!"), :partial=>true }
+                    it { should == expected }
+                  end
+                end
+                context "And an empty hash" do
+                  subject { tag.with_default("Choose wisely!",{}) }
+                  it { should_not be_nil }
+                  it { should be_a_kind_of(Select) }
+                  specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }! }
+                  
+                  context "Campo.output" do
+                    let(:expected) { %q<%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }
+  %option{ atts[:pqr_default], id: "pqr_default", value: "", name: "pqr",  }Choose wisely!>.strip + "\n"  }
+                    subject { Campo.output tag.with_default("Choose wisely!",{}), :partial=>true }
+                    it { should == expected }
+                  end
+                end
+                context "And an empty hash" do
+                  subject { tag.with_default("Choose wisely!",{class: "default"}) }
+                  it { should_not be_nil }
+                  it { should be_a_kind_of(Select) }
+                  specify { subject.output.should == %q!%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }! }
+                  
+                  context "Campo.output" do
+                    let(:expected) { %q<%select{ atts[:pqr], tabindex: "#{@campo_tabindex += 1}", id: "pqr", name: "pqr",  }
+  %option{ atts[:pqr_default], id: "pqr_default", value: "", class: "default", name: "pqr",  }Choose wisely!>.strip + "\n"  }
+                    subject { Campo.output tag.with_default("Choose wisely!",{class: "default"}), :partial=>true }
+                    it { should == expected }
+                  end
+                end
+
               end
             end
           end
