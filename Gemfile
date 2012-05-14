@@ -4,7 +4,10 @@ group :development do
   gem "rake"
   gem "yard"
   gem "maruku"
-  gem "rspec"
-  gem "simplecov"
 end
 
+group :testing do
+  gem "rspec"
+  gem "simplecov"
+  gem "haml"
+end
