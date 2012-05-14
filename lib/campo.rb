@@ -7,20 +7,30 @@ require_relative "./campo/plugins/jqueryvalidation.rb"
 require_relative "./campo/plugins/aria.rb"
 
 module Campo
+
+  # Deals with adding children and tracking parents.
   module Childish
+  
+    # Push something onto the end of the fields array.
+    # @param [Object] child The object to push.
+    # @return [Object] self
     def push=( child )
       @fields << child
       child.parent = self
       self
     end
 
+    # @see #push=
     alias :<< :push=
     
     attr_accessor :parent
   end # Childish
   
-  
+  # Helpers for id'ing fields.
   module Iding
+    
+    # Helps to create a unique id tag.
+    # @param [String,nil] val
     def id_tag( val )
       val.nil? ? "" : "_#{val}"
     end
@@ -53,7 +63,7 @@ module Campo
     end
   end
   
-    
+  # Here to make life a bit easier and cut down on RSI.
   module Convenience  
     
     # @param [optional, Hash] attributes Any attributes you wish to add to the haml element.
@@ -80,6 +90,7 @@ module Campo
 
     # @example Output a literal string
     #   form.literal %Q!%p= "This is a paragraph "!
+    # @see Campo::Literal#initialize
     def literal( *args, &block  )
       tag = Campo::Literal.new( *args, &block  )
       self << tag
@@ -101,7 +112,7 @@ module Campo
     #     # Select using chain of options
     #     form.select("bands").option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").with_default.labelled("Favourite band:")
     #
-    # @see Select
+    # @see Select#initialize
     def select( *args, &block )
       select = Campo::Select.new( *args, &block )
       self << select
@@ -217,6 +228,8 @@ module Campo
   end
   
   
+  # Almost every Campo class inherits from this.
+  # @abstract Not entirely abstract, but should always be subclassed.
   class Base 
     include Childish
     include Iding
@@ -224,11 +237,20 @@ module Campo
     alias_method :enumerable_select, :select
     include Convenience
     
+    # Default attributes.
     DEFAULT = { tabindex: nil }
 
+    # @!attribute [r] attributes The element's html attributes.
+    # @return [Hash]
+    
+    # @!attribute [r] fields The element's child elements.
+    # @return [Array<Base>]
+    
     attr_accessor :attributes, :fields
 
-
+    # @param [String] name The value of the element's name attribute.
+    # @param [Hash,optional] attributes Any attributes for the element. Defaults to a generated tabindex (dependent on the order of form elements).
+    # @yield Any fields defined in the passed block become children of this element.
     def initialize( name, attributes={}, &block )
       @attributes = DEFAULT.merge( {id: name}.merge(attributes.merge({name: name})) ).reject{|k,v| v.nil? }
       @fields = []
@@ -237,6 +259,7 @@ module Campo
     end
     
     
+    # Iterates over the fields array.
     def each(&block)
       block.call self if block
       if respond_to?(:fields) &! fields.empty?
@@ -257,6 +280,9 @@ module Campo
     end
 
 
+    # Bit of a convenience method for adding a label around any element.
+    # @param [String] inner The text for the label.
+    # @return [Base]
     def labelled( inner=nil )
       inner ||= self.attributes[:name].gsub(/\[\]/, "").gsub("_"," ").capitalize
       parent = self.parent
@@ -273,6 +299,9 @@ module Campo
     end # labelled
 
 
+    # Takes a hash and transforms the key value pairs into a stringified version that Haml can consume.
+    # @param [Hash] hash The hash to stringify.
+    # @skip [Symbol,String] skip Key to skip. 
     def self.unhash( hash, skip=nil )
       hash.reject{|k,v| v.nil?  }.reject{|k,v| k.to_sym == skip.to_sym unless skip.nil? }.reduce(""){|mem, (k,v)| mem + %Q!#{k.to_s.include?("-") ? ":\"#{k}\" =>" : "#{k}:"} #{Base.quotable(v)}, !}
     end
@@ -402,7 +431,7 @@ module Campo
   end # Form
   
   
-  # Generally, the first method you'll call.
+  # Probably, the first method you'll call.
   # @example 
   #     # Form with a block
   #     form = Campo.form "form1", action: "/go/for/it/" do |f|
@@ -423,6 +452,8 @@ module Campo
     def initialize( s )
       raise ArgumentError, "you may only pass a string to Haml_Ruby_Insert/bit_of_ruby" unless s.kind_of?( String )
       super( nil ) # no name needed
+      
+      # @todo Don't enforce the equals sign, as a hyphen is also valid for adding a bit of ruby. Raise an exception
       @s = s.start_with?( '=' ) ? s : "= " + s.to_s
     
       self.on_output do |n=0, tab=2|
@@ -432,8 +463,11 @@ module Campo
   end # Haml_Ruby_Insert
   
 
-  # add whatever you need to with a literal
+  # Add whatever you need to with a literal.
   class Literal < Base
+  
+    # @param [String] s The literal string.
+    # @param [Hash,optional] attributes Any html attributes you wish the literal to have. 
     def initialize( s, attributes={} )
       super( nil, attributes ) # no name needed
       @s = s
