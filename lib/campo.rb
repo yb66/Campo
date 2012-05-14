@@ -268,11 +268,15 @@ module Campo
     end
     
     
+    # Takes a block that handles the rendering.
     def on_output( &block )
       @output_listener = block
     end
 
 
+    # Render to Haml
+    # @param [Integer] n
+    # @param [Integer] tab
     def output( n=0, tab=2 )
       n ||= 0
       tab ||= 2
