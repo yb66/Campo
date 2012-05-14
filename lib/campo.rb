@@ -301,15 +301,19 @@ module Campo
 
     # Takes a hash and transforms the key value pairs into a stringified version that Haml can consume.
     # @param [Hash] hash The hash to stringify.
-    # @skip [Array<#to_s>] skips Keys to skip.
+    # @param [Array<#to_s>] skips Keys to skip.
+    # @todo Make an Attributes class < Hash that deals with this.
+    # @api private
     def self.unhash( hash, skips=nil )
       skips = skips.nil? ? [] : skips.map(&:to_sym) # all keys are symbols
       hash.reject{|k,v| v.nil?  }.reject{|k,v| skips.include? k.to_sym }.reduce(""){|mem, (k,v)| mem + %Q!#{k.to_s.include?("-") ? ":\"#{k}\" =>" : "#{k}:"} #{Base.quotable(v)}, !}
     end
     
     
+    # @api private
     # if the string provided begins with a double quote but does not end in one, make it an unquoted string on output
     # else, wrap it in quotes
+    # @param [String] s
     def self.quotable( s )
       retval = if s.respond_to?(:start_with?) && s.start_with?( %Q!"! ) &! s.end_with?( %Q!"! )
         s[1.. -1] # chop the first character
@@ -319,7 +323,12 @@ module Campo
     end
 
 
-    def self.output( top, so_far="", count=0, tab=2)
+    # Where the magic of output happens.
+    # @param [Base] top
+    # @param [String] so_far
+    # @param [Integer] depth
+    # @param [Integer] tab Number of spaces for a tab.
+    def self.output( top, so_far="", depth=0, tab=2)
       so_far << "#{top.output( count, tab )}\n"
       count += 1
       if top.respond_to?( :fields ) && top.fields.length >= 1
@@ -549,10 +558,14 @@ module Campo
   end # Select
   
   
+  # Options for your Selectas!
   class Option < Base
     
     # @param [String] name
     # @param [String] value
+    # @param [String] inner
+    # @param [true,false,nil] selected
+    # @param [Hash] attributes
     def initialize( name, value, inner=nil, selected=nil, attributes={} )
       unless inner.nil? || inner.kind_of?( String )
         attributes = selected
@@ -594,10 +607,12 @@ module Campo
   # form << Campo::Input.new( "submit", :submit )
   class Input < Base  
     
-    #{ type: nil, value: nil, name: nil }
-    #{ size: nil, maxlength: nil, type: "text" }
-    #{ size: nil, maxlength: nil, type: "hidden" }
-    #{ type: "submit" }
+    # @param [String] name
+    # @param [Symbol] type
+    # @param [Hash] attributes
+    # @example
+    #    Campo::Input.new( "abc", :text, maxlength: 50 )
+    #    # => %input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", id: "abc", type: "text", maxlength: "50", name: "abc",  }
     def initialize( name, type=:text, attributes={} )
       id_tag = id_tag(
         [:text,:hidden,:submit,:password].include?(type) ? 
