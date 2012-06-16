@@ -3,18 +3,10 @@
 require 'spec_helper'
 require_relative "../lib/campo.rb"
 require "rspec"
-require "logger"
 
 
 module Campo
   describe Campo do
-    
-    let(:logger){
-      require 'logger'
-      logger = Logger.new(STDOUT)
-      logger.level = Logger::DEBUG
-      logger
-    }
 
     let(:top_bit) { s = <<-'STR'
 - atts = {} if atts.nil?
