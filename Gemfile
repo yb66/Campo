@@ -4,6 +4,7 @@ group :development do
   gem "rake"
   gem "yard"
   gem "maruku"
+  gem "wirble"
 end
 
 group :testing do
