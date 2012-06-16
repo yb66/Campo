@@ -1,4 +1,4 @@
-## 16th of June 2012 ##
+## v0.9.0 16th of June 2012 ##
 
 * Updated the README with info on using plugins, and how to contribute.
 * `describe` in the Aria plugin no longer needs a tuple to create a list, it can take an array of single valued arrays as the missing part of the tuple will default to an empty hash.
