@@ -6,11 +6,15 @@ Btw, I'll be using this with Sinatra, if you're using Rails you'll need to work 
 
 ## Note! ##
 
-As always, keep in mind this is an open source project (licence below) and you can contribute! If you find a problem or would like a feature changed or added, let me know, or even better, fork the project and send me a pull request.
+As always, keep in mind this is an open source project (licence below) and you can contribute! If you find a problem or would like a feature changed or added, let me know, or even better, fork the project and send me a pull request. See the "Contributing" section for some notes on how to do that.
 
 ## Double note! ##
 
 I use Campo myself, and I'm trying to improve it. As I don't want to push new stuff out before I've had a chance to give it a whirl and see if it makes sense and works (through experience, specs aren't everything) I'll have several versions of this up here, some unreleased. I tend to append a 'b' to the end of an unreleased version. Please make sure you're reading the documentation for the version you're using!
+
+## Version numbers ##
+
+You'll notice this library is well past version 0.0.1. Some people take this to mean something like "it works brilliantly", but in fact, I'm attempting to use the [semver standard](http://semver.org/). In essence, it tells you about changes to the API, not about code quality - that's what the specs/tests are for. It's worth a read.
 
 ## Why write this? ##
 
@@ -26,29 +30,29 @@ Here's an example form:
     # Now starts the real action #
     
     form = Campo.form "personal_details", action: %Q!"uri("/my/personal_details/update/")!  do
-      fieldset("Your details") do              
-        text( "full_name", "Full name: ", size: 60 )
-        text( "dob", "Date of birth: ", size: 10 ) #TODO change this
-        fieldset( "Gender: " ) do
-          radio( "gender", "Male", value: 1 )
-          radio( "gender", "Female", value: 2 )
+      fieldset "Your details" do              
+        text "full_name", "Full name: ", size: 60 
+        text "dob", "Date of birth: ", size: 10  #TODO change this
+        fieldset "Gender: "  do
+          radio "gender", "Male", value: 1 
+          radio "gender", "Female", value: 2 
         end
         select("teas").with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:")
-        text( "occupation", "Occupation: ", size: 60 )
-        text( "phone_landline", "Phone (landline): ", size: 20 )
-        text( "phone_mobile", "Phone (mobile): ", size: 20 )
-        fieldset( "May we contact you..." ) do
-          checkbox( "contactable", "In the day?", value: "day" )
-          checkbox( "contactable",  "In the evening?", value: "evening" )
+        text "occupation", "Occupation: ", size: 60 
+        text "phone_landline", "Phone (landline): ", size: 20 
+        text "phone_mobile", "Phone (mobile): ", size: 20 
+        fieldset "May we contact you..."  do
+          checkbox "contactable", "In the day?", value: "day" 
+          checkbox "contactable",  "In the evening?", value: "evening" 
         end
-        submit("Save")
+        submit "Save"
       end
     end
+    
+    
+    puts Campo.output( form )
 
 and the output:
-
-
-    puts Campo.output( form )
 
     - atts = {} if atts.nil?
     - atts.default_proc = proc {|hash, key| hash[key] = {} } if atts.default_proc.nil?
@@ -113,7 +117,12 @@ These get added to the top when calling `Campo.output`, to provide sane defaults
 
 Note: if you don't want these added, you can do:
 
-    Campo.output your_tag, :partial => true
+    Campo.output name-of-tag-here, :partial => true
+    
+e.g
+
+    Campo.output form, :partial => true
+    
 
 Here's some Campo code for a select tag with options:
 
@@ -124,14 +133,14 @@ Here's some Campo code for a select tag with options:
 or
 
     form = Campo.form "best_bands", action: "/best/bands/" do
-      select("bands") do
+      select "bands" do
         with_default
-        option("Suede")
-        option("Blur")
-        option("Oasis")
-        option("Echobelly")
-        option("Pulp")
-        option("Supergrass")
+        option "Suede"
+        option "Blur"
+        option "Oasis"
+        option "Echobelly"
+        option "Pulp"
+        option "Supergrass"
       end.labelled("Favourite band:")
     end
     
@@ -198,6 +207,8 @@ You can do this with any kind of attribute you wish to add. For example:
 
 
     atts[:bands_blur] = {not_worth_listening_to: "selected"}
+    
+    #=> <option not_worth_listening_to='selected' id='bands_blur' name='bands' value='Blur'>Blur</option>
     
 But I doubt your name is Noel Gallagher, which makes this a spurious example.
 
@@ -362,6 +373,8 @@ Most fields will accept a block, so you can nest whatever you like. Generally I 
     end
     
     puts Campo.output form
+
+Output:
     
     - atts = {} if atts.nil?
     - atts.default_proc = proc {|hash, key| hash[key] = {} } if atts.default_proc.nil?
@@ -380,7 +393,115 @@ Most fields will accept a block, so you can nest whatever you like. Generally I 
           %label{ for: "blah",  }
             Blah
             %input{ atts[:blah], tabindex: "#{@campo_tabindex += 1}", id: "blah", type: "text", name: "blah",  }
+
+## Plugins ##
+
+I've written a couple of plugins. If you wish to write one yourself you'll need to look for the code for now until I write some proper instructions.
+
+To load a plugin called "Aria":
+
+    Campo.plugin :Aria
+
+### Aria ###
+
+Helpful methods for outputting forms that add in the [WAI-ARIA](http://www.w3.org/WAI/intro/aria) attributes into your forms.
+
+Here's an example of how I've used this with an account registration form to provide information about each field:
+
+    require 'campo'
+
+    Campo.plugin :Aria
+
+    div = Campo.literal "#session.form" do
+      self << Campo.form( "register" ) do
+        fieldset "Register" do
+          literal "%p.warning" do
+            literal "Fields marked with an <em>*</em> are required."
+          end
+          text( "email_address", size: 40 ).describe("A valid email address, please.", class: "validation info description")
+          text( "username", size: 40 ).describe([["Must be 3 characters at least.", {class: 'validate_username required', id: 'username_length'}], ["No spaces or punctuation, only numbers, letters and underscores, please.", {class: 'validate_username required', id: 'username_specialchars'}], ["You may not use your email address as a username.", {class: 'validate_username required', id: 'username_not_email_address'}]], class: "validation info description")
+          password( "password", size: 40 ).describe([["Must be 8 characters at least.",{class: 'validate_password required', id: 'password_length'}],["It's better to add some numbers/punctuation.", class: 'validate_password', id: 'password_specialchars'],["You may not use your email address or username as a password.", {class: 'validate_password required', id: 'password_not_email_address'}],["For strength, try to make it a phrase, and not to be something you've previously used.",{}]], class: "validation info description")
+          bit_of_ruby "= Rack::Csrf.tag(env)"
+          literal "#validation_overall_result.validation.hidden" do
+            literal "There were problems with the form entries. Please check the highlighted fields."
+          end
+          submit
+        end
+      end
+    end
     
+    
+    
+    puts Campo.output div
+
+Now let's take a look at the output of the email_address field:
+
+    %label{ for: "email_address",  }
+      Email address
+      %span{id: "email_address_description", class: "validation info description", }
+        A valid email address, please.
+      %input{ atts[:email_address], tabindex: "#{@campo_tabindex += 1}", id: "email_address", type: "text", size: "40", name: "email_address", :"aria-describedby" => "email_address_description",  }
+      
+Notice how the label contains a span that precedes the input field - this is helpful for screen readers because those that aren't using ARIA will still hit the description. The input field refers to this span using the aria-describedby attribute.
+
+For a more complex example, look at the output for username:
+
+    %label{ for: "username",  }
+      Username
+      %span{id: "username_description", class: "validation info description", }
+        %ul
+          %li{ id: "username_length", class: "validate_username required", }
+            Must be 3 characters at least.
+          %li{ id: "username_specialchars", class: "validate_username required", }
+            No spaces or punctuation, only numbers, letters and underscores, please.
+          %li{ id: "username_not_email_address", class: "validate_username required", }
+            You may not use your email address as a username.
+      %input{ atts[:username], tabindex: "#{@campo_tabindex += 1}", id: "username", type: "text", size: "40", name: "username", :"aria-describedby" => "username_description",  }
+
+For the campo code, we added an array of tuples to the `describe` method. These tuples are then made into an unordered list within the span. The first part of each tuple is the text description, the second part any attributes you with the list item to have. I've used this in a project in conjunction with JQuery to produce dynamic information back to the user of the form. You don't have to pass the second part of the tuple, in other words you can do:
+
+    text("d").describe([["You"], ["Me"], ["Them"]])
+
+But I would usually expect that you'd want to pass each item an id. It's up to you.
+
+### Contributing ###
+
+When contributings, most of all, remember that **any** contribution you can make will be valuable, whether that is putting in a ticket for a feature request (or a bug, but they don't happen here;), cleaning up some grammar, writing some documentation (or even a blog post, let me know!) or a full blooded piece of code - it's **all** welcome and encouraged.
+
+To contribute some code:
+
+1. Fork this, then:
+* `git clone git@github.com:YOUR-USERNAME/Campo.git`
+* `git remote add upstream git@github.com:yb66/Campo.git`
+* `git fetch upstream`
+* `git checkout develop`
+* Decide on the feature you wish to add.  
+    - Give it a snazzy name, such as **kitchen_sink**.  
+    - `git checkout -b kitchen_sink`
+* Install Bundler.  
+    - `gem install bundler -r --no-ri --no-rdoc`
+* Install gems from Gemfile.  
+    - `bundle install --binstubs --path vendor`  
+    - Any further updates needed, just run `bundle install`, it'll remember the rest.
+* Write some specs.
+* Write some code. (Yes, I believe that is the correct order, and you'll never find me doing any different;)
+* Write some documentation using Yard comments - see [Yard's Getting Started](http://rubydoc.info/docs/yard/file/docs/GettingStarted.md)  
+  - Use real English (i.e. full stops and commas, no l33t or LOLZ). I'll accept American English even though it's ugly. Don't be surprised if I 'correct' it.  
+  - Code without comments won't get in, I don't have the time to work out what you've done if you're not prepared to spend some time telling me (and everyone else).
+* Run `reek PATH_TO_FILE_WITH_YOUR_CHANGES` and see if it gives you any good advice. You don't have to do what it says, just consider it.
+* Run specs to make sure you've not broken anything. If it doesn't pass all the specs it doesn't get in.  
+  - Have a look at coverage/index.htm and see if all your code was checked. We're trying for 100% code coverage.
+* Run `bin/rake docs` to generate documentation.  
+    - Open up docs/index.html and check your documentation has been added and is clear.
+* Add a short summary of your changes to the CHANGES file. Add your name and a link to your bio/website if you like too.
+* Send me a pull request.  
+    - Don't merge into the develop branch!  
+    - Don't merge into the master branch!  
+    - see [http://nvie.com/posts/a-successful-git-branching-model/](http://nvie.com/posts/a-successful-git-branching-model/) for more on how this is supposed to work.
+* Wait for worldwide fame.
+* Shrug and get on with your life when it doesn't arrive, but know you helped quite a few people in their life, even in a small way - 1000 raindrops will fill a bucket!
+
+
 ## Licence ##
 
 This is under the MIT Licence.
