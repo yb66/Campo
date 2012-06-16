@@ -24,11 +24,16 @@ module Campo
           #   @example
           #     text("postcode").describe("All in caps", class: "description")
           #   @return [String] A span with an id (and any options passed in as attributes) as Haml.
-          # @overload text(messages, opts)
-          #   @param [Array<Array<String,Hash>>] messages An array of tuples, each tuple containing the message string and an options hash for attributes.
+          # @overload text(message-tuples, opts)
+          #   @param [Array<Array<String,Hash>>] message-tuples An array of tuples, each tuple containing the message string and an options hash for attributes.
           #   @param [optional,Hash] options Any attributes for the span.
           #   @example
           #     text("Address").describe([["postcode",{class: "British"}],["zipcode", {class: "American"}]], class: "description")
+          #   @return [String] A span with an id (and any options passed in as attributes) as Haml, wrapped around an unordered list with a list-item for each message, each list-item receiving the attributes passed in the tuple for it.
+          # @overload text(messages,opts)
+          #   @param [Array<Array<String>>] messages An array of single valued arrays containing a string, the message.
+          #   @example
+          #     text("Address").describe([["A valid address"],["Don't forget the postcode!"]])
           #   @return [String] A span with an id (and any options passed in as attributes) as Haml, wrapped around an unordered list with a list-item for each message.
           # @see http://www.w3.org/TR/WCAG20-TECHS/ARIA1.html
           def describe( message, opts={} )
