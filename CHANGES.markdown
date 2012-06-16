@@ -1,3 +1,12 @@
+## 16th of June 2012 ##
+
+* Updated the README with info on using plugins, and how to contribute.
+* `describe` in the Aria plugin no longer needs a tuple to create a list, it can take an array of single valued arrays as the missing part of the tuple will default to an empty hash.
+* Added testing for the develop branch to Travis.
+* Moved most of the code to a separate file that is then required back in by lib/campo.rb, as specs were affected by the order they were run in. Now, each spec only `require` the files it needs and clear the plugins before running, which means they can be run in any order and not be affected.
+
+----
+
 ## v0.8.3b 14th of May 2012 ##
 
 * `with_default` can now have the 'disabled' attribute turned off. 
