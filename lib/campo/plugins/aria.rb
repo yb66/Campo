@@ -43,7 +43,8 @@ module Campo
             if message.respond_to? :map
               # array
               span = Campo::Span.new( span_id, "%ul", opts )
-              message.each do |(x,o)|     
+              message.each do |(x,o)|
+                o ||= {}     
                 li = Campo.literal("%li",o) << Campo.literal(x)
                 span.fields.first << li
               end
