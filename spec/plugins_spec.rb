@@ -1,9 +1,14 @@
 # encoding: UTF-8
 
 require_relative "./spec_helper.rb"
-require_relative "../lib/campo.rb"
+require_relative "../lib/campo/campo.rb"
+require_relative "../lib/campo/plugins.rb"
+require_relative "../lib/campo/plugins/partial.rb"
 
 describe :"Campo::plugins" do
+  before(:all) do
+    Campo.plugins.clear
+  end
   context "before plugging anything in" do
     subject { Campo.plugins }
     it { should be_a_kind_of Hash }

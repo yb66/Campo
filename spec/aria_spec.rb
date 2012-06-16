@@ -1,11 +1,15 @@
 # encoding: UTF-8
 
 require_relative "./spec_helper.rb"
-require_relative "../lib/campo.rb"
+require_relative "../lib/campo/campo.rb"
+require_relative "../lib/campo/plugins/aria.rb"
+require_relative "../lib/campo/plugins/partial.rb"
 
 describe "Aria" do
 
-  before {
+  before(:all) {
+    Campo.plugins.clear
+    Campo.plugin :partial # this is normally done by lib/campo.rb
     Campo.plugin :Aria
   }
   let(:form) { 

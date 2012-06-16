@@ -1,12 +1,20 @@
 # encoding: UTF-8
 
 require 'spec_helper'
-require_relative "../lib/campo.rb"
+require_relative "../lib/campo/campo.rb"
+require_relative "../lib/campo/plugins/partial.rb"
+require_relative "../lib/campo/plugins/aria.rb"
 require "rspec"
 
 
 module Campo
   describe Campo do
+  
+    before(:all) do
+      Campo.plugins.clear
+      Campo.plugin :partial # this is normally done by lib/campo.rb
+      Campo.plugin :Aria
+    end      
 
     let(:top_bit) { s = <<-'STR'
 - atts = {} if atts.nil?

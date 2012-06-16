@@ -1,10 +1,15 @@
 # encoding: UTF-8
 
 require_relative "./spec_helper.rb"
-require_relative "../lib/campo.rb"
+require_relative "../lib/campo/campo.rb"
+require_relative "../lib/campo/plugins/partial.rb"
 
 
 describe :"Campo::Plugins::Partial" do
+  before(:all) do
+    Campo.plugins.clear
+    Campo.plugin :partial # this is normally done by lib/campo.rb
+  end
   describe :"Campo::Plugins::Partial::Klass" do
     context "Initialisation" do
       subject { Campo::Plugins::Partial::Klass.new }

@@ -2,9 +2,15 @@
 # encoding: UTF-8
 
 require_relative "./spec_helper.rb"
-require_relative "../lib/campo.rb"
+require_relative "../lib/campo/campo.rb"
+require_relative "../lib/campo/plugins/partial.rb"
+require_relative "../lib/campo/plugins/aria.rb"
+require_relative "../lib/campo/plugins/jqueryvalidation.rb"
 
 describe :"Campo::Plugins::JQueryValidation" do
+  before(:all) do
+    Campo.plugins.clear
+  end
   describe :"Campo::Plugins::JQueryValidation::Klass" do
     context "Initialisation" do
       subject { Campo::Plugins::JQueryValidation::Klass.new }
