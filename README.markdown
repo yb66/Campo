@@ -1,28 +1,34 @@
-[![Build Status for development branch](https://secure.travis-ci.org/yb66/Campo.png?branch=develop)](http://travis-ci.org/yb66/Campo)
-
-# Campo #
+## Campo ##
 
 A static dynamic form builder into haml. Yep, static _and_ dynamic. Use it to statically create a form into haml, but you may notice it's taken advantage of haml's "add a hash to the front of the attributes and it'll get merged" property. [See Haml docs for more](http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#attribute_methods). More on that below.
 
 Btw, I'll be using this with Sinatra, if you're using Rails you'll need to work out how that's done as I don't know.
 
-## Note! ##
+### Build status ###
+
+Master branch:
+[![Build Status for development branch](https://secure.travis-ci.org/yb66/Campo.png?branch=master)](http://travis-ci.org/yb66/Campo)
+
+Develop branch:
+[![Build Status for development branch](https://secure.travis-ci.org/yb66/Campo.png?branch=develop)](http://travis-ci.org/yb66/Campo)
+
+### Note! ###
 
 As always, keep in mind this is an open source project (licence below) and you can contribute! If you find a problem or would like a feature changed or added, let me know, or even better, fork the project and send me a pull request. See the "Contributing" section for some notes on how to do that.
 
-## Double note! ##
+### Double note! ###
 
 I use Campo myself, and I'm trying to improve it. As I don't want to push new stuff out before I've had a chance to give it a whirl and see if it makes sense and works (through experience, specs aren't everything) I'll have several versions of this up here, some unreleased. I tend to append a 'b' to the end of an unreleased version. Please make sure you're reading the documentation for the version you're using!
 
-## Version numbers ##
+### Version numbers ###
 
 You'll notice this library is well past version 0.0.1. Some people take this to mean something like "it works brilliantly", but in fact, I'm attempting to use the [semver standard](http://semver.org/). In essence, it tells you about changes to the API, not about code quality - that's what the specs/tests are for. It's worth a read.
 
-## Why write this? ##
+### Why write this? ###
 
 However nice Haml is, it's still a lot of effort to build a form. If you've got lots of forms it's worse. The long term plan is to link this in to Sequel.
 
-## Example! ##
+### Example! ###
 
 Here's an example form:
 
@@ -105,7 +111,7 @@ and the output:
         %input{ atts[:Save], tabindex: "#{@campo_tabindex += 1}", id: "Save", type: "submit", value: "Save",  }
 
 
-## Haml attributes ##
+### Haml attributes ###
 
 Back to the dynamic attributes mentioned earlier. What does this mean? You can pass in a local to dynamically alter the form based on server side logic.
 
@@ -215,7 +221,7 @@ You can do this with any kind of attribute you wish to add. For example:
 But I doubt your name is Noel Gallagher, which makes this a spurious example.
 
     
-## Be selective ##
+### Be selective ###
     
     opts = [
       ["ceylon"], 
@@ -241,7 +247,7 @@ Output:
         %option{ atts[:teas_english_breakfast], id: "teas_english_breakfast", value: "english_breakfast", selected: "selected", name: "teas",  }English breakfast
         %option{ atts[:teas_earl_grey], id: "teas_earl_grey", value: "earl_grey", name: "teas",  }Earl grey
         
-## Pass a hash ##
+### Pass a hash ###
 
     opts = {
       "ceylon"=>"Ceylon",
@@ -284,7 +290,7 @@ Output:
         %option{ atts[:teas_english_breakfast], id: "teas_english_breakfast", value: "english_breakfast", selected: "selected", name: "teas",  }English Breakfast
         %option{ atts[:teas_earl_grey], id: "teas_earl_grey", value: "earl_grey", name: "teas",  }Earl Grey
 
-## Adding in helpers ##
+### Adding in helpers ###
 
 If you want to use helpers in the attributes, like sinatra's `uri` helper, then add a double-quote to the front:
 
@@ -305,7 +311,7 @@ outputs:
       
 Although, if you forget the "=" sign it will add it for you.
 
-## And literals ##
+### And literals ###
 
 `bit_of_ruby` is really just a literal with a shortcut. Here are some examples using literals:
 
@@ -352,13 +358,13 @@ You can use literals to wrap forms in divs too:
         %p= "I like tea!"
 
         
-## tabindex ##
+### tabindex ###
 
 Each field gets `@campo_tabindex += 1` added to its attributes. This will generate a tabindex easily for you.
 
 Since it's an instance variable it can be passed through easily to nested partials and the count will still be right.
 
-## Blocks ##
+### Blocks ###
 
 Most fields will accept a block, so you can nest whatever you like. Generally I just use this for forms, fieldsets and selects (and those have specs) but if you want to try something new, do it! Let me know if it breaks. You don't have to use the `|var|` notation unless you feel it's helpful.
 
@@ -396,7 +402,7 @@ Output:
             Blah
             %input{ atts[:blah], tabindex: "#{@campo_tabindex += 1}", id: "blah", type: "text", name: "blah",  }
 
-## Plugins ##
+### Plugins ###
 
 I've written a couple of plugins. If you wish to write one yourself you'll need to look for the code for now until I write some proper instructions.
 
@@ -504,7 +510,7 @@ To contribute some code:
 * Shrug and get on with your life when it doesn't arrive, but know you helped quite a few people in their life, even in a small way - 1000 raindrops will fill a bucket!
 
 
-## Licence ##
+### Licence ###
 
 This is under the MIT Licence.
 
