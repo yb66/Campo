@@ -505,9 +505,9 @@ module Campo
     # option params [Hash] :attributes
     # option params [#to_s] :haml_insert
     def initialize( name, params={} )
-      opts = params[:opts] || []
-      attributes = params[:attributes] || {}
-      haml_insert = params[:haml_insert] || nil
+      opts = params.fetch :opts, []
+      attributes = params.fetch :attributes, {}
+      haml_insert = params.delete :haml_insert
       
       super( name, { tabindex: %q!#{@campo_tabindex += 1}! }.merge(attributes) )
       
