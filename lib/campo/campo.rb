@@ -462,7 +462,7 @@ module Campo
   
   class Haml_Ruby_Insert < Base
     def initialize( s )
-      raise ArgumentError, "you may only pass a string to Haml_Ruby_Insert/bit_of_ruby" unless s.kind_of?( String )
+      fail ArgumentError, "you may only pass a string to Haml_Ruby_Insert/bit_of_ruby" unless s.kind_of?( String )
       super( nil ) # no name needed
       
       # @todo Don't enforce the equals sign, as a hyphen is also valid for adding a bit of ruby. Raise an exception
