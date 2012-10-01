@@ -3,7 +3,7 @@ source "https://rubygems.org"
 group :development do
   gem "rake"
   gem "yard"
-  gem "maruku"
+  gem "rdiscount"
   gem "wirble"
   gem "reek"
 end
