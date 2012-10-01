@@ -106,6 +106,8 @@ module Campo
     #     # Select using chain of options
     #     form.select("bands").option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").with_default.labelled("Favourite band:")
     #
+    #     select( "breads", {opts: [[1, "White"],[2,"Malted"],[3,"Black"],[4,"Wholemeal"], [5,"Rye"] ] })
+    #
     # @see Select#initialize
     def select( *args, &block )
       select = Campo::Select.new( *args, &block )
@@ -494,8 +496,14 @@ module Campo
     end
   end # Literal
   
-  
+
+  # For building 'select' tags.
   class Select < Base
+
+    # @param [String] :name
+    # @param [Hash] :params
+    # option params [Hash] :attributes
+    # option params [#to_s] :haml_insert
     def initialize( name, params={} )
       opts = params[:opts] || []
       attributes = params[:attributes] || {}
@@ -515,6 +523,10 @@ module Campo
     end # initialize
 
 
+    # @param [#to_s] value The value for attribute 'value'.
+    # @param [#to_s] inner The display text.
+    # @param [true,false,nil] selected Whether the field is selected. Defaults to false.
+    # @param [Hash] attributes Hash of attributes. They'll get added to the element.
     # @example (see Convenience#select)  
     def option( *args )
       value = args.shift
