@@ -106,6 +106,8 @@ module Campo
     #     # Select using chain of options
     #     form.select("bands").option("Suede").option("Blur").option("Oasis").option("Echobelly").option("Pulp").option("Supergrass").with_default.labelled("Favourite band:")
     #
+    #     select( "breads", {opts: [[1, "White"],[2,"Malted"],[3,"Black"],[4,"Wholemeal"], [5,"Rye"] ] })
+    #
     # @see Select#initialize
     def select( *args, &block )
       select = Campo::Select.new( *args, &block )
@@ -279,12 +281,14 @@ module Campo
 
 
     # Bit of a convenience method for adding a label around any element.
-    # @param [String] inner The text for the label.
+    # @param [String] :inner The text for the label.
+    # @param [Hash] :attributes Attributes for the label.
     # @return [Base]
-    def labelled( inner=nil )
+    # @see Label#initialize
+    def labelled( inner=nil, attributes={} )
       inner ||= self.attributes[:name].gsub(/\[\]/, "").gsub("_"," ").capitalize
       parent = self.parent
-      label = Label.new( %Q!#{@attributes[:id]}!, inner ) << self
+      label = Label.new( %Q!#{@attributes[:id]}!, inner, attributes ) << self
       retval = if parent.nil?
         label
       else
@@ -460,7 +464,7 @@ module Campo
   
   class Haml_Ruby_Insert < Base
     def initialize( s )
-      raise ArgumentError, "you may only pass a string to Haml_Ruby_Insert/bit_of_ruby" unless s.kind_of?( String )
+      fail ArgumentError, "you may only pass a string to Haml_Ruby_Insert/bit_of_ruby" unless s.kind_of?( String )
       super( nil ) # no name needed
       
       # @todo Don't enforce the equals sign, as a hyphen is also valid for adding a bit of ruby. Raise an exception
@@ -494,12 +498,18 @@ module Campo
     end
   end # Literal
   
-  
+
+  # For building 'select' tags.
   class Select < Base
+
+    # @param [String] :name
+    # @param [Hash] :params
+    # option params [Hash] :attributes
+    # option params [#to_s] :haml_insert
     def initialize( name, params={} )
-      opts = params[:opts] || []
-      attributes = params[:attributes] || {}
-      haml_insert = params[:haml_insert] || nil
+      opts = params.fetch :opts, []
+      attributes = params.fetch :attributes, {}
+      haml_insert = params.delete :haml_insert
       
       super( name, { tabindex: %q!#{@campo_tabindex += 1}! }.merge(attributes) )
       
@@ -515,6 +525,10 @@ module Campo
     end # initialize
 
 
+    # @param [#to_s] value The value for attribute 'value'.
+    # @param [#to_s] inner The display text.
+    # @param [true,false,nil] selected Whether the field is selected. Defaults to false.
+    # @param [Hash] attributes Hash of attributes. They'll get added to the element.
     # @example (see Convenience#select)  
     def option( *args )
       value = args.shift
@@ -528,7 +542,7 @@ module Campo
     
     # Adds a default selection to a select list. By default it is disabled.
     # @param [String,nil] The display string for the option. Default is "Choose one:".
-    # @param [Hash,nil] attributes Attributes for the option. Defaults to {disabled: "disabled"}, pass in an empty hash to override (or a filled one), or nil for the default.
+    # @param [Hash,nil] attributes Attributes for the option. Defaults to Hash[ :disabled => "disabled" ], pass in an empty hash to override (or a filled one), or nil for the default.
     # @example 
     #     As a default:
     #     form.select("teas").with_default.option("ceylon")
