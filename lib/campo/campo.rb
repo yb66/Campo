@@ -281,12 +281,14 @@ module Campo
 
 
     # Bit of a convenience method for adding a label around any element.
-    # @param [String] inner The text for the label.
+    # @param [String] :inner The text for the label.
+    # @param [Hash] :attributes Attributes for the label.
     # @return [Base]
-    def labelled( inner=nil )
+    # @see Label#initialize
+    def labelled( inner=nil, attributes={} )
       inner ||= self.attributes[:name].gsub(/\[\]/, "").gsub("_"," ").capitalize
       parent = self.parent
-      label = Label.new( %Q!#{@attributes[:id]}!, inner ) << self
+      label = Label.new( %Q!#{@attributes[:id]}!, inner, attributes ) << self
       retval = if parent.nil?
         label
       else
@@ -540,7 +542,7 @@ module Campo
     
     # Adds a default selection to a select list. By default it is disabled.
     # @param [String,nil] The display string for the option. Default is "Choose one:".
-    # @param [Hash,nil] attributes Attributes for the option. Defaults to {disabled: "disabled"}, pass in an empty hash to override (or a filled one), or nil for the default.
+    # @param [Hash,nil] attributes Attributes for the option. Defaults to Hash[ :disabled => "disabled" ], pass in an empty hash to override (or a filled one), or nil for the default.
     # @example 
     #     As a default:
     #     form.select("teas").with_default.option("ceylon")

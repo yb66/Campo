@@ -40,7 +40,7 @@ STR
       context "Given no form" do
         context "When given a select field with options" do
           let(:expected) { %q!
-%label{ for: "teas",  }
+%label{ class: "list", for: "teas",  }
   Favourite tea:
   %select{ atts[:teas], tabindex: "#{@campo_tabindex += 1}", id: "teas", name: "teas",  }
     %option{ atts[:teas_default], id: "teas_default", value: "", disabled: "disabled", name: "teas",  }Choose one:
@@ -51,7 +51,7 @@ STR
           }
           let(:tag) {
             select = Campo::Select.new( "teas" )
-            tag = select.with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:") 
+            tag = select.with_default.option("ceylon").option("breakfast").option("earl grey").labelled("Favourite tea:", class: "list") 
             tag
           }
           subject { Campo.output tag, :partial=>true }
