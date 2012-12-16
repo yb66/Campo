@@ -1,3 +1,10 @@
+## v0.9.1 16th of December 2012 ##
+
+* `labelled` can now take an attributes hash, so: `.labelled("Favourite tea:", class: "list")` will output `%label{ class: "list", for: "teas",  }`
+
+----
+
+
 ## v0.9.0 16th of June 2012 ##
 
 * Updated the README with info on using plugins, and how to contribute.
