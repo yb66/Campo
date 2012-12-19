@@ -47,8 +47,8 @@ describe :"Campo::Plugins::Partial" do
         subject { Campo::Outputter.new.declarations }
         it { should_not be_nil }
         it { should be_a_kind_of String }
-        it { should include("- atts = {} if atts.nil?")   }
-        it { should include("# for tabindex\n").should be_true   }
+        it { should include("- atts = {} if atts.nil?") }
+        it { should include("# for tabindex\n") }
       end
       describe :options do
         subject { Campo::Outputter.new.options }
