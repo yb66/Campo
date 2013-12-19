@@ -470,7 +470,9 @@ s.chomp
         context "When given no args" do
           let(:form) { Campo::Form.new }
           it { should_not be_nil }
-          it { should raise_error }
+          it "should fail" do
+            expect { form }.to raise_error
+          end
         end
         context "When given a name" do
           let(:form) { Campo::Form.new( "myform" ) }
@@ -1374,8 +1376,10 @@ $.strip + "\n" }
     
     describe Textarea do
       context "Given no arguments" do
-        it { should_not be_nil }
-        it { should raise_error }
+        subject { Textarea.new }
+        it "should fail" do
+          expect { subject }.should raise_error
+        end
       end
       context "Given a name" do
         subject { Textarea.new( "textie" ) }
