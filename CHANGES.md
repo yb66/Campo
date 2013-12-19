@@ -1,5 +1,12 @@
 # CH CH CH CHANGES! #
 
+## v0.10.1 Thursday the 19th of December 2013 ##
+
+* A couple of the specs weren't written correctly to check for failure. For some reason they pass on my machine but fail on Travis CI, so I've updated them and now they should be good!
+
+----
+
+
 ## v0.10.0 Thursday the 19th of December 2013 ##
 
 * The `name` attribute can now be overridden if needs be.
