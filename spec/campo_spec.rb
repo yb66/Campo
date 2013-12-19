@@ -469,7 +469,6 @@ s.chomp
       describe "initialisation" do
         context "When given no args" do
           let(:form) { Campo::Form.new }
-          it { should_not be_nil }
           it "should fail" do
             expect { form }.to raise_error
           end
