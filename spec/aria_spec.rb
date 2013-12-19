@@ -27,17 +27,17 @@ describe "Aria" do
 - inners = {} if inners.nil?
 - inners.default = "" if inners.default.nil?
 - @campo_tabindex ||= 0 # for tabindex
-%form{ atts[:example], id: "example", method: "POST", name: "example", role: "form",  }
+%form{ atts[:example], id: "example", name: "example", method: "POST", role: "form",  }
   %label{ for: "a",  }
     A
     %span{id: "a_description", }
       mm/yy
-    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", :"aria-describedby" => "a_description",  }
+    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", name: "a", type: "text", :"aria-describedby" => "a_description",  }
   %label{ for: "b",  }
     B
     %span{id: "b_description", class: "description", }
       All in caps
-    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b", :"aria-describedby" => "b_description",  }
+    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", name: "b", type: "text", :"aria-describedby" => "b_description",  }
   %label{ for: "c",  }
     C
     %span{id: "c_description", class: "description", }
@@ -46,7 +46,7 @@ describe "Aria" do
           Must be 8 characters at least.
         %li{ id: "password_not_email_address", class: "password validate", }
           It's better to add some numbers/punctuation.
-    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c", :"aria-describedby" => "c_description",  }
+    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", name: "c", type: "text", :"aria-describedby" => "c_description",  }
   %label{ for: "d",  }
     D
     %span{id: "d_description", }
@@ -57,7 +57,7 @@ describe "Aria" do
           Me
         %li
           Them
-    %input{ atts[:d], tabindex: "#{@campo_tabindex += 1}", id: "d", type: "text", name: "d", :"aria-describedby" => "d_description",  }
+    %input{ atts[:d], tabindex: "#{@campo_tabindex += 1}", id: "d", name: "d", type: "text", :"aria-describedby" => "d_description",  }
 STR
   }
 

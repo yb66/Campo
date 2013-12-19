@@ -83,13 +83,13 @@ let(:expected) {
 .form
   %label{ for: "a", class: "required",  }
     A
-    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", class: "required",  }
+    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", name: "a", type: "text", class: "required",  }
   %label{ for: "c",  }
     C
-    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c",  }
+    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", name: "c", type: "text",  }
   %label{ for: "g", class: "required",  }
     G
-    %input{ atts[:g], tabindex: "#{@campo_tabindex += 1}", id: "g", type: "text", size: "3", name: "g", class: "required",  }
+    %input{ atts[:g], tabindex: "#{@campo_tabindex += 1}", id: "g", name: "g", type: "text", size: "3", class: "required",  }
 STR
 }
       
@@ -139,28 +139,28 @@ STR
 - inners = {} if inners.nil?
 - inners.default = "" if inners.default.nil?
 - @campo_tabindex ||= 0 # for tabindex
-%form{ atts[:exampleform], id: "exampleForm", method: "POST", name: "exampleForm", role: "form",  }
+%form{ atts[:exampleform], id: "exampleForm", name: "exampleForm", method: "POST", role: "form",  }
   %label{ for: "a", class: "required",  }
     A
-    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", type: "text", name: "a", class: "required",  }
+    %input{ atts[:a], tabindex: "#{@campo_tabindex += 1}", id: "a", name: "a", type: "text", class: "required",  }
   %label{ for: "b", class: "required",  }
     B
-    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", type: "text", name: "b", class: "required",  }
+    %input{ atts[:b], tabindex: "#{@campo_tabindex += 1}", id: "b", name: "b", type: "text", class: "required",  }
   %label{ for: "c",  }
     C
-    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", type: "text", name: "c",  }
+    %input{ atts[:c], tabindex: "#{@campo_tabindex += 1}", id: "c", name: "c", type: "text",  }
   %label{ for: "d",  }
     D
-    %input{ atts[:d], tabindex: "#{@campo_tabindex += 1}", id: "d", type: "text", size: "2", name: "d",  }
+    %input{ atts[:d], tabindex: "#{@campo_tabindex += 1}", id: "d", name: "d", type: "text", size: "2",  }
   %label{ for: "e", class: "required",  }
     E
-    %input{ atts[:e], tabindex: "#{@campo_tabindex += 1}", id: "e", type: "text", size: "5", name: "e", class: "required",  }
+    %input{ atts[:e], tabindex: "#{@campo_tabindex += 1}", id: "e", name: "e", type: "text", size: "5", class: "required",  }
   %label{ for: "f",  }
     F
-    %input{ atts[:f], tabindex: "#{@campo_tabindex += 1}", id: "f", type: "text", name: "f",  }
+    %input{ atts[:f], tabindex: "#{@campo_tabindex += 1}", id: "f", name: "f", type: "text",  }
   %label{ for: "g", class: "required",  }
     G
-    %input{ atts[:g], tabindex: "#{@campo_tabindex += 1}", id: "g", type: "text", size: "3", name: "g", class: "required",  }
+    %input{ atts[:g], tabindex: "#{@campo_tabindex += 1}", id: "g", name: "g", type: "text", size: "3", class: "required",  }
 STR
 }
       subject { Campo.output(form) }

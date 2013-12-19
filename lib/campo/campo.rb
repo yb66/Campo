@@ -155,11 +155,13 @@ module Campo
     
     # @param (see #text)
     # @param [:symbol] type The type html attribute.
-    def input( name, type, label=nil, attributes={} ) 
+    def input( name, type, label=nil, attributes={} )
+      warn "input"
       if label.kind_of? Hash
         attributes = label
         label = nil
       end
+      warn "attributes = #{attributes.inspect}"
 
       field = Campo::Input.new( name, type, attributes ).labelled( label )
       self << field
@@ -248,9 +250,15 @@ module Campo
     # @param [Hash,optional] attributes Any attributes for the element. Defaults to a generated tabindex (dependent on the order of form elements).
     # @yield Any fields defined in the passed block become children of this element.
     def initialize( name, attributes={}, &block )
-      @attributes = DEFAULT.merge( {id: name}.merge(attributes.merge({name: name})) ).reject{|k,v| v.nil? }
+      warn "Base#initialize"
+      warn "attributes = #{attributes.inspect}"
+      @attributes = DEFAULT.merge( 
+                      {id: name}.merge(
+                          {name: name}.merge(attributes)
+                      )
+                    ).reject{|k,v| v.nil? }
       @fields = []
-      
+      warn "@attributes = #{@attributes.inspect}"
       instance_eval( &block ) if block
     end
     
@@ -628,16 +636,19 @@ module Campo
     #    Campo::Input.new( "abc", :text, maxlength: 50 )
     #    # => %input{ atts[:abc], tabindex: "#{@campo_tabindex += 1}", id: "abc", type: "text", maxlength: "50", name: "abc",  }
     def initialize( name, type=:text, attributes={} )
+      warn "Input#initialize"
       id_tag = id_tag(
         [:text,:hidden,:submit,:password].include?(type) ? 
           nil : 
           attributes[:value]
       ).gsub(/\W/, "_")
+      warn "attributes = #{attributes.inspect}"
       
       name2 = name.gsub(/\[\]/, "") # remove any [] that may have been used for an array like / grouped object
       
       atts_name = "#{name2.gsub(/\W/, "_")}#{id_tag}"
       
+      warn "attributes = #{attributes.inspect}"
       super( name, 
             { type: type.to_s, 
               id: "#{name2}#{id_tag}",
