@@ -1,3 +1,12 @@
+# CH CH CH CHANGES! #
+
+## v0.10.0 Thursday the 19th of December 2013 ##
+
+* The `name` attribute can now be overridden if needs be.
+
+----
+
+
 ## v0.9.1 16th of December 2012 ##
 
 * `labelled` can now take an attributes hash, so: `.labelled("Favourite tea:", class: "list")` will output `%label{ class: "list", for: "teas",  }`
