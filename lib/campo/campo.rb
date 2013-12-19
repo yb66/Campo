@@ -155,7 +155,7 @@ module Campo
     
     # @param (see #text)
     # @param [:symbol] type The type html attribute.
-    def input( name, type, label=nil, attributes={} ) 
+    def input( name, type, label=nil, attributes={} )
       if label.kind_of? Hash
         attributes = label
         label = nil
@@ -248,9 +248,13 @@ module Campo
     # @param [Hash,optional] attributes Any attributes for the element. Defaults to a generated tabindex (dependent on the order of form elements).
     # @yield Any fields defined in the passed block become children of this element.
     def initialize( name, attributes={}, &block )
-      @attributes = DEFAULT.merge( {id: name}.merge(attributes.merge({name: name})) ).reject{|k,v| v.nil? }
+      @attributes = DEFAULT.merge( 
+                      {id: name}.merge(
+                          {name: name}.merge(attributes)
+                      )
+                    ).reject{|k,v| v.nil? }
       @fields = []
-      
+
       instance_eval( &block ) if block
     end
     

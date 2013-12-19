@@ -16,19 +16,19 @@ describe :"Campo::Plugins::Partial" do
       it { should_not be_nil }
       it { should be_a_kind_of Campo::Plugins::Partial::Klass }
     end
-    
+
     context "After initialisation" do
       subject { Campo::Plugins::Partial::Klass.new }
       it { should respond_to(:befores, :afters, :before_output, :after_output, :on_plugin, :extras, :plugged_in) }
     end
   end
-  
+
   describe :"Campo::Plugins::Partial.new" do
     subject { Campo::Plugins::Partial.new }
     it { should_not be_nil }
     it { should be_a_kind_of Campo::Plugins::Partial::Klass }
   end
-  
+
   context "Plugging in the Partial plugin" do
     before(:each) { Campo.plugin :partial }
     after(:each) { Campo.plugins.clear }
@@ -43,7 +43,7 @@ describe :"Campo::Plugins::Partial" do
         subject { Campo::Outputter.new.partial }
         it { should be_nil }
       end
-      describe :declarations do        
+      describe :declarations do
         subject { Campo::Outputter.new.declarations }
         it { should_not be_nil }
         it { should be_a_kind_of String }
