@@ -224,12 +224,31 @@ module Campo
   end
   
   
+  # Cleanroom for Base DSL blocks - only exposes safe convenience methods
+  class BaseCleanroom
+    include Convenience
+
+    def initialize(target)
+      @target = target
+    end
+
+    # Delegate << to target to add children
+    def <<(child)
+      @target << child
+    end
+
+    # Provide read-only access to target's fields if needed for introspection
+    def fields
+      @target.fields
+    end
+  end
+
   # Almost every Campo class inherits from this.
   # @abstract Not entirely abstract, but should always be subclassed.
-  class Base 
+  class Base
     include Childish
     include Iding
-    include Enumerable 
+    include Enumerable
     alias_method :enumerable_select, :select
     include Convenience
     
@@ -248,14 +267,17 @@ module Campo
     # @param [Hash,optional] attributes Any attributes for the element. Defaults to a generated tabindex (dependent on the order of form elements).
     # @yield Any fields defined in the passed block become children of this element.
     def initialize( name, attributes={}, &block )
-      @attributes = DEFAULT.merge( 
+      @attributes = DEFAULT.merge(
                       {id: name}.merge(
                           {name: name}.merge(attributes)
                       )
                     ).reject{|k,v| v.nil? }
       @fields = []
 
-      instance_eval( &block ) if block
+      if block
+        cleanroom = BaseCleanroom.new(self)
+        cleanroom.instance_eval(&block)
+      end
     end
     
     
@@ -371,6 +393,22 @@ module Campo
 # end Campo methods
 
 
+  # Cleanroom for Outputter configuration blocks - only exposes safe configuration methods
+  class OutputterCleanroom
+    def initialize(target)
+      @target = target
+    end
+
+    # Delegate configuration methods to target
+    def before_output(&block)
+      @target.before_output(&block)
+    end
+
+    def after_output(&block)
+      @target.after_output(&block)
+    end
+  end
+
   class Outputter  
     
     def before_output( &block )
@@ -398,11 +436,14 @@ module Campo
         mem + plugin.send(:"#{type}" )
       end
     end
-    
-    
+
+
     def initialize( tab=nil, &block )
-      options[:tab] = tab unless tab.nil? 
-      instance_eval( &block ) if block
+      options[:tab] = tab unless tab.nil?
+      if block
+        cleanroom = OutputterCleanroom.new(self)
+        cleanroom.instance_eval(&block)
+      end
     end
     
     attr_accessor :output
