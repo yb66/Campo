@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version    = ">= 1.9.2"
   s.authors        = ["Iain Barnett"]
   s.files          = `git ls-files`.split("\n")
-  s.add_development_dependency("haml", "~> 4.0.0")
+  s.add_development_dependency("haml", "~> 5.0.0")
   s.add_development_dependency("yard")
   s.add_development_dependency("rake")
   s.homepage       = "https://github.com/yb66/Campo"
