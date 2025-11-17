@@ -2,8 +2,6 @@
 
 A static dynamic form builder into haml. Yep, static _and_ dynamic. Use it to statically create a form into haml, but you may notice it's taken advantage of haml's "add a hash to the front of the attributes and it'll get merged" property. [See Haml docs for more](http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#attribute_methods). More on that below.
 
-Btw, I'll be using this with Sinatra, if you're using Rails you'll need to work out how that's done as I don't know.
-
 ### Build status ###
 
 Master branch:
@@ -16,13 +14,9 @@ Develop branch:
 
 As always, keep in mind this is an open source project (licence below) and you can contribute! If you find a problem or would like a feature changed or added, let me know, or even better, fork the project and send me a pull request. See the "Contributing" section for some notes on how to do that.
 
-### Double note! ###
-
-I use Campo myself, and I'm trying to improve it. As I don't want to push new stuff out before I've had a chance to give it a whirl and see if it makes sense and works (through experience, specs aren't everything) I'll have several versions of this up here, some unreleased. I tend to append a 'b' to the end of an unreleased version. Please make sure you're reading the documentation for the version you're using!
-
 ### Version numbers ###
 
-You'll notice this library is well past version 0.0.1. Some people take this to mean something like "it works brilliantly", but in fact, I'm attempting to use the [semver standard](http://semver.org/). In essence, it tells you about changes to the API, not about code quality - that's what the specs/tests are for. It's worth a read.
+This project uses the [semver standard](http://semver.org/). In essence, it tells you about changes to the API, not about code quality - that's what the specs/tests are for. It's worth a read.
 
 ### Why write this? ###
 
@@ -486,11 +480,10 @@ To contribute some code:
 * Decide on the feature you wish to add.  
     - Give it a snazzy name, such as **kitchen_sink**.  
     - `git checkout -b kitchen_sink`
-* Install Bundler.  
-    - `gem install bundler -r --no-ri --no-rdoc`
-* Install gems from Gemfile.  
-    - `bundle install --binstubs --path vendor`  
-    - Any further updates needed, just run `bundle install`, it'll remember the rest.
+* Install Bundler.
+    - `gem install bundler`
+* Install gems from Gemfile.
+    - `bundle install`
 * Write some specs.
 * Write some code. (Yes, I believe that is the correct order, and you'll never find me doing any different;)
 * Write some documentation using Yard comments - see [Yard's Getting Started](http://rubydoc.info/docs/yard/file/docs/GettingStarted.md)  
@@ -509,18 +502,7 @@ To contribute some code:
 * Wait for worldwide fame.
 * Shrug and get on with your life when it doesn't arrive, but know you helped quite a few people in their life, even in a small way - 1000 raindrops will fill a bucket!
 
+## Licence
 
-### Licence ###
-
-This is under the MIT Licence.
-
-Copyright (c) 2012 Iain Barnett
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-In other words, be good.    
+See LICENCE.txt
 
